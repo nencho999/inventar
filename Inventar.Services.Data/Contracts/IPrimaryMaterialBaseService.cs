@@ -1,13 +1,13 @@
 ﻿using Inventar.Data.Models;
 using Inventar.Models;
+using Inventar.Web.ViewModels.BaseViewModels;
 
 namespace Inventar.Services.Data.Contracts;
 
 public interface IPrimaryMaterialBaseService
 {
-    Task<IEnumerable<PrimaryMaterialBase>> GetAllBasesAsync<T>();
-    Task<PrimaryMaterialBase?> GetBaseByIdAsync(Guid id);
-    Task AddBaseAsync(PrimaryMaterialBase newBase);
-    Task UpdateBaseAsync(PrimaryMaterialBase baseToUpdate);
+    Task<IEnumerable<BaseListViewModel>> GetAllBasesAsync();
+    Task<BaseEditViewModel?> GetBaseForEditAsync(Guid id);
+    Task SaveBaseAsync(BaseEditViewModel model);
     Task DeleteBaseAsync(Guid id);
 }

@@ -1,4 +1,6 @@
 using Inventar.Data;
+using Inventar.Services.Data;
+using Inventar.Services.Data.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,8 @@ public class Program
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddScoped<IPrimaryMaterialBaseService, PrimaryMaterialBaseService>();
 
         var app = builder.Build();
 
