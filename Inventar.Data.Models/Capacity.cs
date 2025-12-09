@@ -5,10 +5,10 @@
         public Guid Id { get; set; }
 
         public Guid PrimaryMaterialBaseId { get; set; }
-
         public PrimaryMaterialBase PrimaryMaterialBase { get; set; } = null!;
-        public string Type { get; set; } = string.Empty;
-        public decimal Quantity { get; set; }
-        public string Unit { get; set; } = string.Empty;
+
+        public Guid MaterialId { get; set; }
+        public Material Material { get; set; } = null!;
+        public decimal CapacityLimit { get; set; }
     }
 }
