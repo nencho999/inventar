@@ -13,19 +13,60 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     }
 
     public DbSet<PrimaryMaterialBase> PrimaryMaterialBases { get; set; }
+    public DbSet<Material> Materials { get; set; }
+
     public DbSet<Capacity> Capacities { get; set; }
+    public DbSet<StockTransaction> StockTransactions { get; set; }
+
+    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<RecurringExpense> RecurringExpenses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<PrimaryMaterialBase>()
-            .HasMany(b => b.Capacities)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Capacity>()
-            .HasOne(c => c.PrimaryMaterialBase)
-            .WithMany(b => b.Capacities)
-            .HasForeignKey(c => c.PrimaryMaterialBaseId);
+            .HasIndex(bc => new { bc.PrimaryMaterialBaseId, bc.MaterialId })
+            .IsUnique();
+
+        modelBuilder.Entity<Capacity>()
+            .Property(bc => bc.CapacityLimit)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<StockTransaction>()
+            .Property(st => st.QuantityChange)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<StockTransaction>()
+            .HasOne(st => st.Base)
+            .WithMany(b => b.StockTransactions)
+            .HasForeignKey(st => st.BaseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<StockTransaction>()
+            .HasOne(st => st.Material)
+            .WithMany()
+            .HasForeignKey(st => st.MaterialId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Expense>()
+            .Property(e => e.Amount)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Expense>()
+            .HasOne(e => e.Base)
+            .WithMany(b => b.Expenses)
+            .HasForeignKey(e => e.BaseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RecurringExpense>()
+            .Property(re => re.Amount)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<RecurringExpense>()
+            .HasOne(re => re.Base)
+            .WithMany(b => b.RecurringExpenses)
+            .HasForeignKey(re => re.BaseId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

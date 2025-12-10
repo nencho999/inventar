@@ -19,12 +19,14 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddScoped<IPrimaryMaterialBaseService, PrimaryMaterialBaseService>();
+        builder.Services.AddScoped<IStockService, StockService>();
+        builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
         var app = builder.Build();
 

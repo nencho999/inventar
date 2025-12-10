@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Inventar.Data;
+﻿using Inventar.Data;
 using Inventar.Data.Models;
-using Inventar.Models;
 using Inventar.Services.Data.Contracts;
-using Inventar.Web.ViewModels.BaseViewModels;
+using Inventar.Web.ViewModels;
+using Inventar.Web.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventar.Services.Data
@@ -21,114 +16,118 @@ namespace Inventar.Services.Data
             _context = context;
         }
 
-        public async Task<IEnumerable<BaseListViewModel>> GetAllBasesAsync()
+        public async Task<BaseFormViewModel> GetBaseForEditAsync(Guid id)
         {
-            return await _context.PrimaryMaterialBases
-                .Include(b => b.Capacities)
-                .Select(b => new BaseListViewModel
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    Address = b.Address,
-                    CapacitySummary = string.Join(", ", b.Capacities.Select(c => $"{c.Quantity} {c.Unit} {c.Type}"))
-                })
-                .ToListAsync();
-        }
+            var allMaterials = await _context.Materials.ToListAsync();
 
-        public async Task<BaseEditViewModel?> GetBaseForEditAsync(Guid id)
-        {
+            BaseFormViewModel model;
+
             if (id == Guid.Empty)
             {
-                return new BaseEditViewModel
-                {
-                    Id = Guid.Empty,
-                    Capacities = new List<CapacityViewModel>{new CapacityViewModel()}
-                };
-            }
-
-            var entity = await _context.PrimaryMaterialBases
-                .Include(b => b.Capacities)
-                .FirstOrDefaultAsync(b => b.Id == id);
-
-            if (entity == null) return null;
-
-            return new BaseEditViewModel
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Address = entity.Address,
-                Description = entity.Description,
-                Capacities = entity.Capacities.Select(c => new CapacityViewModel
-                {
-                    Id = c.Id,
-                    Type = c.Type,
-                    Quantity = c.Quantity,
-                    Unit = c.Unit
-                }).ToList()
-            };
-        }
-
-        public async Task SaveBaseAsync(BaseEditViewModel model)
-        {
-            if (model.Id == Guid.Empty)
-            {
-                var newBase = new PrimaryMaterialBase()
-                {
-                    Name = model.Name,
-                    Address = model.Address,
-                    Description = model.Description,
-                    Capacities = model.Capacities.Select(c => new Capacity
-                    {
-                        Type = c.Type,
-                        Quantity = c.Quantity,
-                        Unit = c.Unit
-                    }).ToList()
-                };
-                await _context.PrimaryMaterialBases.AddAsync(newBase);
+                model = new BaseFormViewModel();
             }
             else
             {
                 var entity = await _context.PrimaryMaterialBases
                     .Include(b => b.Capacities)
-                    .FirstOrDefaultAsync(b => b.Id == model.Id);
+                    .FirstOrDefaultAsync(b => b.Id == id);
 
-                if (entity == null) throw new InvalidOperationException("Base not found.");
-                entity.Name = model.Name;
-                entity.Address = model.Address;
-                entity.Description = model.Description;
+                if (entity == null) return null;
 
-                var capacitiesToRemove = entity.Capacities
-                    .Where(c => !model.Capacities.Any(mc => mc.Id == c.Id && mc.Id != Guid.Empty))
-                    .ToList();
-
-                _context.Capacities.RemoveRange(capacitiesToRemove);
-
-                foreach (var capModel in model.Capacities)
+                model = new BaseFormViewModel
                 {
-                    if (capModel.Id != Guid.Empty)
-                    {
-                        var existingCapacity = entity.Capacities.FirstOrDefault(c => c.Id == capModel.Id);
-                        if (existingCapacity != null)
-                        {
-                            existingCapacity.Type = capModel.Type;
-                            existingCapacity.Quantity = capModel.Quantity;
-                            existingCapacity.Unit = capModel.Unit;
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(capModel.Type))
-                    {
-                        entity.Capacities.Add(new Capacity
-                        {
-                            Type = capModel.Type,
-                            Quantity = capModel.Quantity,
-                            Unit = capModel.Unit,
-                            PrimaryMaterialBaseId = entity.Id
-                        });
-                    }
-                }
-
-                await _context.SaveChangesAsync();
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Address = entity.Address,
+                    Description = entity.Description
+                };
             }
+
+            model.Capacities = allMaterials.Select(m => new BaseCapacityViewModel
+            {
+                MaterialId = m.Id,
+                MaterialName = $"{m.Name} ({m.Unit})",
+                Limit = id == Guid.Empty ? 0 :
+                        _context.Capacities
+                            .Where(bc => bc.PrimaryMaterialBaseId == id && bc.MaterialId == m.Id)
+                            .Select(bc => bc.CapacityLimit)
+                            .FirstOrDefault(),
+                IsSelected = (id != Guid.Empty && _context.Capacities.Any(bc => bc.PrimaryMaterialBaseId == id && bc.MaterialId == m.Id))
+            }).ToList();
+
+            return model;
+        }
+
+        public async Task<DashboardViewModel> GetDashboardAsync()
+        {
+            var basesEntities = await _context.PrimaryMaterialBases
+                .Include(b => b.Expenses)
+                .Include(b => b.RecurringExpenses)
+                .ToListAsync();
+
+            var baseViewModels = basesEntities.Select(b => new BaseListViewModel
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Address = b.Address,
+                Description = b.Description,
+                OneTimeExpenses = b.Expenses.Sum(e => e.Amount),
+                MonthlyExpenses = b.RecurringExpenses
+                    .Where(re => re.IsActive)
+                    .Sum(re => re.Frequency == ExpenseFrequency.Monthly ? re.Amount :
+                    re.Frequency == ExpenseFrequency.Weekly ? re.Amount * 4.33m :
+                    re.Frequency == ExpenseFrequency.Yearly ? re.Amount / 12m :
+                    (re.Frequency == ExpenseFrequency.CustomMonthInterval && re.IntervalMonths > 0)
+                    ? re.Amount / (decimal)re.IntervalMonths
+                    : 0)
+            }).ToList();
+
+            var dashboard = new DashboardViewModel
+            {
+                TotalBases = baseViewModels.Count,
+                TotalOneTimeExpenses = baseViewModels.Sum(x => x.OneTimeExpenses),
+                TotalMonthlyExpenses = baseViewModels.Sum(x => x.MonthlyExpenses),
+                Bases = baseViewModels
+            };
+
+            return dashboard;
+        }
+
+        public async Task SaveBaseAsync(BaseFormViewModel model)
+        {
+            PrimaryMaterialBase entity;
+
+            if (model.Id == Guid.Empty)
+            {
+                entity = new PrimaryMaterialBase();
+                await _context.PrimaryMaterialBases.AddAsync(entity);
+            }
+            else
+            {
+                entity = await _context.PrimaryMaterialBases.FindAsync(model.Id);
+                if (entity == null) return;
+            }
+
+            entity.Name = model.Name;
+            entity.Address = model.Address;
+            entity.Description = model.Description;
+
+            await _context.SaveChangesAsync();
+
+            var existingCapacities = _context.Capacities.Where(bc => bc.PrimaryMaterialBaseId == entity.Id);
+            _context.Capacities.RemoveRange(existingCapacities);
+
+            foreach (var row in model.Capacities.Where(c => c.Limit > 0))
+            {
+                _context.Capacities.Add(new Capacity
+                {
+                    PrimaryMaterialBaseId = entity.Id,
+                    MaterialId = row.MaterialId,
+                    CapacityLimit = row.Limit
+                });
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBaseAsync(Guid id)
@@ -139,6 +138,17 @@ namespace Inventar.Services.Data
                 _context.PrimaryMaterialBases.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<DropdownPairViewModel>> GetBasesDropdownAsync()
+        {
+            return await _context.PrimaryMaterialBases
+                .Select(b => new DropdownPairViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name
+                })
+                .ToListAsync();
         }
     }
 }

@@ -1,64 +1,61 @@
 ﻿using Inventar.Services.Data.Contracts;
-using Inventar.Web.ViewModels.BaseViewModels;
+using Inventar.Web.ViewModels.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventar.Web.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     public class PrimaryMaterialBaseController : Controller
     {
-        private readonly IPrimaryMaterialBaseService _service;
+        private readonly IPrimaryMaterialBaseService _baseService;
 
-        public PrimaryMaterialBaseController(IPrimaryMaterialBaseService service)
+        public PrimaryMaterialBaseController(IPrimaryMaterialBaseService baseService)
         {
-            _service = service;
+            _baseService = baseService;
         }
 
-        //GET: /Base/Index
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = await _service.GetAllBasesAsync();
+            var model = await _baseService.GetDashboardAsync();
             return View(model);
         }
 
-        //GET: /Base/Edit/{id}
-        public async Task<IActionResult> Edit(Guid? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var model = await _service.GetBaseForEditAsync(id??Guid.Empty);
+            var model = await _baseService.GetBaseForEditAsync(id);
+
             if (model == null)
             {
                 return NotFound();
             }
+
             return View(model);
         }
 
-        //POST: /Base/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(BaseEditViewModel model)
+        public async Task<IActionResult> Edit(BaseFormViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            try
-            {
-                await _service.SaveBaseAsync(model);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (InvalidOperationException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View(model);
-            }
+            await _baseService.SaveBaseAsync(model);
+
+            TempData["SuccessMessage"] = "The database has been saved successfully!";
+            return RedirectToAction(nameof(Index));
         }
 
-        //POST: /Base/Delete/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            await _service.DeleteBaseAsync(id);
+            await _baseService.DeleteBaseAsync(id);
+            TempData["SuccessMessage"] = "The database has been deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

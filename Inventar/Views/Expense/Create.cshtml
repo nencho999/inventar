@@ -1,0 +1,145 @@
+﻿@model Inventar.Web.ViewModels.Expense.ExpenseFormViewModel
+@using Inventar.Data.Models
+
+@{
+    ViewData["Title"] = "New Expense";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Register Expense</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="BaseId" class="form-label fw-bold">Base</label>
+                        <select asp-for="BaseId" class="form-select" asp-items="@(new SelectList(Model.Bases, "Id", "Name"))">
+                            <option value="">-- Select Base --</option>
+                        </select>
+                        <span asp-validation-for="BaseId" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label asp-for="Name" class="form-label">Expense Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g. Security Guard Salary" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Amount" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <input asp-for="Amount" class="form-control" type="number" step="0.01" />
+                                <span class="input-group-text">$</span>
+                            </div>
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" asp-for="IsRecurring" id="chkRecurring">
+                        <label class="form-check-label fw-bold" for="chkRecurring">
+                            Is this a recurring (subscription) expense?
+                        </label>
+                    </div>
+
+                    <div id="oneTimeSection">
+                        <div class="mb-3">
+                            <label asp-for="ExpenseDate" class="form-label">Payment Date</label>
+                            <input asp-for="ExpenseDate" class="form-control" />
+                            <span asp-validation-for="ExpenseDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div id="recurringSection" style="display:none;" class="bg-light p-3 rounded border mb-3">
+                        <h6 class="text-success"><i class="fas fa-sync-alt"></i> Period Settings</h6>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label">Start Date</label>
+                                <input asp-for="StartDate" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Frequency" class="form-label">Frequency<</label>
+                                <select asp-for="Frequency" class="form-select"
+                                        asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"
+                                        id="ddlFrequency">
+                                </select>
+                                <span asp-validation-for="Frequency" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="intervalContainer" style="display:none;">
+                            <label asp-for="IntervalMonths" class="form-label">Interval (Months)</label>
+                            <input asp-for="IntervalMonths" class="form-control" placeholder="e.g. 3 for quarterly" />
+                            <span class="form-text text-muted">Enter a number (e.g. 6 for semiannual).</span>
+                            <span asp-validation-for="IntervalMonths" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Save Expense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var chkRecurring = document.getElementById("chkRecurring");
+            var oneTimeSection = document.getElementById("oneTimeSection");
+            var recurringSection = document.getElementById("recurringSection");
+            var ddlFrequency = document.getElementById("ddlFrequency");
+            var intervalContainer = document.getElementById("intervalContainer");
+
+            function toggleSections() {
+                if (chkRecurring.checked) {
+                    oneTimeSection.style.display = "none";
+                    recurringSection.style.display = "block";
+                } else {
+                    oneTimeSection.style.display = "block";
+                    recurringSection.style.display = "none";
+                }
+            }
+
+            function toggleInterval() {
+
+                var selectedValue = ddlFrequency.value;
+                if (selectedValue === "3") {
+                    intervalContainer.style.display = "block";
+                } else {
+                    intervalContainer.style.display = "none";
+                }
+            }
+
+            chkRecurring.addEventListener("change", toggleSections);
+            ddlFrequency.addEventListener("change", toggleInterval);
+
+            toggleSections();
+            toggleInterval();
+        });
+    </script>
+}
