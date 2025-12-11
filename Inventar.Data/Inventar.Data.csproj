@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Inventar.Common\Inventar.Common.csproj" />
     <ProjectReference Include="..\Inventar.Data.Models\Inventar.Data.Models.csproj" />
   </ItemGroup>
 
