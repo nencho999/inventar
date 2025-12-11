@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Inventar.Data\Inventar.Data.csproj" />
     <ProjectReference Include="..\Inventar.Web.ViewModels\Inventar.Web.ViewModels.csproj" />
   </ItemGroup>

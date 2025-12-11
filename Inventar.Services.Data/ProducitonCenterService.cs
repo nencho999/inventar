@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Inventar.Data;
+using Inventar.Data.Models;
+using Inventar.Services.Data.Contracts;
+using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.AspNetCore.Identity;
-using Inventar.Web.ViewModels;
-using Inventar.Data;
-using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using static Inventar.Common.Messages.ErrorMessages.Admin;
+using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
 
 public class ProductionCenterService : IProductionCenterService
 {
@@ -24,7 +27,9 @@ public class ProductionCenterService : IProductionCenterService
                 Name = c.Name,
                 Status = c.Status,
                 Location = c.Location,
+                Contact = c.Contact,
                 Capacity = c.Capacity,
+                Expenses = c.Expenses
             })
             .ToListAsync();
 
@@ -143,11 +148,9 @@ public class ProductionCenterService : IProductionCenterService
         return model;
     }
 
-    public async Task<bool> DeleteCenterAsync(string userId, int id)
+    public async Task<bool> DeleteCenterAsync(CenterDeleteViewModel model)
     {
-        var user = await userManager.FindByIdAsync(userId);
-
-        var center = await dbContext.ProductionCenters.FindAsync(id);
+        var center = await dbContext.ProductionCenters.FindAsync(model.Id);
 
         if (center == null)
         {
@@ -158,5 +161,26 @@ public class ProductionCenterService : IProductionCenterService
         await dbContext.SaveChangesAsync();
 
         return true;
+    }
+    public async Task<IEnumerable<SelectListItem>> GetCenterStatusSelectListAsync(CenterStatus? selectedStatus = null)
+    {
+        var statusList = Enum.GetValues(typeof(CenterStatus))
+                             .Cast<CenterStatus>()
+                             .Select(s => new SelectListItem
+                             {
+                                 Value = ((int)s).ToString(),
+                                 Text = s.ToString(),
+                                 Selected = selectedStatus.HasValue && selectedStatus.Value == s
+                             }).ToList();
+
+        statusList.Insert(0, new SelectListItem
+        {
+            Value = "",
+            Text = "--- Select Center Status ---",
+            Disabled = true,
+            Selected = !selectedStatus.HasValue
+        });
+
+        return statusList;
     }
 }
