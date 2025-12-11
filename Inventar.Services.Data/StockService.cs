@@ -18,6 +18,36 @@ namespace Inventar.Services.Data
 
         public async Task RecordTransactionAsync(StockTransactionViewModel model, string userId)
         {
+            decimal currentStock = await GetCurrentStockLevelAsync(model.BaseId, model.MaterialId);
+
+            if (!model.IsAcquisition)
+            {
+                if (currentStock < model.Quantity)
+                {
+                    throw new InvalidOperationException($"ERROR: Insufficient stock! Current stock is {currentStock}, but you are trying to remove {model.Quantity}.");
+                }
+            }
+            else
+            {
+                var capacityRecord = await _context.Capacities
+                    .FirstOrDefaultAsync(bc => bc.PrimaryMaterialBaseId == model.BaseId && bc.MaterialId == model.MaterialId);
+
+                decimal maxLimit = capacityRecord?.CapacityLimit ?? 0;
+
+                if (maxLimit == 0)
+                {
+                    throw new InvalidOperationException("This base has no defined capacity limit for this material.");
+                }
+
+                decimal futureStock = currentStock + model.Quantity;
+
+                if (futureStock > maxLimit)
+                {
+                    decimal availableSpace = maxLimit - currentStock;
+                    throw new InvalidOperationException($"ERROR: Capacity exceeded! Base limit is {maxLimit}. Current stock is {currentStock}. You can only add {availableSpace}.");
+                }
+            }
+
             decimal change = model.IsAcquisition ? model.Quantity : -model.Quantity;
 
             var transaction = new StockTransaction
@@ -96,6 +126,27 @@ namespace Inventar.Services.Data
                 _context.Materials.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<StockLevelViewModel>> GetStockLevelsAsync()
+        {
+            var stockData = await _context.StockTransactions
+                .Include(t => t.Base)
+                .Include(t => t.Material)
+                .GroupBy(t => new { t.Base.Name, MaterialName = t.Material.Name, t.Material.Unit })
+                .Select(g => new StockLevelViewModel
+                {
+                    BaseName = g.Key.Name,
+                    MaterialName = g.Key.MaterialName,
+                    Unit = g.Key.Unit,
+                    Quantity = g.Sum(t => t.QuantityChange)
+                })
+                .Where(x => x.Quantity != 0)
+                .OrderBy(x => x.BaseName)
+                .ThenBy(x => x.MaterialName)
+                .ToListAsync();
+
+            return stockData;
         }
     }
 }

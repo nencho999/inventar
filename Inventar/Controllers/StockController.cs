@@ -56,6 +56,13 @@ namespace Inventar.Web.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Inventory()
+        {
+            var model = await _stockService.GetStockLevelsAsync();
+            return View(model);
+        }
+
         private async Task PopulateDropdowns(StockTransactionViewModel model)
         {
             model.Bases = await _baseService.GetBasesDropdownAsync();
