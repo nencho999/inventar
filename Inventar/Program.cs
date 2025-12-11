@@ -2,8 +2,10 @@ using Inventar.Data;
 using Inventar.Services.Data;
 using Inventar.Services.Data.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using static Inventar.Data.Seeding.RoleSeeding;
 
 namespace Inventar.Web;
 
@@ -19,16 +21,36 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+        builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireDigit = false;
+        }
+        )
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-        builder.Services.AddControllersWithViews();
+
+        builder.Services.AddControllersWithViews(cfg =>
+        {
+            cfg.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+        });
 
         builder.Services.AddScoped<IPrimaryMaterialBaseService, PrimaryMaterialBaseService>();
         builder.Services.AddScoped<IStockService, StockService>();
         builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+
+            SeedIdentityAsync(services).GetAwaiter().GetResult();
+        }
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -49,6 +71,9 @@ public class Program
 
         app.UseAuthorization();
 
+        app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
