@@ -1,4 +1,8 @@
-﻿public class CenterDeleteViewModel
+﻿using Inventar.Data.Models;
+
+namespace Inventar.Web.ViewModels.ProductionCenter;
+
+public class CenterDeleteViewModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
