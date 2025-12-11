@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using Inventar.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
 public class ProductionCenter
@@ -9,21 +9,13 @@ public class ProductionCenter
     [Required]
     public string Name { get; set; } = "Central production unit";
 
-    public CenterStatus Status { get; set; } = CenterStatus.Operational;
+    public CenterStatus? Status { get; set; } = CenterStatus.Operational;
 
-    public string Location { get; set; }
+    public string? Location { get; set; }
 
-    public string Capacity { get; set; }
+    public string? Capacity { get; set; }
 
-    public string Contact { get; set; }
+    public string? Contact { get; set; }
 
-    public string Expenses { get; set; }
-}
-
-public enum CenterStatus
-{
-    Operational,
-    Maintenance,
-    UnderConstruction,
-    Closed
+    public string? Expenses { get; set; }
 }
