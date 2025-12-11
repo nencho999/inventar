@@ -12,5 +12,5 @@ public interface IStockService
     Task SaveMaterialAsync(MaterialViewModel model);
     Task DeleteMaterialAsync(Guid id);
 
-    Task<IEnumerable<StockLevelViewModel>> GetStockLevelsAsync();
+    Task<IEnumerable<StockLevelViewModel>> GetStockLevelsAsync(Guid? baseId = null, Guid? materialId = null, string searchTerm = null);
 }

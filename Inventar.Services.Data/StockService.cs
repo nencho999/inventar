@@ -128,11 +128,24 @@ namespace Inventar.Services.Data
             }
         }
 
-        public async Task<IEnumerable<StockLevelViewModel>> GetStockLevelsAsync()
+        public async Task<IEnumerable<StockLevelViewModel>> GetStockLevelsAsync(Guid? baseId = null, Guid? materialId = null, string searchTerm = null)
         {
-            var stockData = await _context.StockTransactions
+            var query = _context.StockTransactions
                 .Include(t => t.Base)
                 .Include(t => t.Material)
+                .AsQueryable();
+
+            if (baseId.HasValue)
+            {
+                query = query.Where(t => t.BaseId == baseId.Value);
+            }
+
+            if (materialId.HasValue)
+            {
+                query = query.Where(t => t.MaterialId == materialId.Value);
+            }
+
+            var groupedQuery = query
                 .GroupBy(t => new { t.Base.Name, MaterialName = t.Material.Name, t.Material.Unit })
                 .Select(g => new StockLevelViewModel
                 {
@@ -140,13 +153,22 @@ namespace Inventar.Services.Data
                     MaterialName = g.Key.MaterialName,
                     Unit = g.Key.Unit,
                     Quantity = g.Sum(t => t.QuantityChange)
-                })
+                });
+
+            var resultList = await groupedQuery
                 .Where(x => x.Quantity != 0)
-                .OrderBy(x => x.BaseName)
-                .ThenBy(x => x.MaterialName)
                 .ToListAsync();
 
-            return stockData;
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                resultList = resultList
+                    .Where(x => x.BaseName.ToLower().Contains(searchTerm) ||
+                                x.MaterialName.ToLower().Contains(searchTerm))
+                    .ToList();
+            }
+
+            return resultList.OrderBy(x => x.BaseName).ThenBy(x => x.MaterialName);
         }
     }
 }
