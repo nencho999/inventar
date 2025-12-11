@@ -1,0 +1,93 @@
+﻿@using Inventar.Data.Models
+@using Inventar.Web.ViewModels.ProductionCenter
+@model CenterCreateInputModel
+
+@{
+    ViewData["Title"] = "Register New Production Center";
+}
+
+<h2 class="d-flex align-items-center mb-4">
+    <i class="fas fa-plus-circle me-3 text-success"></i> @ViewData["Title"]
+</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" class="shadow p-4 bg-white rounded">
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> General Information</h5>
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Central production unit"
+                           value="Central production unit" />
+                    <label asp-for="Name" class="form-label"></label>
+                </div>
+                <span class="input-group-text text-danger">*</span>
+            </div>
+            <span asp-validation-for="Name" class="text-danger d-block mb-3"></span>
+
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
+                <div class="form-floating flex-grow-1">
+                    <select asp-for="Status"
+                            asp-items="ViewBag.CenterStatuses"
+                            class="form-select"
+                            aria-label="Status selection"></select>
+                    <label asp-for="Status"></label>
+                </div>
+            </div>
+            <span asp-validation-for="Status" class="text-danger d-block mb-3"></span>
+
+
+            <hr class="my-4" />
+
+            <h5 class="text-primary mb-3"><i class="fas fa-map-marked-alt me-2"></i> Location & Capacity</h5>
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                <input asp-for="Location" class="form-control" placeholder="City, Street Address" />
+            </div>
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                <input asp-for="Capacity" class="form-control" placeholder="e.g., 500 units per hour" />
+            </div>
+
+            <hr class="my-4" />
+
+            <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i> Contact & Financials</h5>
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+                <input asp-for="Contact" class="form-control" placeholder="Email or Phone number" />
+            </div>
+
+            <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
+                <input asp-for="Expenses" class="form-control" placeholder="e.g., 15000 BGN monthly" />
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success me-2 px-4 shadow-sm">
+                    <i class="fas fa-save me-1"></i> Create Center
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
