@@ -18,6 +18,36 @@ namespace Inventar.Services.Data
 
         public async Task RecordTransactionAsync(StockTransactionViewModel model, string userId)
         {
+            decimal currentStock = await GetCurrentStockLevelAsync(model.BaseId, model.MaterialId);
+
+            if (!model.IsAcquisition)
+            {
+                if (currentStock < model.Quantity)
+                {
+                    throw new InvalidOperationException($"ERROR: Insufficient stock! Current stock is {currentStock}, but you are trying to remove {model.Quantity}.");
+                }
+            }
+            else
+            {
+                var capacityRecord = await _context.Capacities
+                    .FirstOrDefaultAsync(bc => bc.PrimaryMaterialBaseId == model.BaseId && bc.MaterialId == model.MaterialId);
+
+                decimal maxLimit = capacityRecord?.CapacityLimit ?? 0;
+
+                if (maxLimit == 0)
+                {
+                    throw new InvalidOperationException("This base has no defined capacity limit for this material.");
+                }
+
+                decimal futureStock = currentStock + model.Quantity;
+
+                if (futureStock > maxLimit)
+                {
+                    decimal availableSpace = maxLimit - currentStock;
+                    throw new InvalidOperationException($"ERROR: Capacity exceeded! Base limit is {maxLimit}. Current stock is {currentStock}. You can only add {availableSpace}.");
+                }
+            }
+
             decimal change = model.IsAcquisition ? model.Quantity : -model.Quantity;
 
             var transaction = new StockTransaction
@@ -96,6 +126,49 @@ namespace Inventar.Services.Data
                 _context.Materials.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<StockLevelViewModel>> GetStockLevelsAsync(Guid? baseId = null, Guid? materialId = null, string searchTerm = null)
+        {
+            var query = _context.StockTransactions
+                .Include(t => t.Base)
+                .Include(t => t.Material)
+                .AsQueryable();
+
+            if (baseId.HasValue)
+            {
+                query = query.Where(t => t.BaseId == baseId.Value);
+            }
+
+            if (materialId.HasValue)
+            {
+                query = query.Where(t => t.MaterialId == materialId.Value);
+            }
+
+            var groupedQuery = query
+                .GroupBy(t => new { t.Base.Name, MaterialName = t.Material.Name, t.Material.Unit })
+                .Select(g => new StockLevelViewModel
+                {
+                    BaseName = g.Key.Name,
+                    MaterialName = g.Key.MaterialName,
+                    Unit = g.Key.Unit,
+                    Quantity = g.Sum(t => t.QuantityChange)
+                });
+
+            var resultList = await groupedQuery
+                .Where(x => x.Quantity != 0)
+                .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                resultList = resultList
+                    .Where(x => x.BaseName.ToLower().Contains(searchTerm) ||
+                                x.MaterialName.ToLower().Contains(searchTerm))
+                    .ToList();
+            }
+
+            return resultList.OrderBy(x => x.BaseName).ThenBy(x => x.MaterialName);
         }
     }
 }

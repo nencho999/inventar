@@ -56,6 +56,27 @@ namespace Inventar.Web.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Inventory(Guid? baseId, Guid? materialId, string search)
+        {
+            var stockData = await _stockService.GetStockLevelsAsync(baseId, materialId, search);
+
+            var bases = await _baseService.GetBasesDropdownAsync();
+            var materials = await _stockService.GetMaterialsDropdownAsync();
+
+            var model = new InventoryFilterViewModel
+            {
+                StockLevels = stockData,
+                BaseId = baseId,
+                MaterialId = materialId,
+                SearchTerm = search,
+                Bases = bases,
+                Materials = materials
+            };
+
+            return View(model);
+        }
+
         private async Task PopulateDropdowns(StockTransactionViewModel model)
         {
             model.Bases = await _baseService.GetBasesDropdownAsync();
