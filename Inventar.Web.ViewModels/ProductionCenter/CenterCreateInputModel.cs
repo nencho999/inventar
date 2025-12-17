@@ -1,0 +1,15 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Inventar.Data.Models;
+
+namespace Inventar.Web.ViewModels.ProductionCenter;
+
+public class CenterCreateInputModel
+{
+    [Required]
+    public string Name { get; set; } = "Central Production Unit";
+    public string? Location { get; set; }
+    public string? Capacity { get; set; }
+    public string? Contact { get; set; }
+    public CenterStatus? Status { get; set; }
+    public string? Expenses { get; set; }
+}

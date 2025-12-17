@@ -20,6 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<RecurringExpense> RecurringExpenses { get; set; }
+    public DbSet<ProductionCenter> ProductionCenters { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

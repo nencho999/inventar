@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{D760E0B9-3EE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventar.Web.ViewModels", "Inventar.Web.ViewModels\Inventar.Web.ViewModels.csproj", "{18127C9F-D770-4DB2-B32C-05DA1CA64CAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventar.Common", "Inventar.Common\Inventar.Common.csproj", "{D40E23E5-F153-432E-8F0B-016631291DD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{18127C9F-D770-4DB2-B32C-05DA1CA64CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18127C9F-D770-4DB2-B32C-05DA1CA64CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18127C9F-D770-4DB2-B32C-05DA1CA64CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D40E23E5-F153-432E-8F0B-016631291DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D40E23E5-F153-432E-8F0B-016631291DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D40E23E5-F153-432E-8F0B-016631291DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D40E23E5-F153-432E-8F0B-016631291DD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

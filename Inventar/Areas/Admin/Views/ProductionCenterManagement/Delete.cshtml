@@ -1,0 +1,30 @@
+﻿@using Inventar.Web.ViewModels.ProductionCenter
+@model CenterDeleteViewModel
+
+@{
+    ViewData["Title"] = "Remove Center";
+}
+
+<h2 class="text-danger">Deletion Confirmation</h2>
+<h3 class="mt-4">Are you sure you want to remove this production center?</h3>
+<hr />
+
+<div class="alert alert-warning" role="alert">
+    <strong>WARNING!</strong> This operation is irreversible.
+</div>
+
+<h4>Details of the Center to be deleted:</h4>
+<dl class="row">
+    <dt class="col-sm-3">Name:</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+
+    <dt class="col-sm-3">Location:</dt>
+    <dd class="col-sm-9">@Model.Location</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Confirm Removal</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
