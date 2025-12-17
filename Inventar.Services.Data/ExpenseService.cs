@@ -41,7 +41,8 @@ namespace Inventar.Services.Data
                     Amount = model.Amount,
                     ExpenseDate = model.ExpenseDate,
                     CreatedByUserId = userId,
-                    IsCreatedByAdmin = isAdmin
+                    IsCreatedByAdmin = isAdmin,
+                    Description = model.Description
                 };
 
                 await _context.Expenses.AddAsync(expense);

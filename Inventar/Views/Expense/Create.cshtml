@@ -92,7 +92,11 @@
                             <span asp-validation-for="IntervalMonths" class="text-danger"></span>
                         </div>
                     </div>
-
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">Description / Comment</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Additional details about this expense..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-success btn-lg">Save Expense</button>
                     </div>

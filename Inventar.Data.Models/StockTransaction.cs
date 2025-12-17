@@ -20,6 +20,9 @@ public class StockTransaction
     [Column(TypeName = "decimal(18, 2)")]
     public decimal QuantityChange { get; set; }
 
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? UnitPrice { get; set; }
+
     public string? CreatedByUserId { get; set; }
     public string? Notes { get; set; }
 }

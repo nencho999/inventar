@@ -57,7 +57,8 @@ namespace Inventar.Services.Data
                 QuantityChange = change,
                 TransactionDate = model.TransactionDate,
                 Notes = model.Notes,
-                CreatedByUserId = userId
+                CreatedByUserId = userId,
+                UnitPrice = model.IsAcquisition ? model.UnitPrice : null
             };
 
             await _context.StockTransactions.AddAsync(transaction);
