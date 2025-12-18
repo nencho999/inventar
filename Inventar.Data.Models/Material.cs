@@ -15,5 +15,7 @@ namespace Inventar.Data.Models
         public string Name { get; set; } = null!;
 
         public string Unit { get; set; } = null!;
+        public virtual ICollection<ProductionCenterStorage> StorageInCenters { get; set; }
+        = new List<ProductionCenterStorage>();
     }
 }

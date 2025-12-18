@@ -18,4 +18,7 @@ public class ProductionCenter
     public string? Contact { get; set; }
 
     public string? Expenses { get; set; }
+    public virtual ICollection<ProductionCenterStorage> StorageCapacities { get; set; }
+        = new List<ProductionCenterStorage>();
+
 }
