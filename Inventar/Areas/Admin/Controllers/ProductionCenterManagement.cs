@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
-using Inventar.Web.ViewModels.ProductionCenter;
-using Inventar.Areas.Admin.Controllers;
+﻿using Inventar.Areas.Admin.Controllers;
+using Inventar.Data;
 using Inventar.Services.Data.Contracts;
+using Inventar.Web.ViewModels.ProductionCenter;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
 
 public class ProductionCenterManagement : AdminBaseController
 {
     private readonly IProductionCenterService _service;
-    public ProductionCenterManagement(IProductionCenterService service)
+    private readonly IPrimaryMaterialBaseService _materialService;
+    public ProductionCenterManagement(IProductionCenterService service, IPrimaryMaterialBaseService materialService)
     {
         _service = service;
+        _materialService = materialService;
     }
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -19,10 +23,14 @@ public class ProductionCenterManagement : AdminBaseController
         return View(centers);
     }
     [HttpGet]
-    public async  Task <IActionResult> Create()
+    public async Task <IActionResult> Create()
     {
+        var model = new CenterCreateInputModel();
+        var dropdownData = await _materialService.GetMaterialsDropdownAsync();
+        model.Materials = dropdownData.ToList();
+
         ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
-        return View(new CenterCreateInputModel());
+        return View(model);
     }
     [HttpPost]
     public async Task<IActionResult> Create(CenterCreateInputModel model)

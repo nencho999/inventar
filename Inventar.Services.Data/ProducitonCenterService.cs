@@ -75,6 +75,15 @@ public class ProductionCenterService : IProductionCenterService
             Expenses = model.Expenses
         };
 
+        foreach (var storage in model.Storages)
+        {
+            center.StorageCapacities.Add(new ProductionCenterStorage
+            {
+                MaterialId = storage.MaterialId,
+                MaxStorageCapacity = storage.MaxCapacity
+            });
+        }
+
         await dbContext.AddAsync(center);
         await dbContext.SaveChangesAsync();
 
