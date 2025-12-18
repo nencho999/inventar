@@ -59,6 +59,8 @@ public class ProductionCenterManagement : AdminBaseController
         try
         {
             var model = await _service.GetCenterForEdittingAsync(GetUserId()!, id);
+            var materials = await _materialService.GetMaterialsDropdownAsync();
+            model.Materials = materials.ToList();
             ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
             return View(model);
         }
