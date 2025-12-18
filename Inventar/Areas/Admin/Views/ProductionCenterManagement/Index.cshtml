@@ -5,7 +5,6 @@
     ViewData["Title"] = "Production Centers Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    // Логика за филтриране и броене: Броим всеки, който има стойност (т.е. не е null). 
     var activeCenters = Model.Where(c => c.Status.HasValue).ToList();
 
     var statusSummary = activeCenters.GroupBy(c => c.Status).Select(g => new
@@ -16,7 +15,6 @@
 
     var totalCenters = activeCenters.Count();
 
-    // Помощна функция за определяне на класа за статус (работи с Enum имена)
     Func<string, string> GetStatusClass = (status) => status switch
     {
         "Operational" => "bg-success",
@@ -44,7 +42,7 @@
                     </div>
                     <div class="col">
                         <div class="text-xs font-weight-bold text-uppercase mb-1">
-                            Total Tracked Centers
+                            Total Active Centers
                         </div>
                         <div class="h5 mb-0 font-weight-bold">@totalCenters</div>
                     </div>
@@ -86,7 +84,6 @@
     <div class="row">
         @foreach (var center in Model)
         {
-            // Проверка за статус: Има ли стойност?
             bool isStatusDefined = center.Status.HasValue;
             string statusString = isStatusDefined ? center.Status.ToString() : "";
             string statusBgClass = GetStatusClass(statusString);
