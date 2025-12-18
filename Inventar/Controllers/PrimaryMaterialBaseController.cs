@@ -1,28 +1,35 @@
-﻿using Inventar.Services.Data.Contracts;
+﻿using Inventar.Areas.Admin.Controllers;
+using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels.Base;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventar.Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize]
     public class PrimaryMaterialBaseController : Controller
     {
         private readonly IPrimaryMaterialBaseService _baseService;
+        private readonly IStockService _stockService;
 
-        public PrimaryMaterialBaseController(IPrimaryMaterialBaseService baseService)
+        public PrimaryMaterialBaseController(IPrimaryMaterialBaseService baseService, IStockService stockService)
         {
             _baseService = baseService;
+            _stockService = stockService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var model = await _baseService.GetDashboardAsync();
+            var stockData = await _stockService.GetStockLevelsAsync();
+            model.TotalInventoryValue = stockData.Sum(x => x.TotalValue);
             return View(model);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var model = await _baseService.GetBaseForEditAsync(id);
@@ -37,6 +44,7 @@ namespace Inventar.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(BaseFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -52,6 +60,7 @@ namespace Inventar.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _baseService.DeleteBaseAsync(id);

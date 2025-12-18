@@ -67,8 +67,11 @@
                             <small class="text-muted">Enter price if purchasing new stock.</small>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label asp-for="TransactionDate" class="form-label">Date</label>
-                            <input asp-for="TransactionDate" class="form-control form-control-lg" />
+                            <label asp-for="TransactionDate" class="form-label">Date & Time</label>
+                            <input asp-for="TransactionDate"
+                                   class="form-control form-control-lg"
+                                   type="datetime-local"
+                                   value="@Model.TransactionDate.ToString("yyyy-MM-ddTHH:mm")"/>
                             <span asp-validation-for="TransactionDate" class="text-danger"></span>
                         </div>
                     </div>

@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Inventar.Web.ViewModels.Stock.StockHistoryViewModel>
+
+@{
+    ViewData["Title"] = "Transaction History";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-history"></i> Transaction History</h2>
+    <a asp-controller="Stock" asp-action="Inventory" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Inventory
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Base / Material</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Value</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-nowrap">@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
+
+                        <td>
+                            @if (item.IsAcquisition)
+                            {
+                                <span class="badge bg-success rounded-pill px-3">
+                                    <i class="fas fa-arrow-down me-1"></i> IN
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger rounded-pill px-3">
+                                    <i class="fas fa-arrow-up me-1"></i> OUT
+                                </span>
+                            }
+                        </td>
+
+                        <td>
+                            <div class="fw-bold text-dark">@item.MaterialName</div>
+                            <div class="small text-muted"><i class="fas fa-warehouse text-secondary"></i> @item.BaseName</div>
+                        </td>
+
+                        <td class="fw-bold">
+                            @item.Quantity.ToString("N2") <small class="text-muted">@item.Unit</small>
+                        </td>
+
+                        <td>
+                            @if (item.UnitPrice.HasValue)
+                            {
+                                <span class="text-muted">$@item.UnitPrice.Value.ToString("N2")</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">-</span>
+                            }
+                        </td>
+
+                        <td class="fw-bold text-dark">
+                            @if (item.IsAcquisition && item.UnitPrice.HasValue)
+                            {
+                                <span>$@item.TotalPrice.ToString("N2")</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">-</span>
+                            }
+                        </td>
+
+                        <td class="text-muted small">
+                            <i class="fas fa-user-circle me-1"></i> @item.UserName
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="fas fa-history fa-2x mb-3 opacity-50"></i>
+                            <p class="mb-0">No transaction history found.</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -2,6 +2,7 @@
 using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels.Expense;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventar.Services.Data
 {
@@ -49,6 +50,21 @@ namespace Inventar.Services.Data
             }
 
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<ExpenseViewModel>> GetAllExpensesAsync()
+        {
+            return await _context.Expenses
+                .Include(e => e.Base) // Връзка с базата
+                .OrderByDescending(e => e.ExpenseDate)      // Най-новите първи
+                .Select(e => new ExpenseViewModel
+                {
+                    Id = e.Id,
+                    Date = e.ExpenseDate,
+                    Amount = e.Amount,
+                    Description = e.Description,
+                    BaseName = e.Base.Name
+                })
+                .ToListAsync();
         }
     }
 }

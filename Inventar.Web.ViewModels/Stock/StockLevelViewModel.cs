@@ -12,5 +12,7 @@ namespace Inventar.Web.ViewModels.Stock
         public string MaterialName { get; set; } = null!;
         public string Unit { get; set; } = null!;
         public decimal Quantity { get; set; }
+        public decimal AveragePrice { get; set; }
+        public decimal TotalValue { get; set; }
     }
 }
