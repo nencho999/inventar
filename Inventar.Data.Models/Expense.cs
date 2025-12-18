@@ -10,7 +10,7 @@ public class Expense
     public string Name { get; set; } = null!;
     public decimal Amount { get; set; }
     public DateTime ExpenseDate { get; set; }
-
+    public string? Description { get; set; }
     public string CreatedByUserId { get; set; } = null!;
     public bool IsCreatedByAdmin { get; set; }
 }

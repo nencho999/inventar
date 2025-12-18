@@ -4,6 +4,7 @@ using Inventar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventar.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217183345_AddPriceAndComment")]
+    partial class AddPriceAndComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,7 @@ namespace Inventar.Data.Migrations
                     b.HasIndex("PrimaryMaterialBaseId", "MaterialId")
                         .IsUnique();
 
-                    b.ToTable("Capacities", (string)null);
+                    b.ToTable("Capacities");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.Expense", b =>
@@ -80,7 +83,7 @@ namespace Inventar.Data.Migrations
 
                     b.HasIndex("BaseId");
 
-                    b.ToTable("Expenses", (string)null);
+                    b.ToTable("Expenses");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.Material", b =>
@@ -99,7 +102,7 @@ namespace Inventar.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Materials", (string)null);
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.PrimaryMaterialBase", b =>
@@ -122,7 +125,7 @@ namespace Inventar.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrimaryMaterialBases", (string)null);
+                    b.ToTable("PrimaryMaterialBases");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.RecurringExpense", b =>
@@ -160,7 +163,7 @@ namespace Inventar.Data.Migrations
 
                     b.HasIndex("BaseId");
 
-                    b.ToTable("RecurringExpenses", (string)null);
+                    b.ToTable("RecurringExpenses");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.StockTransaction", b =>
@@ -196,7 +199,7 @@ namespace Inventar.Data.Migrations
 
                     b.HasIndex("MaterialId");
 
-                    b.ToTable("StockTransactions", (string)null);
+                    b.ToTable("StockTransactions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -399,36 +402,6 @@ namespace Inventar.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("ProductionCenter", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Capacity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Contact")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Expenses")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductionCenters", (string)null);
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.Capacity", b =>
