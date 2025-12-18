@@ -146,19 +146,33 @@ namespace Inventar.Services.Data
                 query = query.Where(t => t.MaterialId == materialId.Value);
             }
 
-            var groupedQuery = query
+            var groupedQuery = await query
                 .GroupBy(t => new { t.Base.Name, MaterialName = t.Material.Name, t.Material.Unit })
-                .Select(g => new StockLevelViewModel
+                .Select(g => new
                 {
                     BaseName = g.Key.Name,
                     MaterialName = g.Key.MaterialName,
                     Unit = g.Key.Unit,
-                    Quantity = g.Sum(t => t.QuantityChange)
-                });
-
-            var resultList = await groupedQuery
-                .Where(x => x.Quantity != 0)
+                    CurrentQuantity = g.Sum(t => t.QuantityChange),
+                    TotalCostIn = g.Where(t => t.QuantityChange > 0 && t.UnitPrice != null)
+                        .Sum(t => t.QuantityChange * t.UnitPrice.Value),
+                    TotalQtyIn = g.Where(t => t.QuantityChange > 0 && t.UnitPrice != null)
+                        .Sum(t => t.QuantityChange)
+                })
                 .ToListAsync();
+
+            var resultList = groupedQuery
+                .Where(x => x.CurrentQuantity != 0)
+                .Select(x => new StockLevelViewModel()
+                {
+                    BaseName = x.BaseName,
+                    MaterialName = x.MaterialName,
+                    Unit = x.Unit,
+                    Quantity = x.CurrentQuantity,
+                    AveragePrice = x.TotalQtyIn > 0 ? (x.TotalCostIn / x.TotalQtyIn) : 0,
+                    TotalValue = x.CurrentQuantity * (x.TotalQtyIn > 0 ? (x.TotalCostIn / x.TotalQtyIn) : 0)
+                })
+                .ToList();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -170,6 +184,26 @@ namespace Inventar.Services.Data
             }
 
             return resultList.OrderBy(x => x.BaseName).ThenBy(x => x.MaterialName);
+        }
+        public async Task<IEnumerable<StockHistoryViewModel>> GetLastTransactionsAsync(int count = 100)
+        {
+            return await _context.StockTransactions
+                .Include(t => t.Base)
+                .Include(t => t.Material)
+                .OrderByDescending(t => t.TransactionDate)
+                .Take(count)
+                .Select(t => new StockHistoryViewModel
+                {
+                    Id = t.Id,
+                    Date = t.TransactionDate,
+                    BaseName = t.Base.Name,
+                    MaterialName = t.Material.Name,
+                    Unit = t.Material.Unit,
+                    IsAcquisition = t.QuantityChange > 0,
+                    Quantity = Math.Abs(t.QuantityChange),
+                    UnitPrice = t.UnitPrice
+                })
+                .ToListAsync();
         }
     }
 }

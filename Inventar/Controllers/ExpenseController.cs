@@ -21,6 +21,13 @@ namespace Inventar.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var model = await _expenseService.GetAllExpensesAsync();
+            return View(model);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Create(Guid? baseId)
         {
             var model = new ExpenseFormViewModel();

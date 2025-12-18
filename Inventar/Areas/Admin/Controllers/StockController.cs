@@ -1,13 +1,12 @@
 ﻿using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels.Stock;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Inventar.Areas.Admin.Controllers;
 
-namespace Inventar.Web.Controllers
+namespace Inventar.Web.Areas.Admin.Controllers
 {
-    //[Authorize(Roles = "Admin")]
-    public class StockController : Controller
+    public class StockController : AdminBaseController
     {
         private readonly IStockService _stockService;
         private readonly IPrimaryMaterialBaseService _baseService;
@@ -74,6 +73,12 @@ namespace Inventar.Web.Controllers
                 Materials = materials
             };
 
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> History()
+        {
+            var model = await _stockService.GetLastTransactionsAsync();
             return View(model);
         }
 

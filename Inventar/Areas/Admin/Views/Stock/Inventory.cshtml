@@ -6,9 +6,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>📊 Current Stock Levels</h2>
-    <a asp-action="RecordMovement" class="btn btn-primary">
-        <i class="fas fa-exchange-alt"></i> Record Movement
-    </a>
+
+    <div>
+        <a asp-action="History" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-history"></i> History
+        </a>
+
+        <a asp-action="RecordMovement" class="btn btn-primary">
+            <i class="fas fa-exchange-alt"></i> Record Movement
+        </a>
+    </div>
 </div>
 
 <div class="card mb-4 bg-light">
@@ -58,6 +65,8 @@
                     <th>📦 Material</th>
                     <th class="text-end">Quantity</th>
                     <th>Unit</th>
+                    <th class="text-end">Avg. Price</th>
+                    <th class="text-end">Total Value</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,15 +79,36 @@
                             @item.Quantity.ToString("N2")
                         </td>
                         <td><span class="badge bg-secondary">@item.Unit</span></td>
+                        <td class="text-end text-muted">
+                            @if(item.AveragePrice > 0) 
+                            {
+                                <span>$@item.AveragePrice.ToString("N2")</span>
+                            }
+                            else 
+                            {
+                                <small>-</small>
+                            }
+                        </td>
+                
+                        <td class="text-end fw-bold text-dark">
+                            @if(item.TotalValue > 0) 
+                            {
+                                <span>$@item.TotalValue.ToString("N2")</span>
+                            }
+                            else 
+                            {
+                                <small>-</small>
+                            }
+                        </td>
                     </tr>
                 }
 
                 @if (!Model.StockLevels.Any())
                 {
-                    <tr>
-                        <td colspan="4" class="text-center py-5 text-muted">
-                            <i class="fas fa-search fa-3x mb-3 text-secondary opacity-50"></i>
-                            <p>No inventory records found matching your filters.</p>
+                    <tr class="table-secondary fw-bold border-top border-dark">
+                        <td colspan="5" class="text-end text-uppercase">Total Inventory Value:</td>
+                        <td class="text-end text-primary fs-5">
+                            $@Model.StockLevels.Sum(x => x.TotalValue).ToString("N2")
                         </td>
                     </tr>
                 }

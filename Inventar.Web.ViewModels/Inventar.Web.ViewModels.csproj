@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Inventar.Data.Models\Inventar.Data.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Expense\" />
-  </ItemGroup>
-
 </Project>

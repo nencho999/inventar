@@ -77,42 +77,68 @@
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-3 p-3">
-            <div class="d-flex justify-content-between align-items-start">
+<div class="row mb-4 g-3">
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100">
+            <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
                     <span class="text-muted small text-uppercase fw-bold">Total Bases</span>
-                    <h2 class="mb-0 fw-bold mt-1">@Model.TotalBases</h2>
+                    <h2 class="mb-0 fw-bold mt-2">@Model.TotalBases</h2>
                 </div>
-                <div class="icon-box bg-light">
-                    <i class="fas fa-cubes fa-lg text-secondary"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-3 p-3">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="text-muted small text-uppercase fw-bold">Total Monthly Expenses</span>
-                    <h2 class="mb-0 fw-bold mt-1">$@Model.TotalMonthlyExpenses.ToString("N2")</h2>
-                </div>
-                <div class="icon-box bg-light">
-                    <i class="fas fa-dollar-sign fa-lg text-secondary"></i>
+                <div class="icon-box bg-light text-secondary">
+                    <i class="fas fa-warehouse fa-lg"></i>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-3 p-3">
-            <div class="d-flex justify-content-between align-items-start">
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
-                    <span class="text-muted small text-uppercase fw-bold">Total One-Time Expenses</span>
-                    <h2 class="mb-0 fw-bold mt-1">$@Model.TotalOneTimeExpenses.ToString("N2")</h2>
+                    <span class="text-muted small text-uppercase fw-bold">Inventory Value</span>
+                    <h2 class="mb-0 fw-bold mt-2 text-success">
+                        $@Model.TotalInventoryValue.ToString("N2")
+                    </h2>
                 </div>
-                <div class="icon-box bg-light">
-                    <i class="fas fa-piggy-bank fa-lg text-secondary"></i>
+                <div class="icon-box bg-light-green text-success">
+                    <i class="fas fa-coins fa-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow">
+            <div class="d-flex justify-content-between align-items-start h-100">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">Monthly Expenses</span>
+                    <h2 class="mb-0 fw-bold mt-2">$@Model.TotalMonthlyExpenses.ToString("N2")</h2>
+
+                    <a asp-controller="Expense" asp-action="Index" class="stretched-link text-decoration-none text-muted small mt-2 d-block">
+                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="icon-box bg-light-blue text-primary">
+                    <i class="fas fa-file-invoice-dollar fa-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow">
+            <div class="d-flex justify-content-between align-items-start h-100">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">One-Time Expenses</span>
+                    <h2 class="mb-0 fw-bold mt-2">$@Model.TotalOneTimeExpenses.ToString("N2")</h2>
+
+                    <a asp-controller="Expense" asp-action="Index" class="stretched-link text-decoration-none text-muted small mt-2 d-block">
+                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="icon-box bg-light-orange text-warning">
+                    <i class="fas fa-tools fa-lg"></i>
                 </div>
             </div>
         </div>
@@ -131,12 +157,16 @@
         <button class="btn btn-white border bg-white text-muted">
             <i class="fas fa-filter"></i> Filter
         </button>
-        <a asp-controller="Material" asp-action="Index" class="btn btn-white border bg-white text-dark">
-            <i class="fas fa-seedling text-success"></i> Materials
-        </a>
-        <a asp-action="Edit" class="btn btn-primary px-4">
-            <i class="fas fa-plus-circle me-1"></i> Add New Base
-        </a>
+        
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-area="Admin" asp-controller="Material" asp-action="Index" class="btn btn-white border bg-white text-dark">
+                <i class="fas fa-seedling text-success"></i> Materials
+            </a>
+            <a asp-action="Edit" class="btn btn-primary px-4">
+                <i class="fas fa-plus-circle me-1"></i> Add New Base
+            </a>
+        }
     </div>
 </div>
 
@@ -177,16 +207,19 @@
                         <a asp-controller="Expense" asp-action="Create" asp-route-baseId="@item.Id" class="btn btn-outline-dark btn-sm flex-grow-1 d-flex align-items-center justify-content-center">
                             <i class="fas fa-plus-circle me-2"></i> Add Expense
                         </a>
+                        
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-action-icon" title="Edit">
+                                <i class="fas fa-pen text-dark"></i>
+                            </a>
 
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-action-icon" title="Edit">
-                            <i class="fas fa-pen text-dark"></i>
-                        </a>
-
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete base?');">
-                            <button type="submit" class="btn btn-outline-danger btn-action-icon" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete base?');">
+                                <button type="submit" class="btn btn-outline-danger btn-action-icon" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        }
                     </div>
 
                 </div>

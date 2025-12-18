@@ -1,12 +1,11 @@
-﻿using Inventar.Services.Data.Contracts;
+﻿using Inventar.Areas.Admin.Controllers;
+using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Inventar.Web.Controllers
+namespace Inventar.Web.Areas.Admin.Controllers
 {
-    [Authorize]
-    public class MaterialController : Controller
+    public class MaterialController : AdminBaseController
     {
         private readonly IStockService _stockService;
 
