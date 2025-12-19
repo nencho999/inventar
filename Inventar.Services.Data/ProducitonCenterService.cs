@@ -5,6 +5,7 @@ using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using static Inventar.Common.Messages.ErrorMessages.Admin;
 using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
 
@@ -12,11 +13,14 @@ public class ProductionCenterService : IProductionCenterService
 {
     private readonly ApplicationDbContext dbContext;
     private readonly UserManager<IdentityUser> userManager;
+    private readonly IStringLocalizer _localizer;
 
-    public ProductionCenterService(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
+    public ProductionCenterService(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager,
+                                    IStringLocalizerFactory factory)
     {
         this.dbContext = dbContext;
         this.userManager = userManager;
+        _localizer = factory.Create("CommonMessages", "Inventar.Web");
     }
     public async Task<IEnumerable<CenterIndexViewModel>> GetAllCentersAsync()
     {
@@ -198,14 +202,14 @@ public class ProductionCenterService : IProductionCenterService
                              .Select(s => new SelectListItem
                              {
                                  Value = ((int)s).ToString(),
-                                 Text = s.ToString(),
+                                 Text = _localizer[s.ToString()],
                                  Selected = selectedStatus.HasValue && selectedStatus.Value == s
                              }).ToList();
 
         statusList.Insert(0, new SelectListItem
         {
             Value = "",
-            Text = "--- Select Center Status ---",
+            Text = _localizer["--- Select Center Status ---"],
             Disabled = true,
             Selected = !selectedStatus.HasValue
         });
