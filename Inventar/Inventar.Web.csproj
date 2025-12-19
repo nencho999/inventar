@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Inventar.Web.ViewModels\Inventar.Web.ViewModels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\Views\Expense\" />
-  </ItemGroup>
-
 </Project>
