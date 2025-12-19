@@ -1,7 +1,12 @@
-﻿@model Inventar.Web.ViewModels.Base.DashboardViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Dashboard"];
+}
+@model Inventar.Web.ViewModels.Base.DashboardViewModel
 
 @{
-    ViewData["Title"] = "Primary Material Bases Management";
+    ViewData["Title"] = "Dashboard";
 }
 
 <style>
@@ -71,7 +76,7 @@
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold text-dark">Primary Material Bases Management</h3>
+    <h3 class="fw-bold text-dark">@Localizer["Dashboard"]</h3>
     <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
         <i class="fas fa-user"></i>
     </div>
@@ -82,7 +87,7 @@
         <div class="card border-0 shadow-sm rounded-3 p-3 h-100">
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
-                    <span class="text-muted small text-uppercase fw-bold">Total Bases</span>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["Total Bases"]</span>
                     <h2 class="mb-0 fw-bold mt-2">@Model.TotalBases</h2>
                 </div>
                 <div class="icon-box bg-light text-secondary">
@@ -96,7 +101,7 @@
         <div class="card border-0 shadow-sm rounded-3 p-3 h-100 border-start border-4 border-success">
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
-                    <span class="text-muted small text-uppercase fw-bold">Inventory Value</span>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["Inventory Value"]</span>
                     <h2 class="mb-0 fw-bold mt-2 text-success">
                         $@Model.TotalInventoryValue.ToString("N2")
                     </h2>
@@ -112,11 +117,11 @@
         <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow">
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
-                    <span class="text-muted small text-uppercase fw-bold">Monthly Expenses</span>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["Monthly Expenses"]</span>
                     <h2 class="mb-0 fw-bold mt-2">$@Model.TotalMonthlyExpenses.ToString("N2")</h2>
 
                     <a asp-controller="Expense" asp-action="Index" class="stretched-link text-decoration-none text-muted small mt-2 d-block">
-                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                        @Localizer["View Details"] <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                 </div>
                 <div class="icon-box bg-light-blue text-primary">
@@ -130,11 +135,11 @@
         <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow">
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
-                    <span class="text-muted small text-uppercase fw-bold">One-Time Expenses</span>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["One-Time Expenses"]</span>
                     <h2 class="mb-0 fw-bold mt-2">$@Model.TotalOneTimeExpenses.ToString("N2")</h2>
 
                     <a asp-controller="Expense" asp-action="Index" class="stretched-link text-decoration-none text-muted small mt-2 d-block">
-                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                        @Localizer["View Details"] <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                 </div>
                 <div class="icon-box bg-light-orange text-warning">
@@ -146,25 +151,25 @@
 </div>
 
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">All Primary Material Bases</h5>
+    <h5 class="fw-bold mb-0">@Localizer["All Primary Material Bases"]</h5>
 
     <div class="d-flex gap-2">
         <div class="input-group" style="width: 300px;">
             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-            <input type="text" class="form-control border-start-0 ps-0" placeholder="Search bases by name, location..." />
+            <input type="text" class="form-control border-start-0 ps-0" placeholder="@Localizer["Search bases by name, location..."]" />
         </div>
 
         <button class="btn btn-white border bg-white text-muted">
-            <i class="fas fa-filter"></i> Filter
+            <i class="fas fa-filter"></i>@Localizer["Filter"]
         </button>
         
         @if (User.IsInRole("Admin"))
         {
             <a asp-area="Admin" asp-controller="Material" asp-action="Index" class="btn btn-white border bg-white text-dark">
-                <i class="fas fa-seedling text-success"></i> Materials
+                <i class="fas fa-seedling text-success"></i>@Localizer["Materials"]
             </a>
             <a asp-action="Edit" class="btn btn-primary px-4">
-                <i class="fas fa-plus-circle me-1"></i> Add New Base
+                <i class="fas fa-plus-circle me-1"></i> @Localizer["Add New Base"]
             </a>
         }
     </div>
@@ -191,13 +196,13 @@
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="expense-label text-info">
-                                <i class="fas fa-dollar-sign"></i> Monthly Expenses:
+                                <i class="fas fa-dollar-sign"></i>@Localizer["Monthly Expenses"]:
                             </span>
                             <span class="fw-bold text-dark">$@item.MonthlyExpenses.ToString("N2")</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="expense-label text-secondary" style="color: #a87e55 !important;">
-                                <i class="fas fa-tags"></i> One-Time Expenses:
+                                <i class="fas fa-tags"></i>@Localizer["One-Time Expenses"]:
                             </span>
                             <span class="fw-bold text-dark">$@item.OneTimeExpenses.ToString("N2")</span>
                         </div>
@@ -205,17 +210,17 @@
 
                     <div class="d-flex gap-2 mt-auto">
                         <a asp-controller="Expense" asp-action="Create" asp-route-baseId="@item.Id" class="btn btn-outline-dark btn-sm flex-grow-1 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-plus-circle me-2"></i> Add Expense
+                            <i class="fas fa-plus-circle me-2"></i>@Localizer["Add Expense"]
                         </a>
                         
                         @if (User.IsInRole("Admin"))
                         {
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-action-icon" title="Edit">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-action-icon" title=@Localizer["Edit"]>
                                 <i class="fas fa-pen text-dark"></i>
                             </a>
 
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete base?');">
-                                <button type="submit" class="btn btn-outline-danger btn-action-icon" title="Delete">
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('@Localizer["Delete base?"]');">
+                                <button type="submit" class="btn btn-outline-danger btn-action-icon" title=@Localizer["Delete"]>
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
