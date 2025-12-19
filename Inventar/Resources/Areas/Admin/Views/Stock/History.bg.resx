@@ -117,25 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Materials" xml:space="preserve">
-    <value>Материали</value>
+  <data name="Back to Inventory" xml:space="preserve">
+    <value>Обратно към инвентара</value>
   </data>
-  <data name="Material Registry" xml:space="preserve">
-    <value>Регистър на Материалите</value>
+  <data name="Base / Material" xml:space="preserve">
+    <value>База / Материал</value>
   </data>
-  <data name="Add Material" xml:space="preserve">
-    <value>Добави Материал</value>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
   </data>
-  <data name="Name" xml:space="preserve">
-    <value>Име</value>
+  <data name="IN" xml:space="preserve">
+    <value>ВХОД</value>
   </data>
-  <data name="Unit" xml:space="preserve">
-    <value>Мерна Единица</value>
+  <data name="lv." xml:space="preserve">
+    <value>лв.</value>
   </data>
-  <data name="Actions" xml:space="preserve">
-    <value>Действия</value>
+  <data name="No transaction history found." xml:space="preserve">
+    <value>Няма намерена история на транзакциите.</value>
   </data>
-  <data name="Are you sure you want to delete this material??" xml:space="preserve">
-    <value>Сигурни ли сте, че искате да изтриете този материал??</value>
+  <data name="OUT" xml:space="preserve">
+    <value>ИЗХОД</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Количество</value>
+  </data>
+  <data name="Total Value" xml:space="preserve">
+    <value>Обща Стойност</value>
+  </data>
+  <data name="Transaction History" xml:space="preserve">
+    <value>История на транзакциите</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="Unit Price" xml:space="preserve">
+    <value>Ед. Цена</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Потребител</value>
   </data>
 </root>

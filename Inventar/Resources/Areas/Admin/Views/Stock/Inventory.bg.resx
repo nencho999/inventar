@@ -117,25 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Materials" xml:space="preserve">
-    <value>Материали</value>
+  <data name="-- All Bases --" xml:space="preserve">
+    <value>-- Всички бази --</value>
   </data>
-  <data name="Material Registry" xml:space="preserve">
-    <value>Регистър на Материалите</value>
+  <data name="-- All Materials --" xml:space="preserve">
+    <value>-- Всички материали --</value>
   </data>
-  <data name="Add Material" xml:space="preserve">
-    <value>Добави Материал</value>
+  <data name="Avg. Price" xml:space="preserve">
+    <value>Ср. Цена</value>
   </data>
-  <data name="Name" xml:space="preserve">
-    <value>Име</value>
+  <data name="Base" xml:space="preserve">
+    <value>База</value>
+  </data>
+  <data name="Base name, Material..." xml:space="preserve">
+    <value>Име на база, материал...</value>
+  </data>
+  <data name="Clear Filters" xml:space="preserve">
+    <value>Изчисти филтрите</value>
+  </data>
+  <data name="Current Stock Levels" xml:space="preserve">
+    <value>Текущи складови наличности</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Филтър</value>
+  </data>
+  <data name="Filter by Base" xml:space="preserve">
+    <value>Филтър по база</value>
+  </data>
+  <data name="Filter by Material" xml:space="preserve">
+    <value>Филтър по материал</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>История</value>
+  </data>
+  <data name="lv." xml:space="preserve">
+    <value>лв.</value>
+  </data>
+  <data name="Material" xml:space="preserve">
+    <value>Материал</value>
+  </data>
+  <data name="No inventory records found matching your criteria." xml:space="preserve">
+    <value>Няма намерени записи, отговарящи на критериите.</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Количество</value>
+  </data>
+  <data name="Record Movement" xml:space="preserve">
+    <value>Запиши движение</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Търсене</value>
+  </data>
+  <data name="Total Inventory Value" xml:space="preserve">
+    <value>Обща стойност на инвентара</value>
+  </data>
+  <data name="Total Value" xml:space="preserve">
+    <value>Обща Стойност</value>
   </data>
   <data name="Unit" xml:space="preserve">
-    <value>Мерна Единица</value>
-  </data>
-  <data name="Actions" xml:space="preserve">
-    <value>Действия</value>
-  </data>
-  <data name="Are you sure you want to delete this material??" xml:space="preserve">
-    <value>Сигурни ли сте, че искате да изтриете този материал??</value>
+    <value>Мярка</value>
   </data>
 </root>

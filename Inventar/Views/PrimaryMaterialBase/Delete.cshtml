@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Inventar.Web.ViewModels.Base.BaseFormViewModel
+
+@{
+    ViewData["Title"] = Localizer["Delete Base"];
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> @Localizer["Delete Base"]
+                </h4>
+            </div>
+            <div class="card-body">
+
+                <div class="alert alert-warning text-center">
+                    <h5 class="alert-heading">@Localizer["Are you sure you want to delete this base?"]</h5>
+                    <p class="mb-0">@Localizer["This action cannot be undone. All associated capacities will be removed."]</p>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="text-muted border-bottom pb-2">@Localizer["Base Details"]</h5>
+
+                    <dl class="row mt-3">
+                        <dt class="col-sm-4 text-muted">@Localizer["Name"]</dt>
+                        <dd class="col-sm-8 fw-bold">@Model.Name</dd>
+
+                        <dt class="col-sm-4 text-muted">@Localizer["Address"]</dt>
+                        <dd class="col-sm-8">@Model.Address</dd>
+
+                        <dt class="col-sm-4 text-muted">@Localizer["Description"]</dt>
+                        <dd class="col-sm-8">
+                            @if (!string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Model.Description
+                            }
+                            else
+                            {
+                                <span class="text-muted small">@Localizer["No description"]</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+
+                <form asp-action="Delete" method="post" class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <input type="hidden" asp-for="Id" />
+
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="fas fa-times"></i> @Localizer["Cancel"]
+                    </a>
+
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fas fa-trash-alt"></i> @Localizer["Confirm Delete"]
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,18 +5,6 @@
     ViewData["Title"] = Localizer["Dashboard"];
 }
 
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
 <style>
     .dashboard-card {
         border: none;
@@ -227,11 +215,9 @@
                                 <i class="fas fa-pen text-dark"></i>
                             </a>
 
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('@Localizer["Delete base?"]');">
-                                <button type="submit" class="btn btn-outline-danger btn-action-icon" title=@Localizer["Delete"]>
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-action-icon" title="@Localizer["Delete"]">
+                                <i class="fas fa-trash"></i>
+                            </a>
                         }
                     </div>
 

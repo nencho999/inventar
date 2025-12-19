@@ -117,25 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Materials" xml:space="preserve">
-    <value>Материали</value>
+  <data name="Address" xml:space="preserve">
+    <value>Адрес</value>
   </data>
-  <data name="Material Registry" xml:space="preserve">
-    <value>Регистър на Материалите</value>
+  <data name="Are you sure you want to delete this base?" xml:space="preserve">
+    <value>Сигурни ли сте, че искате да изтриете тази база?</value>
   </data>
-  <data name="Add Material" xml:space="preserve">
-    <value>Добави Материал</value>
+  <data name="Base Details" xml:space="preserve">
+    <value>Детайли за базата</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отказ</value>
+  </data>
+  <data name="Confirm Delete" xml:space="preserve">
+    <value>Потвърди изтриването</value>
+  </data>
+  <data name="Delete Base" xml:space="preserve">
+    <value>Изтриване на база</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Име</value>
   </data>
-  <data name="Unit" xml:space="preserve">
-    <value>Мерна Единица</value>
+  <data name="No description" xml:space="preserve">
+    <value>Няма описание</value>
   </data>
-  <data name="Actions" xml:space="preserve">
-    <value>Действия</value>
-  </data>
-  <data name="Are you sure you want to delete this material??" xml:space="preserve">
-    <value>Сигурни ли сте, че искате да изтриете този материал??</value>
+  <data name="This action cannot be undone. All associated capacities will be removed." xml:space="preserve">
+    <value>Това действие е необратимо. Всички свързани капацитети ще бъдат премахнати.</value>
   </data>
 </root>

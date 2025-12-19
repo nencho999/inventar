@@ -59,13 +59,32 @@ namespace Inventar.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            var baseModel = await _baseService.GetBaseForEditAsync(id);
+            if (baseModel == null) return NotFound();
+
+            var model = new BaseFormViewModel
+            {
+                Id = baseModel.Id,
+                Name = baseModel.Name,
+                Address = baseModel.Address,
+                Description = baseModel.Description
+            };
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
             await _baseService.DeleteBaseAsync(id);
-            TempData["SuccessMessage"] = BaseDeletedSuccessfully;
+
+            TempData["SuccessMessage"] = "Base deleted successfully.";
+
             return RedirectToAction(nameof(Index));
         }
     }

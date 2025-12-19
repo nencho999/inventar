@@ -1,32 +1,42 @@
-﻿@model Inventar.Web.ViewModels.MaterialViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Inventar.Web.ViewModels.MaterialViewModel
 
 @{
-    ViewData["Title"] = Model.Id == Guid.Empty ? "New Material" : "Edit Material";
+    ViewData["Title"] = Model.Id == Guid.Empty ? Localizer["New Material"] : Localizer["Edit Material"];
 }
 
 <div class="row justify-content-center">
     <div class="col-md-5">
         <div class="card shadow-sm">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0">@(Model.Id == Guid.Empty ? "New Material" : "Edit Material")</h5>
+                <h5 class="mb-0">@if (Model.Id == Guid.Empty)
+                                 {
+                                     @Localizer["New Material"]
+                                 }
+                                 else
+                                 {
+                                     @Localizer["Edit Material"]
+                                 }
+                    </h5>
             </div>
             <div class="card-body">
                 <form asp-action="Edit" method="post">
                     <input type="hidden" asp-for="Id" />
 
                     <div class="mb-3">
-                        <label asp-for="Name" class="form-label">Name</label>
-                        <input asp-for="Name" class="form-control" placeholder="e.g. Corn" />
+                        <label asp-for="Name" class="form-label">@Localizer["Name"]</label>
+                        <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Corn"]" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Unit" class="form-label">Unit</label>
-                        <input asp-for="Unit" class="form-control" placeholder="e.g. kg, tons, liters" />
+                        <label asp-for="Unit" class="form-label">@Localizer["Unit"]</label>
+                        <input asp-for="Unit" class="form-control" placeholder="@Localizer["e.g. kg, tons, liters"]" />
                         <span asp-validation-for="Unit" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100">Save</button>
+                    <button type="submit" class="btn btn-success w-100">@Localizer["Save"]</button>
                 </form>
             </div>
         </div>

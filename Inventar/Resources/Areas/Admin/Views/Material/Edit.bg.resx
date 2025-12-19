@@ -117,25 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Materials" xml:space="preserve">
-    <value>Материали</value>
+  <data name="e.g. Corn" xml:space="preserve">
+    <value>прим. Царевица</value>
   </data>
-  <data name="Material Registry" xml:space="preserve">
-    <value>Регистър на Материалите</value>
+  <data name="e.g. kg, tons, liters" xml:space="preserve">
+    <value>прим. кг, тонове, литри</value>
   </data>
-  <data name="Add Material" xml:space="preserve">
-    <value>Добави Материал</value>
+  <data name="Edit Material" xml:space="preserve">
+    <value>Редакция на материал</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Име</value>
   </data>
+  <data name="New Material" xml:space="preserve">
+    <value>Нов Материал</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Запази</value>
+  </data>
   <data name="Unit" xml:space="preserve">
     <value>Мерна Единица</value>
-  </data>
-  <data name="Actions" xml:space="preserve">
-    <value>Действия</value>
-  </data>
-  <data name="Are you sure you want to delete this material??" xml:space="preserve">
-    <value>Сигурни ли сте, че искате да изтриете този материал??</value>
   </data>
 </root>
