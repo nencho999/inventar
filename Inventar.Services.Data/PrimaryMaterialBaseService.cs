@@ -3,6 +3,7 @@ using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels;
 using Inventar.Web.ViewModels.Base;
+using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventar.Services.Data
@@ -149,6 +150,20 @@ namespace Inventar.Services.Data
                     Name = b.Name
                 })
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MaterialDropDownModel>> GetMaterialsDropdownAsync()
+        {
+            var materials = await _context.Materials
+                .AsNoTracking()
+                .Select(m => new MaterialDropDownModel
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                })
+                .ToListAsync();
+
+            return materials;
         }
     }
 }

@@ -75,6 +75,15 @@ public class ProductionCenterService : IProductionCenterService
             Expenses = model.Expenses
         };
 
+        foreach (var storage in model.Storages)
+        {
+            center.StorageCapacities.Add(new ProductionCenterStorage
+            {
+                MaterialId = storage.MaterialId,
+                MaxStorageCapacity = storage.MaxCapacity
+            });
+        }
+
         await dbContext.AddAsync(center);
         await dbContext.SaveChangesAsync();
 
@@ -90,7 +99,11 @@ public class ProductionCenterService : IProductionCenterService
             throw new ArgumentException(AdminAuthorization);
         }
 
-        var center = await FindCenterByIdAsync(id);
+        var center = await dbContext.ProductionCenters
+        .Include(c => c.StorageCapacities)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (center == null) throw new ArgumentException("Center not found");
 
         var model = new CenterEditFormModel
         {
@@ -100,7 +113,12 @@ public class ProductionCenterService : IProductionCenterService
             Capacity = center.Capacity,
             Contact = center.Contact,
             Status = center.Status,
-            Expenses = center.Expenses
+            Expenses = center.Expenses,
+            Storages = center.StorageCapacities.Select(s => new StorageInputModel
+            {
+                MaterialId = s.MaterialId,
+                MaxCapacity = s.MaxStorageCapacity
+            }).ToList()
         };
 
         return model;
@@ -108,7 +126,9 @@ public class ProductionCenterService : IProductionCenterService
 
     public async Task<bool> EditCenterAsync(CenterEditFormModel model)
     {
-        var center = await dbContext.ProductionCenters.FindAsync(model.Id);
+        var center = await dbContext.ProductionCenters
+        .Include(c => c.StorageCapacities)
+        .FirstOrDefaultAsync(c => c.Id == model.Id);
 
         if (center == null)
         {
@@ -122,8 +142,17 @@ public class ProductionCenterService : IProductionCenterService
         center.Status = model.Status;
         center.Expenses = model.Expenses;
 
-        await dbContext.SaveChangesAsync();
+        center.StorageCapacities.Clear();
+        foreach (var s in model.Storages)
+        {
+            center.StorageCapacities.Add(new ProductionCenterStorage
+            {
+                MaterialId = s.MaterialId,
+                MaxStorageCapacity = s.MaxCapacity
+            });
+        }
 
+        await dbContext.SaveChangesAsync();
         return true;
     }
 

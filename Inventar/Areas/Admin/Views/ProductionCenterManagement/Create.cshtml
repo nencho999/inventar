@@ -1,5 +1,6 @@
 ﻿@using Inventar.Data.Models
 @using Inventar.Web.ViewModels.ProductionCenter
+@using System.Text.Encodings.Web
 @model CenterCreateInputModel
 
 @{
@@ -12,42 +13,31 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-8">
-        <form asp-action="Create" class="shadow p-4 bg-white rounded">
-
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+    <div class="col-md-10">
+        <form asp-action="Create" method="post" class="shadow p-4 bg-white rounded">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
             <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> General Information</h5>
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
                 <div class="form-floating flex-grow-1">
-                    <input asp-for="Name"
-                           class="form-control"
-                           placeholder="Central production unit"
-                           value="Central production unit" />
-                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Central Production Unit" />
+                    <label asp-for="Name"></label>
                 </div>
                 <span class="input-group-text text-danger">*</span>
             </div>
-            <span asp-validation-for="Name" class="text-danger d-block mb-3"></span>
-
+            <span asp-validation-for="Name" class="text-danger"></span>
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
                 <div class="form-floating flex-grow-1">
-                    <select asp-for="Status"
-                            asp-items="ViewBag.CenterStatuses"
-                            class="form-select"
-                            aria-label="Status selection"></select>
+                    <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select"></select>
                     <label asp-for="Status"></label>
                 </div>
             </div>
-            <span asp-validation-for="Status" class="text-danger d-block mb-3"></span>
-
 
             <hr class="my-4" />
-
             <h5 class="text-primary mb-3"><i class="fas fa-map-marked-alt me-2"></i> Location & Capacity</h5>
 
             <div class="mb-3 input-group">
@@ -57,37 +47,88 @@
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input asp-for="Capacity" class="form-control" placeholder="e.g., 500 units per hour" />
+                <input asp-for="Capacity" class="form-control" placeholder="e.g., 10,000 units/day" />
             </div>
 
             <hr class="my-4" />
-
-            <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i> Contact & Financials</h5>
+            <h5 class="text-primary mb-3"><i class="fas fa-phone-alt me-2"></i> Contact & Financials</h5>
 
             <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
-                <input asp-for="Contact" class="form-control" placeholder="Email or Phone number" />
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input asp-for="Contact" class="form-control" placeholder="Email or Phone" />
             </div>
 
             <div class="mb-4 input-group">
                 <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
-                <input asp-for="Expenses" class="form-control" placeholder="e.g., 15000 BGN monthly" />
+                <input asp-for="Expenses" class="form-control" placeholder="Expenses per day/month" />
             </div>
 
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-success me-2 px-4 shadow-sm">
-                    <i class="fas fa-save me-1"></i> Create Center
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> Storage Capacity by Product</h5>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addStorageRow()">
+                    <i class="fas fa-plus"></i> Add Product
                 </button>
-                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">
-                    <i class="fas fa-times me-1"></i> Cancel
-                </a>
+            </div>
+
+            <div id="storage-container" class="mb-4">
+                <div class="text-muted small mb-2" id="no-storage-msg">No storage capacities defined.</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-5">
+                <button type="submit" class="btn btn-success me-2 px-5 shadow-sm">Save Center</button>
+                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        let storageIndex = 0;
+
+        const availableMaterials = @Html.Raw(Json.Serialize(Model.Materials));
+
+        function addStorageRow() {
+            const noStorageMsg = document.getElementById('no-storage-msg');
+            if (noStorageMsg) noStorageMsg.style.display = 'none';
+
+            const container = document.getElementById('storage-container');
+            const row = document.createElement('div');
+            row.className = 'row mb-2 align-items-center g-2 storage-row';
+
+            let optionsHtml = '<option value="">-- Select Material --</option>';
+
+            if (availableMaterials && availableMaterials.length > 0) {
+                availableMaterials.forEach(mat => {
+                    optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
+                });
+            } else {
+                console.warn("Materials list is empty. Check if model.Materials is populated in Controller.");
+                optionsHtml = '<option value="">No materials available</option>';
+            }
+
+            row.innerHTML = `
+                <div class="col-md-6">
+                    <select name="Storages[${storageIndex}].MaterialId" class="form-select" required>
+                        ${optionsHtml}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="Max Capacity" required />
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(row);
+            storageIndex++;
+        }
+    </script>
 }

@@ -21,10 +21,13 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<RecurringExpense> RecurringExpenses { get; set; }
     public DbSet<ProductionCenter> ProductionCenters { get; set; }
+    public DbSet<ProductionCenterStorage> ProductionCenterStorages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ProductionCenter>().ToTable("ProductionCenters", t => t.ExcludeFromMigrations());
 
         modelBuilder.Entity<Capacity>()
             .HasIndex(bc => new { bc.PrimaryMaterialBaseId, bc.MaterialId })
@@ -69,5 +72,6 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .WithMany(b => b.RecurringExpenses)
             .HasForeignKey(re => re.BaseId)
             .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

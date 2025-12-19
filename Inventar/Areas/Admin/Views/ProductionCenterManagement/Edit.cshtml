@@ -3,7 +3,6 @@
 @model CenterEditFormModel
 
 @{
-    // Sets the title, including the name of the center being edited
     ViewData["Title"] = "Editing: " + Model.Name;
 }
 
@@ -13,11 +12,9 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <form asp-action="Edit" method="post" class="shadow p-4 bg-white rounded">
-
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <input type="hidden" asp-for="Id" />
 
             <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> General Information</h5>
@@ -26,68 +23,120 @@
                 <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
                 <div class="form-floating flex-grow-1">
                     <input asp-for="Name" class="form-control" placeholder="Center Name" />
-                    <label asp-for="Name" class="form-label"></label>
+                    <label asp-for="Name"></label>
                 </div>
-                <span class="input-group-text text-danger">*</span>
             </div>
-            <span asp-validation-for="Name" class="text-danger d-block mb-3"></span>
-
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
                 <div class="form-floating flex-grow-1">
-                    <select asp-for="Status"
-                            asp-items="ViewBag.CenterStatuses"
-                            class="form-select"
-                            aria-label="Status selection"></select>
+                    <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select"></select>
                     <label asp-for="Status"></label>
                 </div>
             </div>
-            <span asp-validation-for="Status" class="text-danger d-block mb-3"></span>
-
 
             <hr class="my-4" />
-
             <h5 class="text-primary mb-3"><i class="fas fa-map-marked-alt me-2"></i> Location & Capacity</h5>
-
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                <input asp-for="Location" class="form-control" placeholder="City, Street Address" />
+                <input asp-for="Location" class="form-control" />
             </div>
-
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input asp-for="Capacity" class="form-control" placeholder="e.g., 500 units per hour" />
+                <input asp-for="Capacity" class="form-control" />
             </div>
 
             <hr class="my-4" />
-
             <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i> Contact & Financials</h5>
-
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
-                <input asp-for="Contact" class="form-control" placeholder="Email or Phone number" />
+                <input asp-for="Contact" class="form-control" />
             </div>
-
             <div class="mb-4 input-group">
                 <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
-                <input asp-for="Expenses" class="form-control" placeholder="e.g., 15000 BGN monthly" />
+                <input asp-for="Expenses" class="form-control" />
             </div>
 
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary me-2 px-4 shadow-sm">
-                    <i class="fas fa-save me-1"></i> Save Changes
+            <hr class="my-4" />
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> Storage Capacity by Product</h5>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addStorageRow()">
+                    <i class="fas fa-plus"></i> Add Product
                 </button>
-                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">
-                    <i class="fas fa-times me-1"></i> Cancel
-                </a>
+            </div>
+
+            <div id="storage-container" class="mb-4">
+                @for (int i = 0; i < Model.Storages.Count; i++)
+                {
+                    <div class="row mb-2 align-items-center g-2 storage-row">
+                        <div class="col-md-6">
+                            <select name="Storages[@i].MaterialId" class="form-select" required>
+                                @foreach (var mat in Model.Materials)
+                                {
+                                    <option value="@mat.Id" selected="@(mat.Id == Model.Storages[i].MaterialId ? "selected" : null)">
+                                        @mat.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input name="Storages[@i].MaxCapacity" type="number" step="0.01" class="form-control" value="@Model.Storages[i].MaxCapacity" required />
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="d-flex justify-content-end mt-5">
+                <button type="submit" class="btn btn-primary me-2 px-5 shadow-sm">Save Changes</button>
+                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        let storageIndex = @Model.Storages.Count;
+
+        const availableMaterials = @Html.Raw(Json.Serialize(Model.Materials));
+
+        function addStorageRow() {
+            const container = document.getElementById('storage-container');
+            const row = document.createElement('div');
+            row.className = 'row mb-2 align-items-center g-2 storage-row';
+
+            let optionsHtml = '<option value="">-- Select Material --</option>';
+            if (availableMaterials && availableMaterials.length > 0) {
+                availableMaterials.forEach(mat => {
+                    optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
+                });
+            }
+
+            row.innerHTML = `
+                <div class="col-md-6">
+                    <select name="Storages[${storageIndex}].MaterialId" class="form-select" required>
+                        ${optionsHtml}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="Capacity" required />
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(row);
+            storageIndex++;
+        }
+    </script>
 }

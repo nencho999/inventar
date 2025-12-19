@@ -12,4 +12,11 @@ public class CenterCreateInputModel
     public string? Contact { get; set; }
     public CenterStatus? Status { get; set; }
     public string? Expenses { get; set; }
+    public List<StorageInputModel> Storages { get; set; } = new List<StorageInputModel>();
+    public List<MaterialDropDownModel> Materials { get; set; } = new List<MaterialDropDownModel>();
+}
+public class StorageInputModel
+{
+    public Guid MaterialId { get; set; }
+    public double MaxCapacity { get; set; }
 }
