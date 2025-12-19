@@ -1,13 +1,15 @@
 ﻿@using Inventar.Data.Models
 @using Inventar.Web.ViewModels.ProductionCenter
+@using Microsoft.AspNetCore.Mvc.Localization
 @model CenterEditFormModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Editing: " + Model.Name;
+    ViewData["Title"] = Localizer["Editing: {0}", Model.Name];
 }
 
 <h2 class="d-flex align-items-center mb-4">
-    <i class="fas fa-edit me-3 text-primary"></i> Editing Production Center: @Model.Name
+    <i class="fas fa-edit me-3 text-primary"></i> @Localizer["Editing Production Center:"] @Model.Name
 </h2>
 <hr />
 
@@ -17,13 +19,13 @@
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <input type="hidden" asp-for="Id" />
 
-            <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> General Information</h5>
+            <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> @Localizer["General Information"]</h5>
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
                 <div class="form-floating flex-grow-1">
-                    <input asp-for="Name" class="form-control" placeholder="Center Name" />
-                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" placeholder="@Localizer["Center Name"]" />
+                    <label asp-for="Name">@Localizer["Name"]</label>
                 </div>
             </div>
 
@@ -31,12 +33,12 @@
                 <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
                 <div class="form-floating flex-grow-1">
                     <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select"></select>
-                    <label asp-for="Status"></label>
+                    <label asp-for="Status">@Localizer["Status"]</label>
                 </div>
             </div>
 
             <hr class="my-4" />
-            <h5 class="text-primary mb-3"><i class="fas fa-map-marked-alt me-2"></i> Location & Capacity</h5>
+            <h5 class="text-primary mb-3"><i class="fas fa-map-marked-alt me-2"></i> @Localizer["Location & Capacity"]</h5>
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                 <input asp-for="Location" class="form-control" />
@@ -47,7 +49,7 @@
             </div>
 
             <hr class="my-4" />
-            <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i> Contact & Financials</h5>
+            <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i> @Localizer["Contact & Financials"]</h5>
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
                 <input asp-for="Contact" class="form-control" />
@@ -59,9 +61,9 @@
 
             <hr class="my-4" />
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> Storage Capacity by Product</h5>
+                <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> @Localizer["Storage Capacity by Product"]</h5>
                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="addStorageRow()">
-                    <i class="fas fa-plus"></i> Add Product
+                    <i class="fas fa-plus"></i> @Localizer["Add Product"]
                 </button>
             </div>
 
@@ -92,8 +94,8 @@
             </div>
 
             <div class="d-flex justify-content-end mt-5">
-                <button type="submit" class="btn btn-primary me-2 px-5 shadow-sm">Save Changes</button>
-                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">Cancel</a>
+                <button type="submit" class="btn btn-primary me-2 px-5 shadow-sm">@Localizer["Save Changes"]</button>
+                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">@Localizer["Cancel"]</a>
             </div>
         </form>
     </div>
@@ -107,12 +109,17 @@
 
         const availableMaterials = @Html.Raw(Json.Serialize(Model.Materials));
 
+        const translations = {
+            selectMaterial: "@Localizer["-- Select Material --"]",
+            capacityPlaceholder: "@Localizer["Capacity"]"
+        };
+
         function addStorageRow() {
             const container = document.getElementById('storage-container');
             const row = document.createElement('div');
             row.className = 'row mb-2 align-items-center g-2 storage-row';
 
-            let optionsHtml = '<option value="">-- Select Material --</option>';
+            let optionsHtml = `<option value="">${translations.selectMaterial}</option>`;
             if (availableMaterials && availableMaterials.length > 0) {
                 availableMaterials.forEach(mat => {
                     optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
@@ -126,7 +133,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="Capacity" required />
+                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="${translations.capacityPlaceholder}" required />
                 </div>
                 <div class="col-md-2 text-end">
                     <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">

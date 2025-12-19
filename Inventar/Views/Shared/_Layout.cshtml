@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -15,18 +18,18 @@
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Inventar</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                                    aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="PrimaryMaterialBase" asp-action="Index">
-                                <i class="fas fa-building"></i> Primary Material Bases
+                                <i class="fas fa-building"></i> @Localizer["Primary Material Bases"]
                             </a>
                         </li>
 
@@ -34,24 +37,24 @@
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link text-dark dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user-shield"></i> Admin Tools
+                                    <i class="fas fa-user-shield"></i> @Localizer["Admin Tools"]
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                                     <li>
                                         <a class="dropdown-item" asp-area="Admin" asp-controller="ProductionCenterManagement" asp-action="Index">
-                                            <i class="fas fa-warehouse"></i> Production Center Management
+                                            <i class="fas fa-warehouse"></i> @Localizer["Production Center Management"]
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" asp-area="Admin" asp-controller="Stock" asp-action="Inventory">
-                                            <i class="fas fa-clipboard-list"></i> Inventory
+                                            <i class="fas fa-clipboard-list"></i> @Localizer["Inventory"]
                                         </a>
                                     </li>
                                 </ul>
                             </li>
                         }
                     </ul>
-                    <partial name="_SelectLanguagePartial"/>
+                    <partial name="_SelectLanguagePartial" />
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -65,7 +68,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Inventar - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - Inventar - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

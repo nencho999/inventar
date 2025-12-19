@@ -1,30 +1,32 @@
 ﻿@using Inventar.Web.ViewModels.ProductionCenter
+@using Microsoft.AspNetCore.Mvc.Localization
 @model CenterDeleteViewModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Remove Center";
+    ViewData["Title"] = Localizer["Remove Center"];
 }
 
-<h2 class="text-danger">Deletion Confirmation</h2>
-<h3 class="mt-4">Are you sure you want to remove this production center?</h3>
+<h2 class="text-danger">@Localizer["Deletion Confirmation"]</h2>
+<h3 class="mt-4">@Localizer["Are you sure you want to remove this production center?"]</h3>
 <hr />
 
 <div class="alert alert-warning" role="alert">
-    <strong>WARNING!</strong> This operation is irreversible.
+    <strong>@Localizer["WARNING!"]</strong> @Localizer["This operation is irreversible."]
 </div>
 
-<h4>Details of the Center to be deleted:</h4>
+<h4>@Localizer["Details of the Center to be deleted:"]</h4>
 <dl class="row">
-    <dt class="col-sm-3">Name:</dt>
+    <dt class="col-sm-3">@Localizer["Name:"]</dt>
     <dd class="col-sm-9">@Model.Name</dd>
 
-    <dt class="col-sm-3">Location:</dt>
+    <dt class="col-sm-3">@Localizer["Location:"]</dt>
     <dd class="col-sm-9">@Model.Location</dd>
 </dl>
 
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="Id" />
 
-    <button type="submit" class="btn btn-danger">Confirm Removal</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-danger">@Localizer["Confirm Removal"]</button>
+    <a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
 </form>

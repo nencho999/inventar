@@ -5,6 +5,7 @@ using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
 
 public class ProductionCenterManagement : AdminBaseController
