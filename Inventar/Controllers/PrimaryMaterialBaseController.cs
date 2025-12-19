@@ -4,6 +4,7 @@ using Inventar.Web.ViewModels.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using static Inventar.Common.Messages.SuccessMessages.PrimaryMaterialBase;
 
 namespace Inventar.Web.Controllers
 {
@@ -54,7 +55,7 @@ namespace Inventar.Web.Controllers
 
             await _baseService.SaveBaseAsync(model);
 
-            TempData["SuccessMessage"] = "The database has been saved successfully!";
+            TempData["SuccessMessage"] = BaseSavedSuccessfully;
             return RedirectToAction(nameof(Index));
         }
 
@@ -64,7 +65,7 @@ namespace Inventar.Web.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             await _baseService.DeleteBaseAsync(id);
-            TempData["SuccessMessage"] = "The database has been deleted successfully.";
+            TempData["SuccessMessage"] = BaseDeletedSuccessfully;
             return RedirectToAction(nameof(Index));
         }
     }

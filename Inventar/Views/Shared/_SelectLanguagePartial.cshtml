@@ -11,11 +11,17 @@
         .Select(c => new SelectListItem { Value = c.Name, Text = c.NativeName })
         .ToList();
 
-    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path)
+        ? "~/"
+        : $"{Context.Request.Path.Value}{Context.Request.QueryString}";
+
+    var formAction = Url.Action("SetLanguage", "Culture", new { area = "" });
 }
 
-<form asp-controller="Culture" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl"
-      method="post" class="d-flex align-items-center">
+<form action="@formAction" method="post" class="d-flex align-items-center">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="returnUrl" value="@returnUrl" />
 
     <select name="culture" onchange="this.form.submit();"
             asp-for="@requestCulture.RequestCulture.UICulture.Name"

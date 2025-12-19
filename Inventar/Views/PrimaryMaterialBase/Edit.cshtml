@@ -1,36 +1,47 @@
-﻿@model Inventar.Web.ViewModels.Base.BaseFormViewModel
-
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Inventar.Web.ViewModels.Base.BaseFormViewModel
 @{
-    ViewData["Title"] = Model.Id == Guid.Empty ? "New Base" : "Edit Base";
+    var title = Model.Id == Guid.Empty ? Localizer["New Base"] : Localizer["Edit Base"];
+    ViewData["Title"] = title;
 }
 
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card shadow">
             <div class="card-header bg-white">
-                <h4>@(Model.Id == Guid.Empty ? "➕ Create New Base" : "✏️ Edit Base")</h4>
+                <h4>
+                    @if (Model.Id == Guid.Empty)
+                    {
+                        @:➕ @Localizer["New Base"]
+                    }
+                    else
+                    {
+                        @:✏️ @Localizer["Edit Base"]
+                    }
+                </h4>
             </div>
             <div class="card-body">
                 <form asp-action="Edit" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
 
-                    <h5 class="text-muted mb-3">Basic Information</h5>
+                    <h5 class="text-muted mb-3">@Localizer["Basic Information"]</h5>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Name" class="form-label fw-bold">Base Name</label>
-                        <input asp-for="Name" class="form-control" placeholder="e.g. North Warehouse" />
+                        <label asp-for="Name" class="form-label fw-bold">@Localizer["Base Name"]</label>
+                        <input asp-for="Name" class="form-control" placeholder=@Localizer["e.g. North Warehouse"] />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Address" class="form-label">Address</label>
+                        <label asp-for="Address" class="form-label">@Localizer["Address"]</label>
                         <input asp-for="Address" class="form-control" />
                         <span asp-validation-for="Address" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="Description" class="form-label" Description></label>
+                        <label asp-for="Description" class="form-label">@Localizer["Description"]</label>
                         <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
@@ -38,8 +49,8 @@
                     <hr />
 
                     <h5 class="text-muted mb-3">
-                        <i class="fas fa-cubes"></i> Capacity / Limits
-                        <small class="d-block text-muted fs-6 font-weight-normal">Enter the maximum quantity for each material. Leave 0 if the base does not support this material.</small>
+                        <i class="fas fa-cubes"></i>@Localizer["Capacity / Limits"]
+                        <small class="d-block text-muted fs-6 font-weight-normal">@Localizer["Enter the maximum quantity for each material. Leave 0 if the base does not support this material."]</small>
                     </h5>
 
                     <div class="bg-light p-3 rounded border">
@@ -55,7 +66,7 @@
                                         <label class="form-label">@Model.Capacities[i].MaterialName</label>
                                         <div class="input-group">
                                             <input asp-for="Capacities[i].Limit" class="form-control" type="number" min="0" step="1" />
-                                            <span class="input-group-text bg-white">макс.</span>
+                                            <span class="input-group-text bg-white">@Localizer["max."]</span>
                                         </div>
                                     </div>
                                 }
@@ -64,14 +75,14 @@
                         else
                         {
                             <div class="alert alert-warning">
-                                No materials defined in the system. Please add materials to the registry first.
+                                @Localizer["No materials defined in the system. Please add materials to the registry first."]
                             </div>
                         }
                     </div>
 
                     <div class="d-grid gap-2 mt-4 d-md-flex justify-content-md-end">
-                        <a asp-action="Index" class="btn btn-secondary me-md-2">Cancel</a>
-                        <button type="submit" class="btn btn-success px-4">Save Changes</button>
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">@Localizer["Cancel"]</a>
+                        <button type="submit" class="btn btn-success px-4">@Localizer["Save Changes"]</button>
                     </div>
                 </form>
             </div>

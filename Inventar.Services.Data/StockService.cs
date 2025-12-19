@@ -4,6 +4,7 @@ using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels;
 using Inventar.Web.ViewModels.Stock;
 using Microsoft.EntityFrameworkCore;
+using static Inventar.Common.Messages.ErrorMessages.Stock;
 
 namespace Inventar.Services.Data
 {
@@ -24,7 +25,7 @@ namespace Inventar.Services.Data
             {
                 if (currentStock < model.Quantity)
                 {
-                    throw new InvalidOperationException($"ERROR: Insufficient stock! Current stock is {currentStock}, but you are trying to remove {model.Quantity}.");
+                    throw new InvalidOperationException(string.Format(InsufficientStock, currentStock, model.Quantity));
                 }
             }
             else
@@ -36,7 +37,7 @@ namespace Inventar.Services.Data
 
                 if (maxLimit == 0)
                 {
-                    throw new InvalidOperationException("This base has no defined capacity limit for this material.");
+                    throw new InvalidOperationException(NoCapacityDefined);
                 }
 
                 decimal futureStock = currentStock + model.Quantity;
@@ -44,7 +45,7 @@ namespace Inventar.Services.Data
                 if (futureStock > maxLimit)
                 {
                     decimal availableSpace = maxLimit - currentStock;
-                    throw new InvalidOperationException($"ERROR: Capacity exceeded! Base limit is {maxLimit}. Current stock is {currentStock}. You can only add {availableSpace}.");
+                    throw new InvalidOperationException(string.Format(CapacityExceeded, maxLimit, currentStock, availableSpace));
                 }
             }
 

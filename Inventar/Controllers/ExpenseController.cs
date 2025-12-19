@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Inventar.Web.ViewModels;
+using static Inventar.Common.Messages.SuccessMessages.Expense;
 
 namespace Inventar.Web.Controllers
 {
@@ -56,7 +57,7 @@ namespace Inventar.Web.Controllers
 
             await _expenseService.CreateExpenseAsync(model, userId, isAdmin);
 
-            TempData["SuccessMessage"] = "The expense has been registered successfully!";
+            TempData["SuccessMessage"] = ExpenseCreatedSuccessfully;
             return RedirectToAction(nameof(Create));
         }
 

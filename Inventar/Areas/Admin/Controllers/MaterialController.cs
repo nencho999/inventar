@@ -2,6 +2,7 @@
 using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using static Inventar.Common.Messages.ErrorMessages.Material;
 
 namespace Inventar.Web.Areas.Admin.Controllers
 {
@@ -53,7 +54,7 @@ namespace Inventar.Web.Areas.Admin.Controllers
             }
             catch
             {
-                TempData["ErrorMessage"] = "You cannot delete material that already has a movement history!";
+                TempData["ErrorMessage"] = MaterialInUseCannotBeDeleted;
             }
             return RedirectToAction(nameof(Index));
         }

@@ -54,8 +54,8 @@ namespace Inventar.Services.Data
         public async Task<IEnumerable<ExpenseViewModel>> GetAllExpensesAsync()
         {
             return await _context.Expenses
-                .Include(e => e.Base) // Връзка с базата
-                .OrderByDescending(e => e.ExpenseDate)      // Най-новите първи
+                .Include(e => e.Base)
+                .OrderByDescending(e => e.ExpenseDate)
                 .Select(e => new ExpenseViewModel
                 {
                     Id = e.Id,

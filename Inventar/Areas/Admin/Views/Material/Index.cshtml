@@ -1,11 +1,19 @@
-﻿@model IEnumerable<Inventar.Web.ViewModels.MaterialViewModel>
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<Inventar.Web.ViewModels.MaterialViewModel>
+
+<div class="alert alert-info">
+    <p><strong>Debug Info:</strong></p>
+    <p>Current Culture: @CultureInfo.CurrentUICulture.Name</p> <p>Test Translation: @Localizer["Material"]</p> <p>Searching in path: Resources/Areas/Admin/Views/Material/Index.bg.resx</p>
+</div>
 
 @{
     ViewData["Title"] = "Materials";
 }
 
 <div class="d-flex justify-content-between mb-3">
-    <h2>📦 Materials Registry</h2>
+    <h2>📦 @Localizer["Material Registry"]</h2>
     <a asp-action="Edit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Material</a>
 </div>
 

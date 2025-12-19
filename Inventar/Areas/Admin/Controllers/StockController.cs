@@ -3,6 +3,7 @@ using Inventar.Web.ViewModels.Stock;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Inventar.Areas.Admin.Controllers;
+using static Inventar.Common.Messages.SuccessMessages.Stock;
 
 namespace Inventar.Web.Areas.Admin.Controllers
 {
@@ -42,8 +43,8 @@ namespace Inventar.Web.Areas.Admin.Controllers
                 await _stockService.RecordTransactionAsync(model, userId);
 
                 TempData["SuccessMessage"] = model.IsAcquisition
-                    ? "Stock added successfully!"
-                    : "Stock removed successfully!";
+                    ? StockAddedSuccessfully
+                    : StockRemovedSuccessfully;
 
                 return RedirectToAction(nameof(RecordMovement));
             }

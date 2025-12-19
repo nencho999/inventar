@@ -1,12 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@model Inventar.Web.ViewModels.Base.DashboardViewModel
 @{
     ViewData["Title"] = Localizer["Dashboard"];
-}
-@model Inventar.Web.ViewModels.Base.DashboardViewModel
-
-@{
-    ViewData["Title"] = "Dashboard";
 }
 
 <style>
