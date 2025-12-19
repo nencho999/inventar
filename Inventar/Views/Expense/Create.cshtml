@@ -1,8 +1,10 @@
 ﻿@model Inventar.Web.ViewModels.Expense.ExpenseFormViewModel
 @using Inventar.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "New Expense";
+    ViewData["Title"] = Localizer["New Expense"];
 }
 
 <div class="row justify-content-center">
@@ -18,14 +20,14 @@
 
         <div class="card shadow">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Register Expense</h4>
+                <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i>@Localizer["Register Expense"]</h4>
             </div>
             <div class="card-body">
                 <form asp-action="Create" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="mb-3">
-                        <label asp-for="BaseId" class="form-label fw-bold">Base</label>
+                        <label asp-for="BaseId" class="form-label fw-bold">@Localizer["Base"]</label>
                         <select asp-for="BaseId" class="form-select" asp-items="@(new SelectList(Model.Bases, "Id", "Name"))">
                             <option value="">-- Select Base --</option>
                         </select>
@@ -34,12 +36,12 @@
 
                     <div class="row">
                         <div class="col-md-8 mb-3">
-                            <label asp-for="Name" class="form-label">Expense Name</label>
-                            <input asp-for="Name" class="form-control" placeholder="e.g. Security Guard Salary" />
+                            <label asp-for="Name" class="form-label">@Localizer["Expense Name"]</label>
+                            <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Security Guard Salary"]" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label asp-for="Amount" class="form-label">Amount</label>
+                            <label asp-for="Amount" class="form-label">@Localizer["Amount"]</label>
                             <div class="input-group">
                                 <input asp-for="Amount" class="form-control" type="number" step="0.01" />
                                 <span class="input-group-text">$</span>
@@ -53,52 +55,54 @@
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" asp-for="IsRecurring" id="chkRecurring">
                         <label class="form-check-label fw-bold" for="chkRecurring">
-                            Is this a recurring (subscription) expense?
+                            @Localizer["Is this a recurring (subscription) expense?"]
                         </label>
                     </div>
 
                     <div id="oneTimeSection">
                         <div class="mb-3">
-                            <label asp-for="ExpenseDate" class="form-label">Payment Date</label>
+                            <label asp-for="ExpenseDate" class="form-label">@Localizer["Payment Date"]</label>
                             <input asp-for="ExpenseDate" class="form-control" />
                             <span asp-validation-for="ExpenseDate" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div id="recurringSection" style="display:none;" class="bg-light p-3 rounded border mb-3">
-                        <h6 class="text-success"><i class="fas fa-sync-alt"></i> Period Settings</h6>
+                        <h6 class="text-success"><i class="fas fa-sync-alt"></i> @Localizer["Period Settings"]</h6>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="StartDate" class="form-label">Start Date</label>
+                                <label asp-for="StartDate" class="form-label">@Localizer["Start Date"]</label>
                                 <input asp-for="StartDate" class="form-control" />
                                 <span asp-validation-for="StartDate" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Frequency" class="form-label">Frequency<</label>
-                                <select asp-for="Frequency" class="form-select"
-                                        asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"
-                                        id="ddlFrequency">
+                                <label asp-for="Frequency" class="form-label">@Localizer["Frequency"]</label>
+                                <select asp-for="Frequency" class="form-select" id="ddlFrequency">
+                                    @foreach (var item in Html.GetEnumSelectList<ExpenseFrequency>())
+                                    {
+                                        <option value="@item.Value">@Localizer[item.Text]</option>
+                                    }
                                 </select>
                                 <span asp-validation-for="Frequency" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="mb-3" id="intervalContainer" style="display:none;">
-                            <label asp-for="IntervalMonths" class="form-label">Interval (Months)</label>
-                            <input asp-for="IntervalMonths" class="form-control" placeholder="e.g. 3 for quarterly" />
-                            <span class="form-text text-muted">Enter a number (e.g. 6 for semiannual).</span>
+                            <label asp-for="IntervalMonths" class="form-label">@Localizer["Interval (Months)"]</label>
+                            <input asp-for="IntervalMonths" class="form-control" placeholder="@Localizer["e.g. 3 for quarterly"]" />
+                            <span class="form-text text-muted">@Localizer["Enter a number (e.g. 6 for semiannual)."]</span>
                             <span asp-validation-for="IntervalMonths" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label asp-for="Description" class="form-label">Description / Comment</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Additional details about this expense..."></textarea>
+                        <label asp-for="Description" class="form-label">@Localizer["Description / Comment"]</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="@Localizer["Additional details about this expense..."]"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-success btn-lg">Save Expense</button>
+                        <button type="submit" class="btn btn-success btn-lg">@Localizer["Save Expense"]</button>
                     </div>
                 </form>
             </div>
