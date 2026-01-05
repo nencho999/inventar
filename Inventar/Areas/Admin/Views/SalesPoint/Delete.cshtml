@@ -1,0 +1,97 @@
+﻿@model Inventar.Web.ViewModels.SalesPoint.SalesPointDeleteViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Delete Sales Point";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-lg border-0 rounded-3">
+
+                <div class="card-header bg-danger text-white p-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i> @Localizer["Delete Confirmation"]
+                    </h5>
+                </div>
+
+                <div class="card-body p-4 text-center">
+
+                    <div class="mb-4">
+                        <div class="avatar-lg mx-auto mb-3 text-danger bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="fas fa-trash-alt fa-3x"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark">@Localizer["Are you sure?"]</h4>
+                        <p class="text-muted">
+                            @Localizer["You are about to delete the following sales point. This action cannot be undone."]
+                        </p>
+                    </div>
+
+                    <div class="bg-light p-3 rounded border text-start mb-4">
+                        <div class="mb-2">
+                            <label class="small text-uppercase text-muted fw-bold">@Localizer["Name"]</label>
+                            <div class="fw-bold text-dark fs-5">@Model.Name</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="small text-uppercase text-muted fw-bold">@Localizer["Type"]</label>
+                                <div>
+                                    @if (Model.Type == "Online")
+                                    {
+                                        <span class="badge bg-info text-dark">Online</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Physical</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-uppercase text-muted fw-bold">@Localizer["Address"]</label>
+                                <div class="text-dark">@Model.Address</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.LinkedExpensesCount > 0 || Model.LinkedProductsCount > 0)
+                    {
+                        <div class="alert alert-warning d-flex align-items-center text-start" role="alert">
+                            <i class="fas fa-info-circle fs-4 me-3"></i>
+                            <div>
+                                <strong>@Localizer["Warning:"]</strong> @Localizer["Deleting this base will also remove:"]
+                                <ul class="mb-0 ps-3 small mt-1">
+                                    @if (Model.LinkedExpensesCount > 0)
+                                    {
+                                        <li>@Model.LinkedExpensesCount @Localizer["registered expenses"]</li>
+                                    }
+                                    @if (Model.LinkedProductsCount > 0)
+                                    {
+                                        <li>@Model.LinkedProductsCount @Localizer["product associations"]</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold shadow-sm">
+                                <i class="fas fa-trash-alt me-2"></i> @Localizer["Confirm Delete"]
+                            </button>
+                            <a asp-action="Index" class="btn btn-link text-muted text-decoration-none">
+                                @Localizer["Cancel, keep it"]
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

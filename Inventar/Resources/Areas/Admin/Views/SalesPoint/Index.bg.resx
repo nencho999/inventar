@@ -117,25 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Admin Tools" xml:space="preserve">
-    <value>Админ инструменти</value>
+  <data name="Add Expense" xml:space="preserve">
+    <value>Добави разход</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Начало</value>
+  <data name="Add New Sales Point" xml:space="preserve">
+    <value>Добави нов обект</value>
   </data>
-  <data name="Inventory" xml:space="preserve">
-    <value>Инвентар</value>
+  <data name="All Sales Points" xml:space="preserve">
+    <value>Всички търговски обекти</value>
   </data>
-  <data name="Primary Material Bases" xml:space="preserve">
-    <value>Бази за първични материали</value>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>Сигурни ли сте?</value>
   </data>
-  <data name="Privacy" xml:space="preserve">
-    <value>Поверителност</value>
+  <data name="Delete" xml:space="preserve">
+    <value>Изтриване</value>
   </data>
-  <data name="Production Center Management" xml:space="preserve">
-    <value>Управление на производствени центрове</value>
+  <data name="Edit" xml:space="preserve">
+    <value>Редакция</value>
   </data>
-  <data name="Sales Point Management" xml:space="preserve">
-    <value>Управление на търговски обекти</value>
+  <data name="Filter" xml:space="preserve">
+    <value>Филтър</value>
+  </data>
+  <data name="LOCATIONS" xml:space="preserve">
+    <value>ЛОКАЦИИ</value>
+  </data>
+  <data name="lv." xml:space="preserve">
+    <value>лв.</value>
+  </data>
+  <data name="MONTHLY EXPENSES" xml:space="preserve">
+    <value>МЕСЕЧНИ РАЗХОДИ</value>
+  </data>
+  <data name="Monthly Expenses:" xml:space="preserve">
+    <value>Месечни разходи:</value>
+  </data>
+  <data name="No sales points found." xml:space="preserve">
+    <value>Няма намерени търговски обекти.</value>
+  </data>
+  <data name="ONE-TIME EXPENSES" xml:space="preserve">
+    <value>ЕДНОКРАТНИ РАЗХОДИ</value>
+  </data>
+  <data name="One-Time Expenses:" xml:space="preserve">
+    <value>Еднократни разходи:</value>
+  </data>
+  <data name="Onl." xml:space="preserve">
+    <value>Онл.</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Онлайн</value>
+  </data>
+  <data name="Phys." xml:space="preserve">
+    <value>Физ.</value>
+  </data>
+  <data name="Physical" xml:space="preserve">
+    <value>Физически</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>Продукти</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Премахни</value>
+  </data>
+  <data name="Search sales points..." xml:space="preserve">
+    <value>Търсене на обекти...</value>
+  </data>
+  <data name="TOTAL SALES POINTS" xml:space="preserve">
+    <value>ОБЩО ТЪРГОВСКИ ОБЕКТИ</value>
+  </data>
+  <data name="View Details" xml:space="preserve">
+    <value>Виж детайли</value>
   </data>
 </root>
