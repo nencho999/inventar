@@ -60,7 +60,6 @@ public class Program
 
         builder.Services.AddScoped<IPrimaryMaterialBaseService, PrimaryMaterialBaseService>();
         builder.Services.AddScoped<IStockService, StockService>();
-        builder.Services.AddScoped<IExpenseService, ExpenseService>();
         builder.Services.AddScoped<IProductionCenterService, ProductionCenterService>();
         builder.Services.AddScoped<ISalesPointService, SalesPointService>();
 

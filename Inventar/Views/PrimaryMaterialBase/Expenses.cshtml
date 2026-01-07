@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Inventar.Web.ViewModels.Base.PrimaryBaseExpenseRowViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = ViewBag.PageTitle;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark mb-0">
+        <i class="fas fa-warehouse text-success me-2"></i> @ViewBag.PageTitle
+    </h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> @Localizer["Back to Bases"]
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-uppercase small fw-bold text-muted">
+                    <tr>
+                        <th class="ps-4 py-3">@Localizer["Expense Name"]</th>
+                        <th>@Localizer["Material Base"]</th>
+                        <th>@Localizer["Date / Freq."]</th>
+                        <th class="text-end">@Localizer["Amount"]</th>
+                        <th class="text-end pe-4">@Localizer["Action"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">@item.ExpenseName</div>
+                                @if (item.IsRecurring)
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill" style="font-size: 0.7rem;">Recurring</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        <i class="fas fa-warehouse text-muted small"></i>
+                                    </div>
+                                    <span class="fw-500">@item.BaseName</span>
+                                </div>
+                            </td>
+                            <td class="text-muted small">
+                                <i class="far fa-calendar-alt me-1"></i> @item.DateOrFrequency
+                            </td>
+                            <td class="text-end fw-bold fs-6">
+                                @item.Amount.ToString("N2") <small>@Localizer["lv"].</small>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Edit" asp-route-id="@item.BaseId" class="btn btn-sm btn-light border" title="@Localizer["Go to Base"]">
+                                    <i class="fas fa-external-link-alt text-secondary"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="text-muted opacity-50">
+                                    <i class="fas fa-search-dollar fa-3x mb-3"></i>
+                                    <p class="mb-0">@Localizer["No expenses found."]</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+﻿@model Inventar.Web.ViewModels.PrimaryBase.PrimaryBaseAddExpenseViewModel
+@using Inventar.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Register Base Expense";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-success text-white p-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Register Expense for Base"]
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="AddExpense" method="post">
+                        <input type="hidden" asp-for="BaseId" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase text-muted">@Localizer["Material Base"]</label>
+                            <input asp-for="BaseName" class="form-control bg-light" readonly />
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label fw-bold">@Localizer["Expense Name"]</label>
+                                <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Electricity Bill"]" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Amount" class="form-label fw-bold">@Localizer["Amount"]</label>
+                                <div class="input-group">
+                                    <input asp-for="Amount" type="number" step="0.01" class="form-control text-end" />
+                                    <span class="input-group-text bg-light">@Localizer["lv"].</span>
+                                </div>
+                                <span asp-validation-for="Amount" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+
+                        <div class="form-check form-switch mb-4">
+                            <input asp-for="IsRecurring" class="form-check-input" type="checkbox" id="recurringSwitch" style="cursor: pointer;">
+                            <label class="form-check-label fw-bold ms-2" for="recurringSwitch">
+                                @Localizer["Is this a recurring (subscription) expense?"]
+                            </label>
+                        </div>
+
+                        <div id="oneTimeSection">
+                            <div class="mb-3">
+                                <label asp-for="ExpenseDate" class="form-label fw-bold">@Localizer["Payment Date"]</label>
+                                <input asp-for="ExpenseDate" type="date" class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label fw-bold">@Localizer["Description"]</label>
+                                <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div id="recurringSection" class="d-none bg-light p-3 rounded border mb-3">
+                            <label class="form-label fw-bold small text-uppercase text-primary">@Localizer["Subscription Settings"]</label>
+
+                            <div class="row g-2">
+                                <div class="col-8">
+                                    <label asp-for="Frequency" class="form-label small">@Localizer["Frequency"]</label>
+                                    <select asp-for="Frequency" class="form-select" id="frequencySelect" asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"></select>
+                                </div>
+
+                                <div class="col-4 d-none" id="customIntervalDiv">
+                                    <label asp-for="IntervalMonths" class="form-label small">Months</label>
+                                    <input asp-for="IntervalMonths" type="number" class="form-control" min="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                                @Localizer["Save Expense"]
+                            </button>
+                            <a asp-action="Index" class="btn btn-link text-muted text-decoration-none text-center">
+                                @Localizer["Cancel"]
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const switchEl = document.getElementById('recurringSwitch');
+            const oneTimeSec = document.getElementById('oneTimeSection');
+            const recurSec = document.getElementById('recurringSection');
+
+            const freqSelect = document.getElementById('frequencySelect');
+            const customDiv = document.getElementById('customIntervalDiv');
+
+            function toggleSections() {
+                if(switchEl.checked) {
+                    oneTimeSec.classList.add('d-none');
+                    recurSec.classList.remove('d-none');
+                } else {
+                    oneTimeSec.classList.remove('d-none');
+                    recurSec.classList.add('d-none');
+                }
+            }
+
+            function toggleCustom() {
+                const selectedText = freqSelect.options[freqSelect.selectedIndex].text;
+
+                if(freqSelect.value == "3") {
+                    customDiv.classList.remove('d-none');
+                    freqSelect.parentElement.classList.remove('col-12');
+                    freqSelect.parentElement.classList.add('col-8');
+                } else {
+                    customDiv.classList.add('d-none');
+                    freqSelect.parentElement.classList.remove('col-8');
+                    freqSelect.parentElement.classList.add('col-12');
+                }
+            }
+
+            switchEl.addEventListener('change', toggleSections);
+            freqSelect.addEventListener('change', toggleCustom);
+
+            toggleSections();
+            toggleCustom();
+        });
+    </script>
+}
