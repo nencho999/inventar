@@ -123,7 +123,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            // 1. Select All Products Logic
             const selectAllCheckbox = document.getElementById('selectAllProducts');
             const productCheckboxes = document.querySelectorAll('.product-check');
 
@@ -131,7 +130,6 @@
                 selectAllCheckbox.addEventListener('change', function() {
                     productCheckboxes.forEach(chk => {
                         chk.checked = this.checked;
-                        // Визуално затъмняване на реда, ако не е избран
                         const tr = chk.closest('tr');
                         if(this.checked) {
                             tr.classList.remove('opacity-50', 'bg-light');
@@ -142,7 +140,6 @@
                 });
             }
 
-            // Добавяне на listener за всеки чекбокс поотделно (за визуалния ефект)
             productCheckboxes.forEach(chk => {
                 chk.addEventListener('change', function() {
                     const tr = this.closest('tr');
@@ -154,14 +151,12 @@
                 });
             });
 
-            // 2. Логика за Разходите (Скриване/Показване на полета)
             const expensesContainer = document.getElementById('expensesContainer');
 
             if(expensesContainer) {
                 expensesContainer.addEventListener('change', function(e) {
                     const target = e.target;
 
-                    // Превключване между Еднократен и Периодичен
                     if (target.classList.contains('is-recurring-select')) {
                         const row = target.closest('.expense-row');
                         const oneTimeDiv = row.querySelector('.one-time-field');
@@ -176,13 +171,10 @@
                         }
                     }
 
-                    // Превключване на Custom Month Interval
                     if (target.classList.contains('frequency-select')) {
                         const row = target.closest('.recurring-field');
                         const customIntervalSelect = row.querySelector('.custom-interval');
 
-                        // В твоя Enum CustomMonthInterval е последен. Обикновено стойността е "3".
-                        // Провери generated HTML source, ако не работи.
                         if (target.value == "3") {
                             customIntervalSelect.classList.remove('d-none');
                         } else {
@@ -191,17 +183,14 @@
                     }
                 });
 
-                // 3. Логика за Изтриване на ред (маркира като изтрит и го скрива)
                 expensesContainer.addEventListener('click', function(e) {
                     const btn = e.target.closest('.delete-row-btn');
                     if (btn) {
                         const row = btn.closest('.expense-row');
 
-                        // Намираме скритото поле IsDeleted и го правим true
                         const deletedFlag = row.querySelector('.is-deleted-flag');
                         if (deletedFlag) deletedFlag.value = 'true';
 
-                        // Скриваме реда визуално
                         row.style.display = 'none';
                     }
                 });
