@@ -274,5 +274,28 @@ namespace Inventar.Services.Data
                     return 0;
             }
         }
+
+        public async Task<List<ExpenseListViewModel>> GetExpensesByTypeAsync(string type)
+        {
+            var query = _context.SalesPointExpenses
+                .Include(e => e.SalesPoint)
+                .AsQueryable();
+
+            if (type == "Monthly") query = query.Where(e => e.IsRecurring);
+            else if (type == "OneTime") query = query.Where(e => !e.IsRecurring);
+
+            var list = await query.OrderByDescending(e => e.Amount).ToListAsync();
+
+            return list.Select(e => new ExpenseListViewModel
+            {
+                SalesPointId = e.SalesPointId,
+                SalesPointName = e.SalesPoint.Name,
+                ExpenseName = e.Name,
+                Amount = e.Amount,
+                DateOrFrequency = e.IsRecurring
+                    ? (e.Frequency == ExpenseFrequency.CustomMonthInterval ? $"Every {e.CustomIntervalCount} mo." : e.Frequency.ToString())
+                    : (e.OneTimeDate.HasValue ? e.OneTimeDate.Value.ToString("dd.MM.yyyy") : "-")
+            }).ToList();
+        }
     }
 }

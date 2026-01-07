@@ -18,4 +18,5 @@ public interface ISalesPointService
 
     Task<SalesPointDeleteViewModel> GetDeleteDetailsAsync(Guid id);
     Task DeleteAsync(Guid id);
+    Task<List<ExpenseListViewModel>> GetExpensesByTypeAsync(string type);
 }

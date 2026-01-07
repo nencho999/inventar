@@ -109,5 +109,16 @@ namespace Inventar.Web.Areas.Admin.Controllers
             await _service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Expenses(string type = "All")
+        {
+            var expenses = await _service.GetExpensesByTypeAsync(type);
+
+            ViewBag.PageTitle = type == "Monthly" ? "Monthly Recurring Expenses" :
+                type == "OneTime" ? "One-Time Expenses" : "All Expenses";
+
+            return View(expenses);
+        }
     }
 }
