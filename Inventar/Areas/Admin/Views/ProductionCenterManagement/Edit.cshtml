@@ -1,65 +1,66 @@
 ﻿@using Inventar.Data.Models
 @using Inventar.Web.ViewModels.ProductionCenter
 @using Microsoft.AspNetCore.Mvc.Localization
-@model CenterEditFormModel
 @inject IViewLocalizer Localizer
+@model CenterEditFormModel
 
 @{
-    ViewData["Title"] = Localizer["Editing: {0}", Model.Name];
+    ViewData["Title"] = Localizer["Edit Production Center"];
 }
 
 <h2 class="d-flex align-items-center mb-4">
-    <i class="fas fa-edit me-3 text-primary"></i> @Localizer["Editing Production Center:"] @Model.Name
+    <i class="fas fa-edit me-3 text-primary"></i> @Localizer["Editing:"] @Model.Name
 </h2>
 <hr />
 
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-11">
         <form asp-action="Edit" method="post" class="shadow p-4 bg-white rounded">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            @* Скрито ID за запис *@
             <input type="hidden" asp-for="Id" />
 
             <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> @Localizer["General Information"]</h5>
 
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
-                <div class="form-floating flex-grow-1">
-                    <input asp-for="Name" class="form-control" placeholder="@Localizer["Center Name"]" />
-                    <label asp-for="Name">@Localizer["Name"]</label>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                        <div class="form-floating flex-grow-1">
+                            <input asp-for="Name" class="form-control" placeholder="@Localizer["Name"]" />
+                            <label asp-for="Name">@Localizer["Name"]</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
+                        <div class="form-floating flex-grow-1">
+                            <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select"></select>
+                            <label asp-for="Status">@Localizer["Status"]</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
-                <div class="form-floating flex-grow-1">
-                    <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select"></select>
-                    <label asp-for="Status">@Localizer["Status"]</label>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input asp-for="Location" class="form-control" placeholder="@Localizer["Location"]" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                        <input asp-for="Capacity" class="form-control" placeholder="@Localizer["Capacity"]" />
+                    </div>
                 </div>
             </div>
 
             <hr class="my-4" />
-            <h5 class="text-primary mb-3"><i class="fas fa-map-marked-alt me-2"></i> @Localizer["Location & Capacity"]</h5>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                <input asp-for="Location" class="form-control" />
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input asp-for="Capacity" class="form-control" />
-            </div>
 
-            <hr class="my-4" />
-            <h5 class="text-primary mb-3"><i class="fas fa-calculator me-2"></i> @Localizer["Contact & Financials"]</h5>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
-                <input asp-for="Contact" class="form-control" />
-            </div>
-            <div class="mb-4 input-group">
-                <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
-                <input asp-for="Expenses" class="form-control" />
-            </div>
-
-            <hr class="my-4" />
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> @Localizer["Storage Capacity by Product"]</h5>
                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="addStorageRow()">
@@ -75,9 +76,7 @@
                             <select name="Storages[@i].MaterialId" class="form-select" required>
                                 @foreach (var mat in Model.Materials)
                                 {
-                                    <option value="@mat.Id" selected="@(mat.Id == Model.Storages[i].MaterialId ? "selected" : null)">
-                                        @mat.Name
-                                    </option>
+                                    <option value="@mat.Id" selected="@(mat.Id == Model.Storages[i].MaterialId ? "selected" : null)">@mat.Name</option>
                                 }
                             </select>
                         </div>
@@ -88,6 +87,69 @@
                             <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">
                                 <i class="fas fa-trash"></i>
                             </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-primary mb-0"><i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses Management"]</h5>
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="addExpenseRow()">
+                    <i class="fas fa-plus"></i> @Localizer["Add Expense"]
+                </button>
+            </div>
+
+            <div id="expense-container" class="mb-4">
+                @* Тук зареждаме съществуващите разходи *@
+                @for (int i = 0; i < Model.ExpensesList.Count; i++)
+                {
+                    <div class="card mb-3 p-3 expense-row shadow-sm">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-4">
+                                <input name="ExpensesList[@i].Name" class="form-control" value="@Model.ExpensesList[i].Name" required />
+                            </div>
+                            <div class="col-md-3">
+                                <input name="ExpensesList[@i].Amount" type="number" step="0.01" class="form-control" value="@Model.ExpensesList[i].Amount" required />
+                            </div>
+                            <div class="col-md-3">
+                                <select name="ExpensesList[@i].Type" class="form-select" onchange="toggleExpenseFields(this, @i)">
+                                    <option value="0" selected="@(Model.ExpensesList[i].Type == ExpenseType.OneTime)">@Localizer["One-time"]</option>
+                                    <option value="1" selected="@(Model.ExpensesList[i].Type == ExpenseType.Regular)">@Localizer["Regular"]</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.expense-row').remove()">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="expense-details-@i" class="mt-2 row g-2">
+                            @if (Model.ExpensesList[i].Type == ExpenseType.OneTime)
+                            {
+                                <div class="col-md-4">
+                                    <label class="small text-muted">@Localizer["Date"]</label>
+                                    <input name="ExpensesList[@i].Date" type="date" class="form-control" value="@Model.ExpensesList[i].Date?.ToString("yyyy-MM-dd")" required />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-4">
+                                    <label class="small text-muted">@Localizer["Frequency"]</label>
+                                    <select name="ExpensesList[@i].Frequency" class="form-select" onchange="toggleCustomMonths(this, @i)">
+                                        <option value="0" selected="@(Model.ExpensesList[i].Frequency == Frequency.Weekly)">@Localizer["Weekly"]</option>
+                                        <option value="1" selected="@(Model.ExpensesList[i].Frequency == Frequency.Monthly)">@Localizer["Monthly"]</option>
+                                        <option value="2" selected="@(Model.ExpensesList[i].Frequency == Frequency.Yearly)">@Localizer["Yearly"]</option>
+                                        <option value="3" selected="@(Model.ExpensesList[i].Frequency == Frequency.CustomMonths)">@Localizer["Every X months"]</option>
+                                    </select>
+                                </div>
+                                <div id="custom-months-container-@i" class="col-md-4 @(Model.ExpensesList[i].Frequency == Frequency.CustomMonths ? "" : "d-none")">
+                                    <label class="small text-muted">@Localizer["Months Interval"]</label>
+                                    <input name="ExpensesList[@i].EveryXMonths" type="number" class="form-control" value="@Model.ExpensesList[i].EveryXMonths" />
+                                </div>
+                            }
                         </div>
                     </div>
                 }
@@ -105,45 +167,85 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+        // Инициализираме индексите от броя на съществуващите редове в Модела
         let storageIndex = @Model.Storages.Count;
+        let expenseIndex = @Model.ExpensesList.Count;
 
         const availableMaterials = @Html.Raw(Json.Serialize(Model.Materials));
-
-        const translations = {
-            selectMaterial: "@Localizer["-- Select Material --"]",
-            capacityPlaceholder: "@Localizer["Capacity"]"
-        };
 
         function addStorageRow() {
             const container = document.getElementById('storage-container');
             const row = document.createElement('div');
             row.className = 'row mb-2 align-items-center g-2 storage-row';
 
-            let optionsHtml = `<option value="">${translations.selectMaterial}</option>`;
-            if (availableMaterials && availableMaterials.length > 0) {
-                availableMaterials.forEach(mat => {
-                    optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
-                });
-            }
+            let optionsHtml = `<option value="">-- @Localizer["Select Material"] --</option>`;
+            availableMaterials.forEach(mat => {
+                optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
+            });
 
             row.innerHTML = `
                 <div class="col-md-6">
-                    <select name="Storages[${storageIndex}].MaterialId" class="form-select" required>
-                        ${optionsHtml}
-                    </select>
+                    <select name="Storages[${storageIndex}].MaterialId" class="form-select" required>${optionsHtml}</select>
                 </div>
                 <div class="col-md-4">
-                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="${translations.capacityPlaceholder}" required />
+                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="@Localizer["Capacity"]" required />
                 </div>
                 <div class="col-md-2 text-end">
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-
+                    <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()"><i class="fas fa-trash"></i></button>
+                </div>`;
             container.appendChild(row);
             storageIndex++;
+        }
+
+        function addExpenseRow() {
+            const container = document.getElementById('expense-container');
+            const row = document.createElement('div');
+            row.className = 'card mb-3 p-3 expense-row shadow-sm';
+
+            row.innerHTML = `
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-4"><input name="ExpensesList[${expenseIndex}].Name" class="form-control" placeholder="@Localizer["Expense Name"]" required /></div>
+                    <div class="col-md-3"><input name="ExpensesList[${expenseIndex}].Amount" type="number" step="0.01" class="form-control" placeholder="@Localizer["Amount"]" required /></div>
+                    <div class="col-md-3">
+                        <select name="ExpensesList[${expenseIndex}].Type" class="form-select" onchange="toggleExpenseFields(this, ${expenseIndex})">
+                            <option value="0">@Localizer["One-time"]</option>
+                            <option value="1">@Localizer["Regular"]</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 text-end"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.expense-row').remove()"><i class="fas fa-trash"></i></button></div>
+                </div>
+                <div id="expense-details-${expenseIndex}" class="mt-2 row g-2">
+                    <div class="col-md-4"><label class="small text-muted">@Localizer["Date"]</label><input name="ExpensesList[${expenseIndex}].Date" type="date" class="form-control" required /></div>
+                </div>`;
+            container.appendChild(row);
+            expenseIndex++;
+        }
+
+        function toggleExpenseFields(select, index) {
+            const detailsDiv = document.getElementById(`expense-details-${index}`);
+            if (select.value === "0") {
+                detailsDiv.innerHTML = `<div class="col-md-4"><label class="small text-muted">@Localizer["Date"]</label><input name="ExpensesList[${index}].Date" type="date" class="form-control" required /></div>`;
+            } else {
+                detailsDiv.innerHTML = `
+                    <div class="col-md-4">
+                        <label class="small text-muted">@Localizer["Frequency"]</label>
+                        <select name="ExpensesList[${index}].Frequency" class="form-select" onchange="toggleCustomMonths(this, ${index})">
+                            <option value="0">@Localizer["Weekly"]</option>
+                            <option value="1">@Localizer["Monthly"]</option>
+                            <option value="2">@Localizer["Yearly"]</option>
+                            <option value="3">@Localizer["Every X months"]</option>
+                        </select>
+                    </div>
+                    <div id="custom-months-container-${index}" class="col-md-4 d-none">
+                        <label class="small text-muted">@Localizer["Months Interval"]</label>
+                        <input name="ExpensesList[${index}].EveryXMonths" type="number" class="form-control" />
+                    </div>`;
+            }
+        }
+
+        function toggleCustomMonths(select, index) {
+            const container = document.getElementById(`custom-months-container-${index}`);
+            select.value === "3" ? container.classList.remove('d-none') : container.classList.add('d-none');
         }
     </script>
 }

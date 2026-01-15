@@ -64,6 +64,7 @@ public class ProductionCenterService : IProductionCenterService
     {
         var user = await userManager.FindByIdAsync(userId);
         bool isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
         if (user == null || !isAdmin)
         {
             throw new ArgumentException(AdminAuthorization);
@@ -88,6 +89,21 @@ public class ProductionCenterService : IProductionCenterService
             });
         }
 
+        foreach (var expenseModel in model.ExpensesList)
+        {
+            center.ExpensesList.Add(new ProductionCenterExpense
+            {
+                Name = expenseModel.Name,
+                Amount = expenseModel.Amount,
+                Type = expenseModel.Type,
+                Date = expenseModel.Type == ExpenseType.OneTime ? expenseModel.Date : null,
+                Frequency = expenseModel.Type == ExpenseType.Regular ? expenseModel.Frequency : null,
+                EveryXMonths = (expenseModel.Type == ExpenseType.Regular && expenseModel.Frequency == Frequency.CustomMonths)
+                                ? expenseModel.EveryXMonths
+                                : null
+            });
+        }
+
         await dbContext.AddAsync(center);
         await dbContext.SaveChangesAsync();
 
@@ -104,8 +120,9 @@ public class ProductionCenterService : IProductionCenterService
         }
 
         var center = await dbContext.ProductionCenters
-        .Include(c => c.StorageCapacities)
-        .FirstOrDefaultAsync(c => c.Id == id);
+            .Include(c => c.StorageCapacities)
+            .Include(c => c.ExpensesList) // Добавяме това!
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if (center == null) throw new ArgumentException("Center not found");
 
@@ -122,6 +139,15 @@ public class ProductionCenterService : IProductionCenterService
             {
                 MaterialId = s.MaterialId,
                 MaxCapacity = s.MaxStorageCapacity
+            }).ToList(),
+            ExpensesList = center.ExpensesList.Select(e => new ExpenseInputModel
+            {
+                Name = e.Name,
+                Amount = e.Amount,
+                Type = e.Type,
+                Date = e.Date,
+                Frequency = e.Frequency,
+                EveryXMonths = e.EveryXMonths
             }).ToList()
         };
 
@@ -131,14 +157,16 @@ public class ProductionCenterService : IProductionCenterService
     public async Task<bool> EditCenterAsync(CenterEditFormModel model)
     {
         var center = await dbContext.ProductionCenters
-        .Include(c => c.StorageCapacities)
-        .FirstOrDefaultAsync(c => c.Id == model.Id);
+            .Include(c => c.StorageCapacities)
+            .Include(c => c.ExpensesList) // Трябва да ги включим, за да ги изчистим
+            .FirstOrDefaultAsync(c => c.Id == model.Id);
 
         if (center == null)
         {
-            throw new ArgumentException(CenterNotFoundErrorMessage);
+            throw new ArgumentException("Center not found");
         }
 
+        // Обновяване на базови данни
         center.Name = model.Name;
         center.Location = model.Location;
         center.Capacity = model.Capacity;
@@ -153,6 +181,22 @@ public class ProductionCenterService : IProductionCenterService
             {
                 MaterialId = s.MaterialId,
                 MaxStorageCapacity = s.MaxCapacity
+            });
+        }
+
+        center.ExpensesList.Clear();
+        foreach (var e in model.ExpensesList)
+        {
+            center.ExpensesList.Add(new ProductionCenterExpense
+            {
+                Name = e.Name,
+                Amount = e.Amount,
+                Type = e.Type,
+                Date = e.Type == ExpenseType.OneTime ? e.Date : null,
+                Frequency = e.Type == ExpenseType.Regular ? e.Frequency : null,
+                EveryXMonths = (e.Type == ExpenseType.Regular && e.Frequency == Frequency.CustomMonths)
+                                ? e.EveryXMonths
+                                : null
             });
         }
 

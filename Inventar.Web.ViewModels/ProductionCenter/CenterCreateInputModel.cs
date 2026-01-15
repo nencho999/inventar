@@ -12,8 +12,19 @@ public class CenterCreateInputModel
     public string? Contact { get; set; }
     public CenterStatus? Status { get; set; }
     public string? Expenses { get; set; }
+    public List<ExpenseInputModel> ExpensesList { get; set; } = new List<ExpenseInputModel>();
     public List<StorageInputModel> Storages { get; set; } = new List<StorageInputModel>();
     public List<MaterialDropDownModel> Materials { get; set; } = new List<MaterialDropDownModel>();
+}
+
+public class ExpenseInputModel
+{
+    public string Name { get; set; } = null!;
+    public decimal Amount { get; set; }
+    public ExpenseType Type { get; set; }
+    public DateTime? Date { get; set; }
+    public Frequency? Frequency { get; set; }
+    public int? EveryXMonths { get; set; }
 }
 public class StorageInputModel
 {

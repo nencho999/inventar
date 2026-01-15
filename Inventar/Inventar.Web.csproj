@@ -25,7 +25,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Views\Expense\" />
+    <Compile Update="Resources\CommonMessages.bg.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CommonMessages.bg.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\CommonMessages.bg.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommonMessages.bg.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
