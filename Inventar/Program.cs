@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using static Inventar.Data.Seeding.RoleSeeding;
+using Inventar.Data.Models;
 
 namespace Inventar.Web;
 
@@ -24,7 +25,7 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
             options.Password.RequireNonAlphanumeric = false;
@@ -62,6 +63,7 @@ public class Program
         builder.Services.AddScoped<IStockService, StockService>();
         builder.Services.AddScoped<IProductionCenterService, ProductionCenterService>();
         builder.Services.AddScoped<ISalesPointService, SalesPointService>();
+        builder.Services.AddScoped<IUserService, UserService>();
 
         var app = builder.Build();
 

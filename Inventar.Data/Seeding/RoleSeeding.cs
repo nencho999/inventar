@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Inventar.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using static Inventar.Common.Messages.ValidationConstants;
@@ -31,7 +32,7 @@ namespace Inventar.Data.Seeding
         }
         private static async Task SeedAdminAsync(IServiceProvider serviceProvider)
         {
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var adminConfiguration = serviceProvider.GetRequiredService<IConfiguration>();
 
             string adminUserEmail = adminConfiguration["AdminSettings:Username"];
@@ -40,7 +41,7 @@ namespace Inventar.Data.Seeding
             var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
             if (adminUser == null)
             {
-                adminUser = new IdentityUser
+                adminUser = new ApplicationUser
                 {
                     Email = adminUserEmail,
                     UserName = adminUserEmail,

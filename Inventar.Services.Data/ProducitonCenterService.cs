@@ -12,10 +12,10 @@ using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
 public class ProductionCenterService : IProductionCenterService
 {
     private readonly ApplicationDbContext dbContext;
-    private readonly UserManager<IdentityUser> userManager;
+    private readonly UserManager<ApplicationUser> userManager;
     private readonly IStringLocalizer _localizer;
 
-    public ProductionCenterService(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager,
+    public ProductionCenterService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager,
                                     IStringLocalizerFactory factory)
     {
         this.dbContext = dbContext;
