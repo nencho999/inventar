@@ -3,18 +3,13 @@
 @inject IViewLocalizer Localizer
 @model IEnumerable<Inventar.Web.ViewModels.MaterialViewModel>
 
-<div class="alert alert-info">
-    <p><strong>Debug Info:</strong></p>
-    <p>Current Culture: @CultureInfo.CurrentUICulture.Name</p> <p>Test Translation: @Localizer["Material"]</p> <p>Searching in path: Resources/Areas/Admin/Views/Material/Index.bg.resx</p>
-</div>
-
 @{
-    ViewData["Title"] = "Materials";
+    ViewData["Title"] = @Localizer["Materials"];
 }
 
 <div class="d-flex justify-content-between mb-3">
     <h2>📦 @Localizer["Material Registry"]</h2>
-    <a asp-action="Edit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Material</a>
+    <a asp-action="Edit" class="btn btn-primary"><i class="fas fa-plus"></i> @Localizer["Add Material"]</a>
 </div>
 
 @if (TempData["ErrorMessage"] != null)
@@ -25,9 +20,9 @@
 <table class="table table-striped table-hover">
     <thead class="table-dark">
     <tr>
-        <th>Name</th>
-        <th>Unit</th>
-        <th>Actions</th>
+        <th>@Localizer["Name"]</th>
+        <th>@Localizer["Unit"]</th>
+        <th>@Localizer["Actions"]</th>
     </tr>
     </thead>
     <tbody>
@@ -40,7 +35,7 @@
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
                     <i class="fas fa-edit"></i>
                 </a>
-                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this material??');">
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm(@Localizer["Are you sure you want to delete this material??"]);">
                     <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                 </form>
             </td>

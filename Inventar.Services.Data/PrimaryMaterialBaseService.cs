@@ -3,6 +3,7 @@ using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels;
 using Inventar.Web.ViewModels.Base;
+using Inventar.Web.ViewModels.PrimaryBase;
 using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.EntityFrameworkCore;
 
@@ -164,6 +165,101 @@ namespace Inventar.Services.Data
                 .ToListAsync();
 
             return materials;
+        }
+
+        public async Task<List<PrimaryBaseExpenseRowViewModel>> GetBaseExpensesByTypeAsync(string type)
+        {
+            var resultList = new List<PrimaryBaseExpenseRowViewModel>();
+
+            if (type == "Monthly" || type == "All")
+            {
+                var recurringQuery = _context.RecurringExpenses
+                    .Include(r => r.Base)
+                    .Where(r => r.IsActive);
+
+                var recurringList = await recurringQuery.Select(r => new PrimaryBaseExpenseRowViewModel
+                {
+                    BaseId = r.BaseId,
+                    BaseName = r.Base.Name,
+                    ExpenseName = r.Name,
+                    Amount = r.Amount,
+                    IsRecurring = true,
+
+                    DateOrFrequency = r.Frequency == ExpenseFrequency.CustomMonthInterval
+                        ? $"Every {r.IntervalMonths} mo."
+                        : r.Frequency.ToString()
+                }).ToListAsync();
+
+                resultList.AddRange(recurringList);
+            }
+
+            if (type == "OneTime" || type == "All")
+            {
+                var oneTimeQuery = _context.Expenses
+                    .Include(e => e.Base);
+
+                var oneTimeList = await oneTimeQuery.Select(e => new PrimaryBaseExpenseRowViewModel
+                {
+                    BaseId = e.BaseId,
+                    BaseName = e.Base.Name,
+                    ExpenseName = e.Name,
+                    Amount = e.Amount,
+                    IsRecurring = false,
+
+                    DateOrFrequency = e.ExpenseDate.ToString("dd.MM.yyyy")
+                }).ToListAsync();
+
+                resultList.AddRange(oneTimeList);
+            }
+
+            return resultList.OrderByDescending(x => x.Amount).ToList();
+        }
+
+        public async Task<PrimaryBaseAddExpenseViewModel> GetExpenseFormAsync(Guid baseId)
+        {
+            var baseEntity = await _context.PrimaryMaterialBases.FindAsync(baseId);
+            if (baseEntity == null) return null;
+
+            return new PrimaryBaseAddExpenseViewModel
+            {
+                BaseId = baseEntity.Id,
+                BaseName = baseEntity.Name,
+                ExpenseDate = DateTime.Today
+            };
+        }
+
+        public async Task AddExpenseAsync(PrimaryBaseAddExpenseViewModel model, string userId)
+        {
+            if (model.IsRecurring)
+            {
+                var recurring = new RecurringExpense
+                {
+                    BaseId = model.BaseId,
+                    Name = model.Name,
+                    Amount = model.Amount,
+                    Frequency = model.Frequency,
+                    IntervalMonths = model.Frequency == ExpenseFrequency.CustomMonthInterval ? model.IntervalMonths : (int?)null,
+                    StartDate = DateTime.Now,
+                    IsActive = true
+                };
+                _context.RecurringExpenses.Add(recurring);
+            }
+            else
+            {
+                var oneTime = new Expense
+                {
+                    BaseId = model.BaseId,
+                    Name = model.Name,
+                    Amount = model.Amount,
+                    ExpenseDate = model.ExpenseDate,
+                    Description = model.Description,
+                    CreatedByUserId = userId,
+                    IsCreatedByAdmin = true
+                };
+                _context.Expenses.Add(oneTime);
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

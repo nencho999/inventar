@@ -5,18 +5,6 @@
     ViewData["Title"] = Localizer["Dashboard"];
 }
 
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
 <style>
     .dashboard-card {
         border: none;
@@ -68,18 +56,18 @@
         font-weight: 500;
     }
 
-    .btn-action-icon {
-        width: 38px;
-        height: 38px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
+    .btn-action-wide {
+        border: 1px solid #dee2e6;
+        color: #495057;
+        font-weight: 500;
+        transition: all 0.2s;
+        background-color: #fff;
     }
 
-        .btn-action-icon:hover {
-            transform: scale(1.05);
+        .btn-action-wide:hover {
+            background-color: #f8f9fa;
+            border-color: #cdd4db;
+            color: #212529;
         }
 </style>
 
@@ -111,7 +99,7 @@
                 <div>
                     <span class="text-muted small text-uppercase fw-bold">@Localizer["Inventory Value"]</span>
                     <h2 class="mb-0 fw-bold mt-2 text-success">
-                        $@Model.TotalInventoryValue.ToString("N2")
+                        @Model.TotalInventoryValue.ToString("N2") @Localizer["lv."]
                     </h2>
                 </div>
                 <div class="icon-box bg-light-green text-success">
@@ -126,9 +114,9 @@
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
                     <span class="text-muted small text-uppercase fw-bold">@Localizer["Monthly Expenses"]</span>
-                    <h2 class="mb-0 fw-bold mt-2">$@Model.TotalMonthlyExpenses.ToString("N2")</h2>
+                    <h2 class="mb-0 fw-bold mt-2">@Model.TotalMonthlyExpenses.ToString("N2") @Localizer["lv."]</h2>
 
-                    <a asp-controller="Expense" asp-action="Index" class="stretched-link text-decoration-none text-muted small mt-2 d-block">
+                    <a asp-action="Expenses" asp-route-type="Monthly" class="text-decoration-none small text-muted">
                         @Localizer["View Details"] <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -144,9 +132,9 @@
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
                     <span class="text-muted small text-uppercase fw-bold">@Localizer["One-Time Expenses"]</span>
-                    <h2 class="mb-0 fw-bold mt-2">$@Model.TotalOneTimeExpenses.ToString("N2")</h2>
+                    <h2 class="mb-0 fw-bold mt-2">@Model.TotalOneTimeExpenses.ToString("N2") @Localizer["lv."]</h2>
 
-                    <a asp-controller="Expense" asp-action="Index" class="stretched-link text-decoration-none text-muted small mt-2 d-block">
+                    <a asp-action="Expenses" asp-route-type="OneTime" class="text-decoration-none small text-muted">
                         @Localizer["View Details"] <i class="fas fa-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -168,13 +156,13 @@
         </div>
 
         <button class="btn btn-white border bg-white text-muted">
-            <i class="fas fa-filter"></i>@Localizer["Filter"]
+            <i class="fas fa-filter"></i> @Localizer["Filter"]
         </button>
         
         @if (User.IsInRole("Admin"))
         {
             <a asp-area="Admin" asp-controller="Material" asp-action="Index" class="btn btn-white border bg-white text-dark">
-                <i class="fas fa-seedling text-success"></i>@Localizer["Materials"]
+                <i class="fas fa-seedling text-success"></i> @Localizer["Materials"]
             </a>
             <a asp-action="Edit" class="btn btn-primary px-4">
                 <i class="fas fa-plus-circle me-1"></i> @Localizer["Add New Base"]
@@ -204,31 +192,31 @@
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="expense-label text-info">
-                                <i class="fas fa-dollar-sign"></i>@Localizer["Monthly Expenses"]:
+                                <i class="fas fa-dollar-sign"></i> @Localizer["Monthly Expenses"]:
                             </span>
-                            <span class="fw-bold text-dark">$@item.MonthlyExpenses.ToString("N2")</span>
+                            <span class="fw-bold text-dark">@item.MonthlyExpenses.ToString("N2") @Localizer["lv."]</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="expense-label text-secondary" style="color: #a87e55 !important;">
-                                <i class="fas fa-tags"></i>@Localizer["One-Time Expenses"]:
+                                <i class="fas fa-tags"></i> @Localizer["One-Time Expenses"]:
                             </span>
-                            <span class="fw-bold text-dark">$@item.OneTimeExpenses.ToString("N2")</span>
+                            <span class="fw-bold text-dark">@item.OneTimeExpenses.ToString("N2") @Localizer["lv."]</span>
                         </div>
                     </div>
 
                     <div class="d-flex gap-2 mt-auto">
-                        <a asp-controller="Expense" asp-action="Create" asp-route-baseId="@item.Id" class="btn btn-outline-dark btn-sm flex-grow-1 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-plus-circle me-2"></i>@Localizer["Add Expense"]
+                        <a asp-action="AddExpense" asp-route-id="@item.Id" class="btn btn-action-wide flex-grow-1 text-start ps-3">
+                            <i class="fas fa-plus-circle me-2"></i> @Localizer["Add Expense"]
                         </a>
-                        
+
                         @if (User.IsInRole("Admin"))
                         {
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-action-icon" title=@Localizer["Edit"]>
-                                <i class="fas fa-pen text-dark"></i>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning text-warning px-3" title="@Localizer["Edit"]">
+                                <i class="fas fa-pen"></i>
                             </a>
 
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('@Localizer["Delete base?"]');">
-                                <button type="submit" class="btn btn-outline-danger btn-action-icon" title=@Localizer["Delete"]>
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('@Localizer["Are you sure?"]');">
+                                <button type="submit" class="btn btn-outline-danger px-3" title="@Localizer["Delete"]">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>

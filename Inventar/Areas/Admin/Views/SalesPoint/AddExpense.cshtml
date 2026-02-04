@@ -1,0 +1,140 @@
+﻿@model Inventar.Web.ViewModels.SalesPoint.SalesPointAddExpenseViewModel
+@using Inventar.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Register Expense";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-lg border-0 rounded-3">
+
+                <div class="card-header bg-success text-white p-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Register Expense"]
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="AddExpense" method="post">
+                        <input type="hidden" asp-for="SalesPointId" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase text-muted">@Localizer["Base"]</label>
+                            <input asp-for="SalesPointName" class="form-control bg-light" readonly />
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label fw-bold">@Localizer["Expense Name"]</label>
+                                <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Security Guard Salary"]" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Amount" class="form-label fw-bold">@Localizer["Amount"]</label>
+                                <div class="input-group">
+                                    <input asp-for="Amount" type="number" step="0.01" class="form-control text-end" placeholder="0" />
+                                    <span class="input-group-text bg-light">@Localizer["lv."]</span>
+                                </div>
+                                <span asp-validation-for="Amount" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+
+                        <div class="form-check form-switch mb-4">
+                            <input asp-for="IsRecurring" class="form-check-input" type="checkbox" id="recurringSwitch" style="cursor: pointer;">
+                            <label class="form-check-label fw-bold ms-2" for="recurringSwitch" style="cursor: pointer;">
+                                @Localizer["Is this a recurring (subscription) expense?"]
+                            </label>
+                        </div>
+
+                        <div id="dateSection">
+                            <div class="mb-3">
+                                <label asp-for="OneTimeDate" class="form-label fw-bold">@Localizer["Payment Date"]</label>
+                                <input asp-for="OneTimeDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div id="frequencySection" class="d-none bg-light p-3 rounded border mb-3">
+                            <label class="form-label fw-bold small text-uppercase text-primary">@Localizer["Recurring Settings"]</label>
+                            <div class="d-flex gap-2">
+                                <select asp-for="Frequency" class="form-select" id="frequencySelect" asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"></select>
+
+                                <select asp-for="CustomIntervalCount" id="customInterval" class="form-select d-none" style="max-width: 100px;">
+                                    @for (int i = 1; i <= 12; i++)
+                                    {
+                                        <option value="@i">@i mo.</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold">@Localizer["Description / Comment"]</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="@Localizer["Additional details about this expense..."]"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                                @Localizer["Save Expense"]
+                            </button>
+                            <a asp-action="Index" class="btn btn-link text-muted text-decoration-none text-center">
+                                @Localizer["Cancel"]
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const switchEl = document.getElementById('recurringSwitch');
+            const dateSec = document.getElementById('dateSection');
+            const freqSec = document.getElementById('frequencySection');
+            const freqSelect = document.getElementById('frequencySelect');
+            const customInt = document.getElementById('customInterval');
+
+            // 1. Toggle Recurring/OneTime
+            function toggleSections() {
+                if(switchEl.checked) {
+                    dateSec.classList.add('d-none');
+                    freqSec.classList.remove('d-none');
+                } else {
+                    dateSec.classList.remove('d-none');
+                    freqSec.classList.add('d-none');
+                }
+            }
+
+            // 2. Toggle Custom Month Interval
+            function toggleCustom() {
+                // Предполагаме, че value="3" е CustomMonthInterval (провери HTML source-а)
+                if(freqSelect.value == "3") {
+                    customInt.classList.remove('d-none');
+                } else {
+                    customInt.classList.add('d-none');
+                }
+            }
+
+            switchEl.addEventListener('change', toggleSections);
+            freqSelect.addEventListener('change', toggleCustom);
+
+            // Initial run
+            toggleSections();
+            toggleCustom();
+        });
+    </script>
+}

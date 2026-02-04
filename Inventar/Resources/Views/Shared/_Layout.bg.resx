@@ -135,4 +135,7 @@
   <data name="Production Center Management" xml:space="preserve">
     <value>Управление на производствени центрове</value>
   </data>
+  <data name="Sales Point Management" xml:space="preserve">
+    <value>Управление на търговски обекти</value>
+  </data>
 </root>

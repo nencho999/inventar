@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inventar.Data;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -22,6 +22,10 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<RecurringExpense> RecurringExpenses { get; set; }
     public DbSet<ProductionCenter> ProductionCenters { get; set; }
     public DbSet<ProductionCenterStorage> ProductionCenterStorages { get; set; }
+    public DbSet<SalesPoint> SalesPoints { get; set; }
+    public DbSet<SalesPointExpense> SalesPointStorages { get; set; }
+    public DbSet<SalesPointProduct> SalesPointProducts { get; set; }
+    public DbSet<SalesPointExpense> SalesPointExpenses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,5 +77,25 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasForeignKey(re => re.BaseId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<SalesPointProduct>()
+            .HasKey(spp => new { spp.SalesPointId, spp.ProductId });
+
+        modelBuilder.Entity<SalesPointProduct>()
+            .HasOne(spp => spp.SalesPoint)
+            .WithMany(spp => spp.SalesPointProducts)
+            .HasForeignKey(spp => spp.SalesPointId);
+
+        modelBuilder.Entity<SalesPointProduct>()
+            .HasOne(spp => spp.Product)
+            .WithMany()
+            .HasForeignKey(spp => spp.ProductId);
+
+        modelBuilder.Entity<SalesPointProduct>()
+            .Property(p => p.PriceReductionValue)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<SalesPointExpense>()
+            .Property(e => e.Amount)
+            .HasPrecision(18, 2);
     }
 }

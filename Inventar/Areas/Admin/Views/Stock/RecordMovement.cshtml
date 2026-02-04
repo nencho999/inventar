@@ -1,7 +1,9 @@
-﻿@model Inventar.Web.ViewModels.Stock.StockTransactionViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model Inventar.Web.ViewModels.Stock.StockTransactionViewModel
 
 @{
-    ViewData["Title"] = "Stock Movement";
+    ViewData["Title"] = Localizer["Stock Movement"];
 }
 
 <div class="row justify-content-center">
@@ -17,7 +19,7 @@
         <div asp-validation-summary="All" class="text-danger border p-3 mb-3"></div>
         <div class="card shadow-sm">
             <div class="card-header bg-dark text-white">
-                <h4 class="mb-0"><i class="fas fa-exchange-alt"></i> Record Stock Movement</h4>
+                <h4 class="mb-0"><i class="fas fa-exchange-alt"></i> @Localizer["Record Stock Movement"]</h4>
             </div>
             <div class="card-body">
                 <form asp-action="RecordMovement" method="post">
@@ -25,27 +27,27 @@
                     <div class="mb-3 text-center">
                         <div class="btn-group w-100" role="group">
                             <input type="radio" class="btn-check" name="IsAcquisition" id="btnRadioIn" value="true" checked autocomplete="off" @(Model.IsAcquisition ? "checked" : "")>
-                            <label class="btn btn-outline-success" for="btnRadioIn"><i class="fas fa-plus"></i> IN (Acquisition)</label>
+                            <label class="btn btn-outline-success" for="btnRadioIn"><i class="fas fa-plus"></i> @Localizer["IN (Acquisition)"]</label>
 
                             <input type="radio" class="btn-check" name="IsAcquisition" id="btnRadioOut" value="false" autocomplete="off" @(!Model.IsAcquisition ? "checked" : "")>
-                            <label class="btn btn-outline-danger" for="btnRadioOut"><i class="fas fa-minus"></i> OUT (Usage)</label>
+                            <label class="btn btn-outline-danger" for="btnRadioOut"><i class="fas fa-minus"></i> @Localizer["OUT (Usage)"]</label>
                         </div>
                         <span asp-validation-for="IsAcquisition" class="text-danger"></span>
                     </div>
 
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label asp-for="BaseId" class="form-label fw-bold">Base</label>
+                            <label asp-for="BaseId" class="form-label fw-bold">@Localizer["Base"]</label>
                             <select asp-for="BaseId" class="form-select" asp-items="@(new SelectList(Model.Bases, "Id", "Name"))">
-                                <option value="">-- Select Base --</option>
+                                <option value="">@Localizer["-- Select Base --"]</option>
                             </select>
                             <span asp-validation-for="BaseId" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-12 mb-3">
-                            <label asp-for="MaterialId" class="form-label fw-bold">Material</label>
+                            <label asp-for="MaterialId" class="form-label fw-bold">@Localizer["Material"]</label>
                             <select asp-for="MaterialId" class="form-select" asp-items="@(new SelectList(Model.Materials, "Id", "Name"))">
-                                <option value="">-- Select Material --</option>
+                                <option value="">@Localizer["-- Select Material --"]</option>
                             </select>
                             <span asp-validation-for="MaterialId" class="text-danger"></span>
                         </div>
@@ -53,21 +55,21 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Quantity" class="form-label fw-bold">Quantity</label>
+                            <label asp-for="Quantity" class="form-label fw-bold">@Localizer["Quantity"]</label>
                             <input asp-for="Quantity" class="form-control form-control-lg" type="number" step="0.01" />
                             <span asp-validation-for="Quantity" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3" id="priceContainer">
-                            <label asp-for="UnitPrice" class="form-label fw-bold">Price per Unit (BGN)<span class="text-danger">*</span></label>
+                            <label asp-for="UnitPrice" class="form-label fw-bold">@Localizer["Price per Unit (BGN)"]<span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input asp-for="UnitPrice" class="form-control form-control-lg" type="number" step="0.01" />
-                                <span class="input-group-text bg-white">lv.</span>
+                                <span class="input-group-text bg-white">@Localizer["lv."]</span>
                             </div>
                             <span asp-validation-for="UnitPrice" class="text-danger"></span>
-                            <small class="text-muted">Enter price if purchasing new stock.</small>
+                            <small class="text-muted">@Localizer["Enter price if purchasing new stock."]</small>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label asp-for="TransactionDate" class="form-label">Date & Time</label>
+                            <label asp-for="TransactionDate" class="form-label">@Localizer["Date & Time"]</label>
                             <input asp-for="TransactionDate"
                                    class="form-control form-control-lg"
                                    type="datetime-local"
@@ -77,12 +79,12 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="Notes" class="form-label">Notes</label>
-                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Additional information..."></textarea>
+                        <label asp-for="Notes" class="form-label">@Localizer["Notes"]</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="@Localizer["Additional information..."]"></textarea>
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-dark btn-lg">Save Movement</button>
+                        <button type="submit" class="btn btn-dark btn-lg">@Localizer["Save Movement"]</button>
                     </div>
                 </form>
             </div>
@@ -102,18 +104,16 @@
 
             function togglePrice() {
                 if (radioIn.checked) {
-                    priceContainer.style.display = "block"; // Показва се при ВХОД
+                    priceContainer.style.display = "block";
                 } else {
-                    priceContainer.style.display = "none";  // Крие се при ИЗХОД
-                    document.getElementById("UnitPrice").value = ""; // Чистим стойността
+                    priceContainer.style.display = "none";
+                    document.getElementById("UnitPrice").value = "";
                 }
             }
 
-            // Слушаме за промени
             radioIn.addEventListener("change", togglePrice);
             radioOut.addEventListener("change", togglePrice);
 
-            // Първоначална проверка
             togglePrice();
         });
     </script>

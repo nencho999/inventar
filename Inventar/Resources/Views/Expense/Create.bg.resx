@@ -153,6 +153,9 @@
   <data name="Is this a recurring (subscription) expense?" xml:space="preserve">
     <value>Това периодичен (абонаментен) разход ли е?</value>
   </data>
+  <data name="lv." xml:space="preserve">
+    <value>лв.</value>
+  </data>
   <data name="Monthly" xml:space="preserve">
     <value>Месечно</value>
   </data>

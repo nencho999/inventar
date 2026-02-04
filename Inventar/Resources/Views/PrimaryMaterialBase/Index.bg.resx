@@ -162,4 +162,7 @@
   <data name="Add Expense" xml:space="preserve">
     <value>Добави Разход</value>
   </data>
+  <data name="lv." xml:space="preserve">
+    <value>лв.</value>
+  </data>
 </root>

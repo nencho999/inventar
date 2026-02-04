@@ -1,13 +1,15 @@
-﻿@model IEnumerable<Inventar.Web.ViewModels.Stock.StockHistoryViewModel>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<Inventar.Web.ViewModels.Stock.StockHistoryViewModel>
 
 @{
-    ViewData["Title"] = "Transaction History";
+    ViewData["Title"] = Localizer["Transaction History"];
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-history"></i> Transaction History</h2>
+    <h2><i class="fas fa-history"></i> @Localizer["Transaction History"]</h2>
     <a asp-controller="Stock" asp-action="Inventory" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left"></i> Back to Inventory
+        <i class="fas fa-arrow-left"></i> @Localizer["Back to Inventory"]
     </a>
 </div>
 
@@ -16,13 +18,13 @@
         <table class="table table-hover mb-0 align-middle">
             <thead class="bg-light">
                 <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Base / Material</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Total Value</th>
-                    <th>User</th>
+                    <th>@Localizer["Date"]</th>
+                    <th>@Localizer["Type"]</th>
+                    <th>@Localizer["Base / Material"]</th>
+                    <th>@Localizer["Quantity"]</th>
+                    <th>@Localizer["Unit Price"]</th>
+                    <th>@Localizer["Total Value"]</th>
+                    <th>@Localizer["User"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,13 +37,13 @@
                             @if (item.IsAcquisition)
                             {
                                 <span class="badge bg-success rounded-pill px-3">
-                                    <i class="fas fa-arrow-down me-1"></i> IN
+                                    <i class="fas fa-arrow-down me-1"></i> @Localizer["IN"]
                                 </span>
                             }
                             else
                             {
                                 <span class="badge bg-danger rounded-pill px-3">
-                                    <i class="fas fa-arrow-up me-1"></i> OUT
+                                    <i class="fas fa-arrow-up me-1"></i> @Localizer["OUT"]
                                 </span>
                             }
                         </td>
@@ -58,7 +60,7 @@
                         <td>
                             @if (item.UnitPrice.HasValue)
                             {
-                                <span class="text-muted">$@item.UnitPrice.Value.ToString("N2")</span>
+                                <span class="text-muted">@item.UnitPrice.Value.ToString("N2") @Localizer["lv."]</span>
                             }
                             else
                             {
@@ -69,7 +71,7 @@
                         <td class="fw-bold text-dark">
                             @if (item.IsAcquisition && item.UnitPrice.HasValue)
                             {
-                                <span>$@item.TotalPrice.ToString("N2")</span>
+                                <span>@item.TotalPrice.ToString("N2") @Localizer["lv."]</span>
                             }
                             else
                             {
@@ -88,7 +90,7 @@
                     <tr>
                         <td colspan="7" class="text-center py-5 text-muted">
                             <i class="fas fa-history fa-2x mb-3 opacity-50"></i>
-                            <p class="mb-0">No transaction history found.</p>
+                            <p class="mb-0">@Localizer["No transaction history found."]</p>
                         </td>
                     </tr>
                 }
