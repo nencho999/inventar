@@ -1,10 +1,10 @@
-﻿@model Inventar.Web.ViewModels.SalesPoint.SalesPointAddExpenseViewModel
+﻿@model Inventar.Web.ViewModels.Warehouse.WarehouseAddExpenseViewModel
 @using Inventar.Data.Models
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Register Expense";
+    ViewData["Title"] = "Register Warehouse Expense";
 }
 
 <div class="container py-5">
@@ -15,23 +15,22 @@
 
                 <div class="card-header bg-success text-white p-3">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Register Expense"]
+                        <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Register Warehouse Expense"]
                     </h5>
                 </div>
 
                 <div class="card-body p-4">
                     <form asp-action="AddExpense" method="post">
-                        <input type="hidden" asp-for="SalesPointId" />
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-uppercase text-muted">@Localizer["Base"]</label>
-                            <input asp-for="SalesPointName" class="form-control bg-light" readonly />
+                        <input type="hidden" asp-for="WarehouseId" />
+                        <input type="hidden" asp-for="WarehouseName" /> <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase text-muted">@Localizer["Warehouse"]</label>
+                            <input asp-for="WarehouseName" class="form-control bg-light" readonly />
                         </div>
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-8">
                                 <label asp-for="Name" class="form-label fw-bold">@Localizer["Expense Name"]</label>
-                                <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Security Guard Salary"]" />
+                                <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Electricity, Security"]" />
                                 <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
                             <div class="col-md-4">
@@ -55,8 +54,9 @@
 
                         <div id="dateSection">
                             <div class="mb-3">
-                                <label asp-for="OneTimeDate" class="form-label fw-bold">@Localizer["Payment Date"]</label>
-                                <input asp-for="OneTimeDate" type="date" class="form-control" />
+                                <label asp-for="ExpenseDate" class="form-label fw-bold">@Localizer["Payment Date"]</label>
+                                <input asp-for="ExpenseDate" type="date" class="form-control" />
+                                <span asp-validation-for="ExpenseDate" class="text-danger small"></span>
                             </div>
                         </div>
 
@@ -65,7 +65,7 @@
                             <div class="d-flex gap-2">
                                 <select asp-for="Frequency" class="form-select" id="frequencySelect" asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"></select>
 
-                                <select asp-for="CustomIntervalCount" id="customInterval" class="form-select d-none" style="max-width: 100px;">
+                                <select asp-for="IntervalMonths" id="customInterval" class="form-select d-none" style="max-width: 100px;">
                                     @for (int i = 1; i <= 12; i++)
                                     {
                                         <option value="@i">@i mo.</option>

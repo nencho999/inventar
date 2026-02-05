@@ -1,0 +1,252 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Inventar.Data.Models
+@inject IViewLocalizer Localizer
+@model Inventar.Web.ViewModels.Warehouse.WarehouseIndexViewModel
+
+@{
+    ViewData["Title"] = Localizer["Warehouse Management"];
+}
+
+<style>
+    .dashboard-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+        background-color: #fff;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .bg-light-blue {
+        background-color: #e3f2fd;
+        color: #0d6efd;
+    }
+
+    .bg-light-green {
+        background-color: #e8f5e9;
+        color: #198754;
+    }
+
+    .bg-light-orange {
+        background-color: #fff3e0;
+        color: #fd7e14;
+    }
+
+    .status-badge-sm {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-operational {
+        background-color: #e0f2f1;
+        color: #00695c;
+    }
+
+    .status-maintenance {
+        background-color: #fff3e0;
+        color: #ef6c00;
+    }
+
+    .status-closed {
+        background-color: #eceff1;
+        color: #455a64;
+    }
+
+    .base-card-title {
+        font-weight: 600;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+    .location-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .expense-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .btn-action-wide {
+        border: 1px solid #dee2e6;
+        color: #495057;
+        font-weight: 500;
+        transition: all 0.2s;
+        background-color: #fff;
+    }
+
+        .btn-action-wide:hover {
+            background-color: #f8f9fa;
+            border-color: #cdd4db;
+            color: #212529;
+        }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-dark">@Localizer["Warehouse Management"]</h3>
+    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+        <i class="fas fa-industry"></i>
+    </div>
+</div>
+
+<div class="row mb-4 g-3">
+    <div class="col-xl-4 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100">
+            <div class="d-flex justify-content-between align-items-start h-100">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["Total Warehouses"]</span>
+                    <h2 class="mb-0 fw-bold mt-2">@Model.TotalWarehouses</h2>
+                </div>
+                <div class="icon-box bg-light-blue text-primary">
+                    <i class="fas fa-warehouse fa-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-start h-100">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["Monthly Expenses"]</span>
+                    <h2 class="mb-0 fw-bold mt-2 text-success">@Model.TotalMonthlyExpenses.ToString("N2") @Localizer["lv."]</h2>
+                </div>
+                <div class="icon-box bg-light-green text-success">
+                    <i class="fas fa-wallet fa-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow border-start border-4 border-warning">
+            <div class="d-flex justify-content-between align-items-start h-100">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">@Localizer["One-Time Expenses"]</span>
+                    <h2 class="mb-0 fw-bold mt-2 text-warning">@Model.TotalOneTimeExpenses.ToString("N2") @Localizer["lv."]</h2>
+                </div>
+                <div class="icon-box bg-light-orange text-warning">
+                    <i class="fas fa-coins fa-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">@Localizer["All Warehouses"]</h5>
+
+    <div class="d-flex gap-2">
+        <form method="get" class="d-flex">
+            <div class="input-group" style="width: 300px;">
+                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="@Localizer["Search warehouses..."]" />
+            </div>
+        </form>
+
+        <button class="btn btn-white border bg-white text-muted">
+            <i class="fas fa-filter"></i> @Localizer["Filter"]
+        </button>
+
+        <a asp-action="Create" class="btn btn-primary px-4 fw-bold">
+            <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Warehouse"]
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    @foreach (var item in Model.Warehouses)
+    {
+        string statusClass = item.Status switch
+        {
+            WarehouseStatus.Operational => "status-operational",
+            WarehouseStatus.Maintenance => "status-maintenance",
+            WarehouseStatus.UnderConstruction => "status-maintenance",
+            WarehouseStatus.Closed => "status-closed",
+            _ => "bg-light text-dark"
+        };
+
+        var monthlyTotal = item.RecurringExpenses.Sum(x => x.Amount);
+        var oneTimeTotal = item.Expenses.Sum(x => x.Amount);
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card dashboard-card h-100 p-3">
+                <div class="card-body p-1 d-flex flex-column h-100">
+
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="base-card-title mb-0 text-truncate" title="@item.Name">@item.Name</h5>
+                            <p class="location-text mb-0 mt-1 text-truncate" style="max-width: 200px;">
+                                <i class="fas fa-map-marker-alt me-1"></i> @(string.IsNullOrEmpty(item.Location) ? "No location" : item.Location)
+                            </p>
+                        </div>
+                        <span class="status-badge-sm @statusClass">@item.Status</span>
+                    </div>
+
+                    <p class="text-muted small mb-3">
+                        <i class="fas fa-cubes me-1"></i> @(item.Capacity ?? "No capacity info")
+                    </p>
+
+                    <hr class="text-muted opacity-25" />
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="expense-label text-info">
+                                <i class="fas fa-dollar-sign"></i> @Localizer["Monthly"]:
+                            </span>
+                            <span class="fw-bold text-dark">@monthlyTotal.ToString("N2") @Localizer["lv."]</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="expense-label text-secondary" style="color: #a87e55 !important;">
+                                <i class="fas fa-tags"></i> @Localizer["One-Time"]:
+                            </span>
+                            <span class="fw-bold text-dark">@oneTimeTotal.ToString("N2") @Localizer["lv."]</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-auto">
+                        <a asp-action="AddExpense" asp-route-id="@item.Id" class="btn btn-action-wide flex-grow-1 text-start ps-3">
+                            <i class="fas fa-plus-circle me-2 text-success"></i> @Localizer["Add Expense"]
+                        </a>
+
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning text-warning px-3" title="@Localizer["Edit"]">
+                            <i class="fas fa-pen"></i>
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger px-3" title="@Localizer["Delete"]">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!Model.Warehouses.Any())
+    {
+        <div class="col-12 text-center py-5">
+            <div class="text-muted opacity-50">
+                <i class="fas fa-industry fa-3x mb-3"></i>
+                <p class="fs-5">@Localizer["No warehouses found."]</p>
+            </div>
+        </div>
+    }
+</div>

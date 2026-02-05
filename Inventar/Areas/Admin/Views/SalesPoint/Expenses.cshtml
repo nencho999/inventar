@@ -11,7 +11,7 @@
         <i class="fas fa-list-ul text-primary me-2"></i> @ViewBag.PageTitle
     </h2>
     <a asp-action="Index" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> @Localizer["Back"]
     </a>
 </div>
 
@@ -20,11 +20,11 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="bg-light text-uppercase small fw-bold text-muted">
                 <tr>
-                    <th class="ps-4">Expense Name</th>
-                    <th>Base (Sales Point)</th>
-                    <th>Frequency / Date</th>
-                    <th class="text-end">Amount</th>
-                    <th class="text-end pe-4">Action</th>
+                    <th class="ps-4">@Localizer["Expense Name"]</th>
+                    <th>@Localizer["Base (Sales Point)"]</th>
+                    <th>@Localizer["Frequency / Date"]</th>
+                    <th class="text-end">@Localizer["Amount"]</th>
+                    <th class="text-end pe-4">@Localizer["Action"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                             <i class="fas fa-store text-muted me-2 small"></i> @item.SalesPointName
                         </td>
                         <td class="text-muted small">@item.DateOrFrequency</td>
-                        <td class="text-end fw-bold">@item.Amount.ToString("N2") lv.</td>
+                        <td class="text-end fw-bold">@item.Amount.ToString("N2") @Localizer["lv."]</td>
                         <td class="text-end pe-4">
                             <a asp-action="Edit" asp-route-id="@item.SalesPointId" class="btn btn-sm btn-light border" title="Go to Base">
                                 <i class="fas fa-external-link-alt text-secondary"></i>
