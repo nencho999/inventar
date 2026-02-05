@@ -4,6 +4,7 @@ using Inventar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventar.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260205131440_procuts")]
+    partial class procuts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +127,7 @@ namespace Inventar.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("BaseId")
+                    b.Property<Guid>("BaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByUserId")
@@ -144,14 +147,9 @@ namespace Inventar.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("WarehouseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BaseId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Expenses");
                 });
@@ -208,25 +206,10 @@ namespace Inventar.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<decimal>("Gain")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Package")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ProductType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Vat")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -268,7 +251,7 @@ namespace Inventar.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("BaseId")
+                    b.Property<Guid>("BaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Frequency")
@@ -290,14 +273,9 @@ namespace Inventar.Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("WarehouseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BaseId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.ToTable("RecurringExpenses");
                 });
@@ -422,34 +400,6 @@ namespace Inventar.Data.Migrations
                     b.HasIndex("MaterialId");
 
                     b.ToTable("StockTransactions");
-                });
-
-            modelBuilder.Entity("Inventar.Data.Models.Warehouse", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Capacity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactInfo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -681,15 +631,10 @@ namespace Inventar.Data.Migrations
                     b.HasOne("Inventar.Data.Models.PrimaryMaterialBase", "Base")
                         .WithMany("Expenses")
                         .HasForeignKey("BaseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Inventar.Data.Models.Warehouse", "Warehouse")
-                        .WithMany("Expenses")
-                        .HasForeignKey("WarehouseId");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Base");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.ProductionCenterStorage", b =>
@@ -720,15 +665,10 @@ namespace Inventar.Data.Migrations
                     b.HasOne("Inventar.Data.Models.PrimaryMaterialBase", "Base")
                         .WithMany("RecurringExpenses")
                         .HasForeignKey("BaseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Inventar.Data.Models.Warehouse", "Warehouse")
-                        .WithMany("RecurringExpenses")
-                        .HasForeignKey("WarehouseId");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Base");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.SalesPointExpense", b =>
@@ -868,13 +808,6 @@ namespace Inventar.Data.Migrations
                     b.Navigation("Expenses");
 
                     b.Navigation("SalesPointProducts");
-                });
-
-            modelBuilder.Entity("Inventar.Data.Models.Warehouse", b =>
-                {
-                    b.Navigation("Expenses");
-
-                    b.Navigation("RecurringExpenses");
                 });
 
             modelBuilder.Entity("ProductionCenter", b =>

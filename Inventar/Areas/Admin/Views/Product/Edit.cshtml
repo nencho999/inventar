@@ -1,0 +1,112 @@
+﻿@model ProductFormModel
+@using Inventar.Web.ViewModels.Product
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Edit Product"];
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-0 mt-4">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i> @ViewData["Title"]: @Model.Name
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        @* 1. Име на продукта *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">@Localizer["Name"] *</label>
+                            <input asp-for="Name" class="form-control" placeholder="@Localizer["Enter product name"]" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        @* 2. Тип на продукта *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ProductType" class="form-label fw-bold">@Localizer["Product Type"]</label>
+                            <input asp-for="ProductType" class="form-control" placeholder="@Localizer["e.g. Raw Material"]" />
+                            <span asp-validation-for="ProductType" class="text-danger"></span>
+                        </div>
+
+                        @* 3. Пакетиране *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Package" class="form-label fw-bold">@Localizer["Package"]</label>
+                            <input asp-for="Package" class="form-control" placeholder="@Localizer["e.g. Box 10kg"]" />
+                            <span asp-validation-for="Package" class="text-danger"></span>
+                        </div>
+
+                        @* 4. Цена и ДДС (VAT) *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label fw-bold">@Localizer["Price"] *</label>
+                            <div class="input-group">
+                                <input asp-for="Price" id="priceInput" type="number" step="0.01" class="form-control" />
+                                <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
+                            </div>
+                            <div class="mt-2 p-2 bg-light rounded border">
+                                <small class="text-muted d-block">@Localizer["Automatically Calculated VAT (20%):"]</small>
+                                <span class="h6 mb-0 fw-bold text-primary">
+                                    <span id="vatDisplay">@Model.Vat.ToString("F2")</span>
+                                </span>
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        @* 5. Печалба (Gain) *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Gain" class="form-label fw-bold">@Localizer["Target Gain"]</label>
+                            <div class="input-group">
+                                <input asp-for="Gain" type="number" step="0.01" class="form-control" />
+                                <span class="input-group-text"><i class="fas fa-chart-line"></i></span>
+                            </div>
+                            <span asp-validation-for="Gain" class="text-danger"></span>
+                        </div>
+
+                        @* 6. Описание *@
+                        <div class="col-12 mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">@Localizer["Description"]</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="@Localizer["Enter product details..."]"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            <i class="fas fa-times me-1"></i> @Localizer["Cancel"]
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                            <i class="fas fa-save me-2"></i> @Localizer["Update Product"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Изчисляване на ДДС в реално време при промяна на цената
+        document.addEventListener("DOMContentLoaded", function() {
+            const priceInput = document.getElementById('priceInput');
+            const vatDisplay = document.getElementById('vatDisplay');
+
+            priceInput.addEventListener('input', function () {
+                const price = parseFloat(this.value) || 0;
+                const vat = (price * 0.20).toFixed(2);
+                vatDisplay.innerText = vat;
+            });
+        });
+    </script>
+}

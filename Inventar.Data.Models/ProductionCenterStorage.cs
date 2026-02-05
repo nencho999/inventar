@@ -14,9 +14,10 @@ namespace Inventar.Data.Models
         public ProductionCenter ProductionCenter { get; set; } = null!;
 
         [Required]
-        public Guid MaterialId { get; set; }
-        [ForeignKey(nameof(MaterialId))]
-        public Material Material { get; set; } = null!;
+        public Guid ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public virtual Product Product { get; set; } = null!;
 
         [Required]
         public double MaxStorageCapacity { get; set; }
