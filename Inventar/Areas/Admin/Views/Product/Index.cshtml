@@ -13,6 +13,7 @@
             <i class="fas fa-boxes me-2"></i> @ViewData["Title"]
         </h1>
         <div class="d-flex gap-2">
+            @* Бутон за групово изтриване *@
             <button type="submit" id="deleteSelectedBtn" class="btn btn-danger shadow-sm d-none"
                     onclick="return confirm('@Localizer["Are you sure you want to delete the selected products?"]');">
                 <i class="fas fa-trash-alt me-2"></i> @Localizer["Delete Selected"]
@@ -35,7 +36,8 @@
                             </th>
                             <th>@Localizer["Name / Type"]</th>
                             <th>@Localizer["Package"]</th>
-                            <th class="text-end">@Localizer["Price"]</th>
+                            <th class="text-end">@Localizer["Base Price"]</th>
+                            <th class="text-end text-muted">@Localizer["VAT (20%)"]</th>
                             <th class="text-end text-success">@Localizer["Gain"]</th>
                             <th class="text-center">@Localizer["Centers"]</th>
                             <th class="text-end pe-4">@Localizer["Actions"]</th>
@@ -54,19 +56,40 @@
                                         <div class="fw-bold text-dark">@product.Name</div>
                                         <small class="text-muted">@(product.ProductType ?? Localizer["No type"].Value)</small>
                                     </td>
-                                    <td><span class="text-muted">@(product.Package ?? "-")</span></td>
-                                    <td class="text-end fw-bold">@product.Price.ToString("F2")</td>
-                                    <td class="text-end text-success fw-bold">@product.Gain.ToString("F2")</td>
+                                    <td>
+                                        <span class="text-muted small">@(product.Package ?? "-")</span>
+                                    </td>
+                                    <td class="text-end fw-bold text-dark">
+                                        @product.Price.ToString("F2")
+                                    </td>
+                                    @* НОВАТА КОЛОНА ЗА VAT *@
+                                    <td class="text-end text-muted small">
+                                        @product.Vat.ToString("F2")
+                                    </td>
+                                    <td class="text-end text-success fw-bold">
+                                        @product.Gain.ToString("F2")
+                                    </td>
                                     <td class="text-center">
-                                        <span class="badge rounded-pill bg-info text-dark">@product.CentersCount</span>
+                                        <span class="badge rounded-pill bg-info text-dark">
+                                            <i class="fas fa-industry me-1"></i> @product.CentersCount
+                                        </span>
                                     </td>
                                     <td class="text-end pe-4">
-                                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">
+                                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary" title="@Localizer["Edit"]">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
                             }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-5 text-muted">
+                                    <i class="fas fa-box-open fa-3x mb-3 d-block opacity-25"></i>
+                                    @Localizer["No products available."]
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -81,9 +104,8 @@
         const checkboxes = document.querySelectorAll('.product-checkbox');
         const deleteBtn = document.getElementById('deleteSelectedBtn');
 
-        // Логика за "Избери всички"
         selectAll.addEventListener('change', function() {
-            checkboxes.OfEach(cb => {
+            checkboxes.forEach(cb => {
                 cb.checked = this.checked;
             });
             toggleDeleteButton();

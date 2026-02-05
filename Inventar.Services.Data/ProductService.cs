@@ -53,13 +53,8 @@ namespace Inventar.Services.Data
 
         public async Task<ProductFormModel?> GetProductForEditAsync(Guid id)
         {
-            var product = await dbContext.Products
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (product == null)
-            {
-                return null;
-            }
+            var product = await dbContext.Products.FindAsync(id);
+            if (product == null) return null;
 
             return new ProductFormModel
             {
@@ -69,6 +64,7 @@ namespace Inventar.Services.Data
                 ProductType = product.ProductType,
                 Package = product.Package,
                 Price = product.Price,
+                Vat = product.Vat,
                 Gain = product.Gain
             };
         }

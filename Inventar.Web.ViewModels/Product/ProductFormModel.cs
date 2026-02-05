@@ -16,6 +16,7 @@
         public string? ProductType { get; set; }
 
         public string? Package { get; set; }
+        public decimal Vat { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
         [Range(0.01, 1000000, ErrorMessage = "Price must be positive")]
