@@ -26,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SalesPointExpense> SalesPointStorages { get; set; }
     public DbSet<SalesPointProduct> SalesPointProducts { get; set; }
     public DbSet<SalesPointExpense> SalesPointExpenses { get; set; }
+    public DbSet<Product> Products { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -97,5 +99,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<SalesPointExpense>()
             .Property(e => e.Amount)
             .HasPrecision(18, 2);
+
+        modelBuilder.Entity<ProductionCenterStorage>()
+        .HasKey(ps => new { ps.ProductionCenterId, ps.ProductId });
     }
 }

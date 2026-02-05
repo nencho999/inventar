@@ -84,7 +84,7 @@ public class ProductionCenterService : IProductionCenterService
         {
             center.StorageCapacities.Add(new ProductionCenterStorage
             {
-                MaterialId = storage.MaterialId,
+                //MaterialId = storage.MaterialId,
                 MaxStorageCapacity = storage.MaxCapacity
             });
         }
@@ -137,7 +137,7 @@ public class ProductionCenterService : IProductionCenterService
             Expenses = center.Expenses,
             Storages = center.StorageCapacities.Select(s => new StorageInputModel
             {
-                MaterialId = s.MaterialId,
+                //MaterialId = s.MaterialId,
                 MaxCapacity = s.MaxStorageCapacity
             }).ToList(),
             ExpensesList = center.ExpensesList.Select(e => new ExpenseInputModel
@@ -179,7 +179,8 @@ public class ProductionCenterService : IProductionCenterService
         {
             center.StorageCapacities.Add(new ProductionCenterStorage
             {
-                MaterialId = s.MaterialId,
+                ProductionCenterId = center.Id,
+                ProductId = s.MaterialId,
                 MaxStorageCapacity = s.MaxCapacity
             });
         }

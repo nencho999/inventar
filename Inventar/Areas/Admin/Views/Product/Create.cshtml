@@ -1,0 +1,81 @@
+﻿@model ProductFormModel
+@using Inventar.Web.ViewModels.Product
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Add New Product"];
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-0 mt-4">
+            <div class="card-header bg-success text-white py-3">
+                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i> @ViewData["Title"]</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">@Localizer["Name"] *</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ProductType" class="form-label fw-bold">@Localizer["Product Type"]</label>
+                            <input asp-for="ProductType" class="form-control" placeholder="e.g. Raw Material" />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Package" class="form-label fw-bold">@Localizer["Package"]</label>
+                            <input asp-for="Package" class="form-control" placeholder="e.g. Box 10kg" />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label fw-bold">@Localizer["Price"] *</label>
+                            <div class="input-group">
+                                <input asp-for="Price" id="priceInput" type="number" step="0.01" class="form-control" />
+                                <span class="input-group-text">€/$</span>
+                            </div>
+                            <div class="mt-1 small text-muted">
+                                @Localizer["Calculated VAT (20%):"] <span id="vatDisplay" class="fw-bold text-primary">0.00</span>
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Gain" class="form-label fw-bold">@Localizer["Target Gain"]</label>
+                            <input asp-for="Gain" type="number" step="0.01" class="form-control" />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">@Localizer["Description"]</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-secondary px-4">@Localizer["Back to List"]</a>
+                        <button type="submit" class="btn btn-success px-5 shadow-sm">
+                            <i class="fas fa-save me-2"></i> @Localizer["Save Product"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('priceInput').addEventListener('input', function () {
+            const price = parseFloat(this.value) || 0;
+            const vat = (price * 0.20).toFixed(2);
+            document.getElementById('vatDisplay').innerText = vat;
+        });
+    </script>
+}

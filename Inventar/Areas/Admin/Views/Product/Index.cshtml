@@ -1,0 +1,105 @@
+﻿@using Inventar.Web.ViewModels.Product
+@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<ProductIndexViewModel>
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Product Catalog"];
+}
+
+<form id="bulkDeleteForm" asp-action="DeleteSelected" method="post">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-primary">
+            <i class="fas fa-boxes me-2"></i> @ViewData["Title"]
+        </h1>
+        <div class="d-flex gap-2">
+            <button type="submit" id="deleteSelectedBtn" class="btn btn-danger shadow-sm d-none"
+                    onclick="return confirm('@Localizer["Are you sure you want to delete the selected products?"]');">
+                <i class="fas fa-trash-alt me-2"></i> @Localizer["Delete Selected"]
+            </button>
+
+            <a asp-action="Create" class="btn btn-success d-flex align-items-center shadow-sm">
+                <i class="fas fa-plus-circle me-2"></i> @Localizer["Add Product"]
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary">
+                        <tr>
+                            <th class="ps-4" style="width: 40px;">
+                                <input type="checkbox" id="selectAll" class="form-check-input" />
+                            </th>
+                            <th>@Localizer["Name / Type"]</th>
+                            <th>@Localizer["Package"]</th>
+                            <th class="text-end">@Localizer["Price"]</th>
+                            <th class="text-end text-success">@Localizer["Gain"]</th>
+                            <th class="text-center">@Localizer["Centers"]</th>
+                            <th class="text-end pe-4">@Localizer["Actions"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var product in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <input type="checkbox" name="selectedIds" value="@product.Id" class="form-check-input product-checkbox" />
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">@product.Name</div>
+                                        <small class="text-muted">@(product.ProductType ?? Localizer["No type"].Value)</small>
+                                    </td>
+                                    <td><span class="text-muted">@(product.Package ?? "-")</span></td>
+                                    <td class="text-end fw-bold">@product.Price.ToString("F2")</td>
+                                    <td class="text-end text-success fw-bold">@product.Gain.ToString("F2")</td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill bg-info text-dark">@product.CentersCount</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        const deleteBtn = document.getElementById('deleteSelectedBtn');
+
+        // Логика за "Избери всички"
+        selectAll.addEventListener('change', function() {
+            checkboxes.OfEach(cb => {
+                cb.checked = this.checked;
+            });
+            toggleDeleteButton();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', toggleDeleteButton);
+        });
+
+        function toggleDeleteButton() {
+            const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+            if (checkedCount > 0) {
+                deleteBtn.classList.remove('d-none');
+            } else {
+                deleteBtn.classList.add('d-none');
+            }
+        }
+    </script>
+}
