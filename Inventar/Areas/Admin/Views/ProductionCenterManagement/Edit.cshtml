@@ -8,6 +8,8 @@
     ViewData["Title"] = Localizer["Edit Production Center"];
 }
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <h2 class="d-flex align-items-center mb-4">
     <i class="fas fa-edit me-3 text-primary"></i> @Localizer["Editing:"] @Model.Name
 </h2>
@@ -37,7 +39,9 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
                         <div class="form-floating flex-grow-1">
-                            <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select"></select>
+                            <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select">
+                                <option value="">@Localizer["Non-defined"]</option>
+                            </select>
                             <label asp-for="Status">@Localizer["Status"]</label>
                         </div>
                     </div>
@@ -61,31 +65,35 @@
 
             <hr class="my-4" />
 
+            @* STORAGE CAPACITY SECTION С ТЪРСАЧКА *@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> @Localizer["Storage Capacity by Product"]</h5>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addStorageRow()">
-                    <i class="fas fa-plus"></i> @Localizer["Add Product"]
+                <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="addStorageRow()">
+                    <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Product"]
                 </button>
             </div>
 
             <div id="storage-container" class="mb-4">
                 @for (int i = 0; i < Model.Storages.Count; i++)
                 {
-                    <div class="row mb-2 align-items-center g-2 storage-row">
-                        <div class="col-md-6">
-                            <select name="Storages[@i].MaterialId" class="form-select" required>
-                                @foreach (var mat in Model.Materials)
+                    <div class="row mb-3 align-items-center g-2 p-3 border rounded bg-light mx-0 storage-row shadow-sm">
+                        <div class="col-md-7">
+                            <label class="small text-muted mb-1 d-block">@Localizer["Product"]</label>
+                            <select name="Storages[@i].MaterialId" class="form-select product-search-select" required>
+                                <option value="">-- @Localizer["Select Product"] --</option>
+                                @foreach (var mat in Model.Products)
                                 {
                                     <option value="@mat.Id" selected="@(mat.Id == Model.Storages[i].MaterialId ? "selected" : null)">@mat.Name</option>
                                 }
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label class="small text-muted mb-1 d-block">@Localizer["Max Capacity"]</label>
                             <input name="Storages[@i].MaxCapacity" type="number" step="0.01" class="form-control" value="@Model.Storages[i].MaxCapacity" required />
                         </div>
-                        <div class="col-md-2 text-end">
-                            <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()">
-                                <i class="fas fa-trash"></i>
+                        <div class="col-md-2 text-end pt-4">
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.storage-row').remove()">
+                                <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
                     </div>
@@ -94,33 +102,36 @@
 
             <hr class="my-4" />
 
+            @* EXPENSES SECTION *@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="text-primary mb-0"><i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses Management"]</h5>
-                <button type="button" class="btn btn-outline-success btn-sm" onclick="addExpenseRow()">
-                    <i class="fas fa-plus"></i> @Localizer["Add Expense"]
+                <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="addExpenseRow()">
+                    <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Expense"]
                 </button>
             </div>
 
             <div id="expense-container" class="mb-4">
-                @* Тук зареждаме съществуващите разходи *@
                 @for (int i = 0; i < Model.ExpensesList.Count; i++)
                 {
-                    <div class="card mb-3 p-3 expense-row shadow-sm">
+                    <div class="card mb-3 p-3 expense-row shadow-sm border-light bg-white">
                         <div class="row g-2 align-items-center">
                             <div class="col-md-4">
+                                <label class="small text-muted mb-1 d-block">@Localizer["Expense Name"]</label>
                                 <input name="ExpensesList[@i].Name" class="form-control" value="@Model.ExpensesList[i].Name" required />
                             </div>
                             <div class="col-md-3">
+                                <label class="small text-muted mb-1 d-block">@Localizer["Amount"]</label>
                                 <input name="ExpensesList[@i].Amount" type="number" step="0.01" class="form-control" value="@Model.ExpensesList[i].Amount" required />
                             </div>
                             <div class="col-md-3">
+                                <label class="small text-muted mb-1 d-block">@Localizer["Type"]</label>
                                 <select name="ExpensesList[@i].Type" class="form-select" onchange="toggleExpenseFields(this, @i)">
                                     <option value="0" selected="@(Model.ExpensesList[i].Type == ExpenseType.OneTime)">@Localizer["One-time"]</option>
                                     <option value="1" selected="@(Model.ExpensesList[i].Type == ExpenseType.Regular)">@Localizer["Regular"]</option>
                                 </select>
                             </div>
-                            <div class="col-md-2 text-end">
-                                <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.expense-row').remove()">
+                            <div class="col-md-2 text-end pt-4">
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.expense-row').remove()">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -145,7 +156,7 @@
                                         <option value="3" selected="@(Model.ExpensesList[i].Frequency == Frequency.CustomMonths)">@Localizer["Every X months"]</option>
                                     </select>
                                 </div>
-                                <div id="custom-months-container-@i" class="col-md-4 @(Model.ExpensesList[i].Frequency == Frequency.CustomMonths ? "" : "d-none")">
+                                <div id="custom-months-container-@i" class="col-md-3 @(Model.ExpensesList[i].Frequency == Frequency.CustomMonths ? "" : "d-none")">
                                     <label class="small text-muted">@Localizer["Months Interval"]</label>
                                     <input name="ExpensesList[@i].EveryXMonths" type="number" class="form-control" value="@Model.ExpensesList[i].EveryXMonths" />
                                 </div>
@@ -155,9 +166,11 @@
                 }
             </div>
 
-            <div class="d-flex justify-content-end mt-5">
-                <button type="submit" class="btn btn-primary me-2 px-5 shadow-sm">@Localizer["Save Changes"]</button>
-                <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">@Localizer["Cancel"]</a>
+            <div class="d-flex justify-content-end mt-5 border-top pt-4">
+                <a asp-action="Index" class="btn btn-secondary px-4 me-2 shadow-sm">@Localizer["Cancel"]</a>
+                <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                    <i class="fas fa-save me-2"></i> @Localizer["Save Changes"]
+                </button>
             </div>
         </form>
     </div>
@@ -165,57 +178,93 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        // Инициализираме индексите от броя на съществуващите редове в Модела
         let storageIndex = @Model.Storages.Count;
         let expenseIndex = @Model.ExpensesList.Count;
 
-        const availableMaterials = @Html.Raw(Json.Serialize(Model.Materials));
+        const availableMaterials = @Html.Raw(Json.Serialize(Model.Products));
+
+        // Инициализиране на Select2 за вече съществуващите редове
+        $(document).ready(function() {
+            $('.product-search-select').select2({
+                placeholder: "-- @Localizer["Select Product"] --",
+                allowClear: true,
+                width: '100%'
+            });
+        });
 
         function addStorageRow() {
             const container = document.getElementById('storage-container');
-            const row = document.createElement('div');
-            row.className = 'row mb-2 align-items-center g-2 storage-row';
+            const rowId = `storage-row-${storageIndex}`;
+            const selectId = `product-select-${storageIndex}`;
 
-            let optionsHtml = `<option value="">-- @Localizer["Select Material"] --</option>`;
+            const row = document.createElement('div');
+            row.className = 'row mb-3 align-items-center g-2 p-3 border rounded bg-light mx-0 storage-row shadow-sm';
+
+            let optionsHtml = `<option value="">-- @Localizer["Select Product"] --</option>`;
             availableMaterials.forEach(mat => {
                 optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
             });
 
             row.innerHTML = `
-                <div class="col-md-6">
-                    <select name="Storages[${storageIndex}].MaterialId" class="form-select" required>${optionsHtml}</select>
+                <div class="col-md-7">
+                    <label class="small text-muted mb-1 d-block">@Localizer["Product"]</label>
+                    <select id="${selectId}" name="Storages[${storageIndex}].MaterialId" class="form-select" required>${optionsHtml}</select>
                 </div>
-                <div class="col-md-4">
-                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="@Localizer["Capacity"]" required />
+                <div class="col-md-3">
+                    <label class="small text-muted mb-1 d-block">@Localizer["Max Capacity"]</label>
+                    <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="0.00" required />
                 </div>
-                <div class="col-md-2 text-end">
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.storage-row').remove()"><i class="fas fa-trash"></i></button>
+                <div class="col-md-2 text-end pt-4">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.storage-row').remove()"><i class="fas fa-trash-alt"></i></button>
                 </div>`;
+
             container.appendChild(row);
+
+            // Инициализация на Select2 за новия ред
+            $(`#${selectId}`).select2({
+                placeholder: "-- @Localizer["Select Product"] --",
+                allowClear: true,
+                width: '100%'
+            });
+
             storageIndex++;
         }
 
+        // --- Останалите функции (Expenses) остават същите като в Create ---
         function addExpenseRow() {
             const container = document.getElementById('expense-container');
             const row = document.createElement('div');
-            row.className = 'card mb-3 p-3 expense-row shadow-sm';
+            row.className = 'card mb-3 p-3 expense-row shadow-sm border-light bg-white';
 
             row.innerHTML = `
                 <div class="row g-2 align-items-center">
-                    <div class="col-md-4"><input name="ExpensesList[${expenseIndex}].Name" class="form-control" placeholder="@Localizer["Expense Name"]" required /></div>
-                    <div class="col-md-3"><input name="ExpensesList[${expenseIndex}].Amount" type="number" step="0.01" class="form-control" placeholder="@Localizer["Amount"]" required /></div>
+                    <div class="col-md-4">
+                        <label class="small text-muted mb-1 d-block">@Localizer["Expense Name"]</label>
+                        <input name="ExpensesList[${expenseIndex}].Name" class="form-control" required />
+                    </div>
                     <div class="col-md-3">
+                        <label class="small text-muted mb-1 d-block">@Localizer["Amount"]</label>
+                        <input name="ExpensesList[${expenseIndex}].Amount" type="number" step="0.01" class="form-control" required />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small text-muted mb-1 d-block">@Localizer["Type"]</label>
                         <select name="ExpensesList[${expenseIndex}].Type" class="form-select" onchange="toggleExpenseFields(this, ${expenseIndex})">
                             <option value="0">@Localizer["One-time"]</option>
                             <option value="1">@Localizer["Regular"]</option>
                         </select>
                     </div>
-                    <div class="col-md-2 text-end"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.expense-row').remove()"><i class="fas fa-trash"></i></button></div>
+                    <div class="col-md-2 text-end pt-4">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.expense-row').remove()"><i class="fas fa-trash"></i></button>
+                    </div>
                 </div>
                 <div id="expense-details-${expenseIndex}" class="mt-2 row g-2">
-                    <div class="col-md-4"><label class="small text-muted">@Localizer["Date"]</label><input name="ExpensesList[${expenseIndex}].Date" type="date" class="form-control" required /></div>
+                    <div class="col-md-4">
+                        <label class="small text-muted">@Localizer["Date"]</label>
+                        <input name="ExpensesList[${expenseIndex}].Date" type="date" class="form-control" required />
+                    </div>
                 </div>`;
             container.appendChild(row);
             expenseIndex++;
@@ -236,7 +285,7 @@
                             <option value="3">@Localizer["Every X months"]</option>
                         </select>
                     </div>
-                    <div id="custom-months-container-${index}" class="col-md-4 d-none">
+                    <div id="custom-months-container-${index}" class="col-md-3 d-none">
                         <label class="small text-muted">@Localizer["Months Interval"]</label>
                         <input name="ExpensesList[${index}].EveryXMonths" type="number" class="form-control" />
                     </div>`;
@@ -248,4 +297,21 @@
             select.value === "3" ? container.classList.remove('d-none') : container.classList.add('d-none');
         }
     </script>
+
+    <style>
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #dee2e6;
+            height: 38px;
+            padding-top: 5px;
+        }
+
+        .storage-row {
+            transition: all 0.2s;
+        }
+
+            .storage-row:hover {
+                border-color: #0d6efd !important;
+                background-color: #fff !important;
+            }
+    </style>
 }

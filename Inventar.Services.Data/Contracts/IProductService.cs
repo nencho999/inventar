@@ -1,4 +1,5 @@
-﻿using Inventar.Web.ViewModels.Product;
+﻿using Inventar.Web.ViewModels;
+using Inventar.Web.ViewModels.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Inventar.Services.Data.Contracts
         Task<ProductFormModel?> GetProductForEditAsync(Guid id);
         Task EditProductAsync(ProductFormModel model);
         Task DeleteMultipleProductsAsync(List<Guid> ids);
+
+        Task<IEnumerable<ProductDropdownViewModel>> GetProductsForDropdownAsync();
     }
 }

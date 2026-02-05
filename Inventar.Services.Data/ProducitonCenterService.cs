@@ -62,49 +62,60 @@ public class ProductionCenterService : IProductionCenterService
 
     public async Task<bool> AddCenterAsync(string userId, CenterCreateInputModel model)
     {
+        // 1. Проверка на потребителя
         var user = await userManager.FindByIdAsync(userId);
-        bool isAdmin = await userManager.IsInRoleAsync(user, "Admin");
-
-        if (user == null || !isAdmin)
+        if (user == null || !await userManager.IsInRoleAsync(user, "Admin"))
         {
-            throw new ArgumentException(AdminAuthorization);
+            throw new ArgumentException("Admin authorization required.");
         }
 
+        // 2. Инициализация на центъра
         var center = new ProductionCenter
         {
+            Id = Guid.NewGuid(),
             Name = model.Name,
             Location = model.Location,
             Capacity = model.Capacity,
             Contact = model.Contact,
-            Status = model.Status,
+            Status = model.Status, // Може да е null (Non-defined)
             Expenses = model.Expenses
         };
 
-        foreach (var storage in model.Storages)
+        // 3. Запис на Продукти и Капацитети
+        if (model.Storages != null)
         {
-            center.StorageCapacities.Add(new ProductionCenterStorage
+            foreach (var storage in model.Storages)
             {
-                //MaterialId = storage.MaterialId,
-                MaxStorageCapacity = storage.MaxCapacity
-            });
+                // Проверяваме дали е избран продукт (MaterialId всъщност е ProductId)
+                if (storage.MaterialId != Guid.Empty)
+                {
+                    center.StorageCapacities.Add(new ProductionCenterStorage
+                    {
+                        ProductionCenterId = center.Id,
+                        ProductId = storage.MaterialId,
+                        MaxStorageCapacity = storage.MaxCapacity
+                    });
+                }
+            }
         }
 
-        foreach (var expenseModel in model.ExpensesList)
+        // 4. Запис на Разходи
+        foreach (var e in model.ExpensesList)
         {
             center.ExpensesList.Add(new ProductionCenterExpense
             {
-                Name = expenseModel.Name,
-                Amount = expenseModel.Amount,
-                Type = expenseModel.Type,
-                Date = expenseModel.Type == ExpenseType.OneTime ? expenseModel.Date : null,
-                Frequency = expenseModel.Type == ExpenseType.Regular ? expenseModel.Frequency : null,
-                EveryXMonths = (expenseModel.Type == ExpenseType.Regular && expenseModel.Frequency == Frequency.CustomMonths)
-                                ? expenseModel.EveryXMonths
-                                : null
+                Id = Guid.NewGuid(),
+                Name = e.Name,
+                Amount = e.Amount,
+                Type = e.Type,
+                Date = e.Type == ExpenseType.OneTime ? e.Date : null,
+                Frequency = e.Type == ExpenseType.Regular ? e.Frequency : null,
+                EveryXMonths = (e.Type == ExpenseType.Regular && e.Frequency == Frequency.CustomMonths)
+                               ? e.EveryXMonths : null
             });
         }
 
-        await dbContext.AddAsync(center);
+        await dbContext.ProductionCenters.AddAsync(center);
         await dbContext.SaveChangesAsync();
 
         return true;
@@ -121,7 +132,7 @@ public class ProductionCenterService : IProductionCenterService
 
         var center = await dbContext.ProductionCenters
             .Include(c => c.StorageCapacities)
-            .Include(c => c.ExpensesList) // Добавяме това!
+            .Include(c => c.ExpensesList)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (center == null) throw new ArgumentException("Center not found");
@@ -135,9 +146,10 @@ public class ProductionCenterService : IProductionCenterService
             Contact = center.Contact,
             Status = center.Status,
             Expenses = center.Expenses,
+            // МАПВАНЕ ОБРАТНО ОТ ПРОДУКТИ
             Storages = center.StorageCapacities.Select(s => new StorageInputModel
             {
-                //MaterialId = s.MaterialId,
+                MaterialId = s.ProductId, // Guid на продукта
                 MaxCapacity = s.MaxStorageCapacity
             }).ToList(),
             ExpensesList = center.ExpensesList.Select(e => new ExpenseInputModel
@@ -156,52 +168,75 @@ public class ProductionCenterService : IProductionCenterService
 
     public async Task<bool> EditCenterAsync(CenterEditFormModel model)
     {
+        // 1. Зареждаме центъра със свързаните му обекти
         var center = await dbContext.ProductionCenters
             .Include(c => c.StorageCapacities)
-            .Include(c => c.ExpensesList) // Трябва да ги включим, за да ги изчистим
+            .Include(c => c.ExpensesList)
             .FirstOrDefaultAsync(c => c.Id == model.Id);
 
-        if (center == null)
-        {
-            throw new ArgumentException("Center not found");
-        }
+        if (center == null) throw new ArgumentException("Center not found");
 
-        // Обновяване на базови данни
+        // 2. Обновяваме основните свойства на центъра
         center.Name = model.Name;
         center.Location = model.Location;
         center.Capacity = model.Capacity;
         center.Contact = model.Contact;
         center.Status = model.Status;
-        center.Expenses = model.Expenses;
 
-        center.StorageCapacities.Clear();
-        foreach (var s in model.Storages)
+        // 3. ПЪРВА СТЪПКА: Изтриваме съществуващите записи в междинните таблици
+        // Използваме RemoveRange директно върху контекста за по-голяма сигурност
+        if (center.StorageCapacities.Any())
         {
-            center.StorageCapacities.Add(new ProductionCenterStorage
-            {
-                ProductionCenterId = center.Id,
-                ProductId = s.MaterialId,
-                MaxStorageCapacity = s.MaxCapacity
-            });
+            dbContext.ProductionCenterStorages.RemoveRange(center.StorageCapacities);
         }
 
-        center.ExpensesList.Clear();
-        foreach (var e in model.ExpensesList)
+        if (center.ExpensesList.Any())
         {
-            center.ExpensesList.Add(new ProductionCenterExpense
-            {
-                Name = e.Name,
-                Amount = e.Amount,
-                Type = e.Type,
-                Date = e.Type == ExpenseType.OneTime ? e.Date : null,
-                Frequency = e.Type == ExpenseType.Regular ? e.Frequency : null,
-                EveryXMonths = (e.Type == ExpenseType.Regular && e.Frequency == Frequency.CustomMonths)
-                                ? e.EveryXMonths
-                                : null
-            });
+            dbContext.ProductionCenterExpenses.RemoveRange(center.ExpensesList);
         }
 
+        // КРИТИЧНО: Записваме изтриването СЕГА. 
+        // Това предотвратява Concurrency грешката, като казва на базата, че тези редове са премахнати.
         await dbContext.SaveChangesAsync();
+
+        // 4. ВТОРА СТЪПКА: Добавяме новите записи от формата
+        // Добавяме ги директно към DbSet, за да избегнем проблеми с навигационните свойства
+        if (model.Storages != null)
+        {
+            foreach (var s in model.Storages)
+            {
+                await dbContext.ProductionCenterStorages.AddAsync(new ProductionCenterStorage
+                {
+                    Id = Guid.NewGuid(), // Нов ключ
+                    ProductionCenterId = center.Id,
+                    ProductId = s.MaterialId,
+                    MaxStorageCapacity = (double)s.MaxCapacity
+                });
+            }
+        }
+
+        if (model.ExpensesList != null)
+        {
+            foreach (var e in model.ExpensesList)
+            {
+                await dbContext.ProductionCenterExpenses.AddAsync(new ProductionCenterExpense
+                {
+                    Id = Guid.NewGuid(), // Нов ключ
+                    ProductionCenterId = center.Id,
+                    Name = e.Name,
+                    Amount = e.Amount,
+                    Type = e.Type,
+                    Date = e.Type == ExpenseType.OneTime ? e.Date : null,
+                    Frequency = e.Type == ExpenseType.Regular ? e.Frequency : null,
+                    EveryXMonths = (e.Type == ExpenseType.Regular && e.Frequency == Frequency.CustomMonths)
+                                   ? e.EveryXMonths : null
+                });
+            }
+        }
+
+        // 5. Финален запис на новите данни
+        await dbContext.SaveChangesAsync();
+
         return true;
     }
 

@@ -1,6 +1,8 @@
 ﻿using Inventar.Areas.Admin.Controllers;
 using Inventar.Data;
+using Inventar.Services.Data;
 using Inventar.Services.Data.Contracts;
+using Inventar.Web.ViewModels;
 using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,11 +13,11 @@ using static Inventar.Common.Messages.ErrorMessages.ProductionCenter;
 public class ProductionCenterManagement : AdminBaseController
 {
     private readonly IProductionCenterService _service;
-    private readonly IPrimaryMaterialBaseService _materialService;
-    public ProductionCenterManagement(IProductionCenterService service, IPrimaryMaterialBaseService materialService)
+    private readonly IProductService _productService;
+    public ProductionCenterManagement(IProductionCenterService service, IProductService productService)
     {
         _service = service;
-        _materialService = materialService;
+        _productService = productService;
     }
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -24,21 +26,27 @@ public class ProductionCenterManagement : AdminBaseController
         return View(centers);
     }
     [HttpGet]
-    public async Task <IActionResult> Create()
+    public async Task<IActionResult> Create()
     {
         var model = new CenterCreateInputModel();
-        var dropdownData = await _materialService.GetMaterialsDropdownAsync();
-        model.Materials = dropdownData.ToList();
+
+        var dropdownData = await _productService.GetAllProductsAsync();
+        model.Products = dropdownData.Select(p => new ProductDropdownViewModel
+        {
+            Id = p.Id,
+            Name = p.Name
+        }).ToList();
 
         ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
         return View(model);
     }
+
     [HttpPost]
     public async Task<IActionResult> Create(CenterCreateInputModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
+            await ReloadMetadataAsync(model);
             return View(model);
         }
 
@@ -49,10 +57,22 @@ public class ProductionCenterManagement : AdminBaseController
         }
         catch (ArgumentException ex)
         {
-            ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
+            await ReloadMetadataAsync(model);
             ModelState.AddModelError(string.Empty, ex.Message);
             return View(model);
         }
+    }
+
+    private async Task ReloadMetadataAsync(CenterCreateInputModel model)
+    {
+        var products = await _productService.GetAllProductsAsync();
+        model.Products = products.Select(p => new ProductDropdownViewModel
+        {
+            Id = p.Id,
+            Name = p.Name
+        }).ToList();
+
+        ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
     }
     [HttpGet]
     public async Task<IActionResult> Edit(Guid? id)
@@ -60,8 +80,8 @@ public class ProductionCenterManagement : AdminBaseController
         try
         {
             var model = await _service.GetCenterForEdittingAsync(GetUserId()!, id);
-            var materials = await _materialService.GetMaterialsDropdownAsync();
-            model.Materials = materials.ToList();
+            var products = await _productService.GetProductsForDropdownAsync();
+            model.Products = products.ToList();
             ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
             return View(model);
         }
@@ -80,18 +100,21 @@ public class ProductionCenterManagement : AdminBaseController
     {
         if (!ModelState.IsValid)
         {
+            await ReloadMetadataAsync(model); // Методът, който пълни модела с продукти отново
             ViewBag.CenterStatuses = await _service.GetCenterStatusSelectListAsync();
             return View(model);
         }
 
         try
-        { 
+        {
             await _service.EditCenterAsync(model);
             return RedirectToAction(nameof(Index));
         }
-        catch (ArgumentException ex)
+        catch (DbUpdateConcurrencyException)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
+            // Опционално: Логни грешката или пренасочи потребителя
+            ModelState.AddModelError("", "The data was modified by another user. Please reload.");
+            await ReloadMetadataAsync(model);
             return View(model);
         }
     }
