@@ -1,6 +1,9 @@
 ﻿@model Inventar.Web.ViewModels.User.UserFormViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Edit User";
+    ViewData["Title"] = Localizer["Edit User"];
 }
 
 <div class="container py-4">
@@ -9,7 +12,7 @@
 
             <div class="card shadow border-0 rounded-3">
                 <div class="card-header bg-warning text-dark p-3">
-                    <h5 class="mb-0 fw-bold"><i class="fas fa-user-edit me-2"></i> Edit User</h5>
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-user-edit me-2"></i> @Localizer["Edit User"]</h5>
                 </div>
 
                 <div class="card-body p-4">
@@ -17,32 +20,32 @@
                         <input type="hidden" asp-for="Id" />
 
                         <div class="mb-3">
-                            <label asp-for="Email" class="form-label fw-bold">Email</label>
+                            <label asp-for="Email" class="form-label fw-bold">@Localizer["Email"]</label>
                             <input asp-for="Email" class="form-control" />
                             <span asp-validation-for="Email" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="FullName" class="form-label fw-bold">Full Name</label>
+                            <label asp-for="FullName" class="form-label fw-bold">@Localizer["Full Name"]</label>
                             <input asp-for="FullName" class="form-control" />
                             <span asp-validation-for="FullName" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <label asp-for="PhoneNumber" class="form-label">@Localizer["Phone Number"]</label>
                             <input asp-for="PhoneNumber" class="form-control" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
 
                         <div class="mb-4">
-                            <label asp-for="RoleId" class="form-label fw-bold">Role</label>
+                            <label asp-for="RoleId" class="form-label fw-bold">@Localizer["Role"]</label>
                             <select asp-for="RoleId" asp-items="ViewBag.Roles" class="form-select"></select>
                             <span asp-validation-for="RoleId" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">Save Changes</button>
-                            <a asp-action="Index" class="btn btn-link text-decoration-none text-muted">Cancel</a>
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">@Localizer["Save Changes"]</button>
+                            <a asp-action="Index" class="btn btn-link text-decoration-none text-muted">@Localizer["Cancel"]</a>
                         </div>
                     </form>
                 </div>
