@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SalesPointExpense> SalesPointStorages { get; set; }
     public DbSet<SalesPointProduct> SalesPointProducts { get; set; }
     public DbSet<SalesPointExpense> SalesPointExpenses { get; set; }
+    public DbSet<Warehouse> Warehouses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

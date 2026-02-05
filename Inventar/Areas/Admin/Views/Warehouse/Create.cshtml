@@ -1,0 +1,54 @@
+﻿@model Inventar.Web.ViewModels.Warehouse.WarehouseFormViewModel
+@using Inventar.Data.Models
+@{
+    ViewData["Title"] = "Add Warehouse";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-industry me-2"></i> Add Warehouse</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Main Warehouse" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label fw-bold">Location</label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Status" class="form-label fw-bold">Status</label>
+                                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<WarehouseStatus>()"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Capacity" class="form-label fw-bold">Capacity</label>
+                                <input asp-for="Capacity" class="form-control" placeholder="e.g. 500 pallets" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ContactInfo" class="form-label fw-bold">Contact Info</label>
+                            <textarea asp-for="ContactInfo" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary fw-bold">Create</button>
+                            <a asp-action="Index" class="btn btn-light border">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

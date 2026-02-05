@@ -4,8 +4,11 @@ public class Expense
 {
     public Guid Id { get; set; }
 
-    public Guid BaseId { get; set; }
-    public PrimaryMaterialBase Base { get; set; }
+    public Guid? BaseId { get; set; }
+    public PrimaryMaterialBase? Base { get; set; }
+
+    public Guid? WarehouseId { get; set; }
+    public Warehouse? Warehouse { get; set; }
 
     public string Name { get; set; } = null!;
     public decimal Amount { get; set; }

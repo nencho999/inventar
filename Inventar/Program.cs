@@ -64,6 +64,7 @@ public class Program
         builder.Services.AddScoped<IProductionCenterService, ProductionCenterService>();
         builder.Services.AddScoped<ISalesPointService, SalesPointService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 
         var app = builder.Build();
 
