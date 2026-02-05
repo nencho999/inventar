@@ -14,7 +14,7 @@ public class CenterCreateInputModel
     public string? Expenses { get; set; }
     public List<ExpenseInputModel> ExpensesList { get; set; } = new List<ExpenseInputModel>();
     public List<StorageInputModel> Storages { get; set; } = new List<StorageInputModel>();
-    public List<MaterialDropDownModel> Materials { get; set; } = new List<MaterialDropDownModel>();
+    public List<ProductDropdownViewModel> Products { get; set; } = new List<ProductDropdownViewModel>();
 }
 
 public class ExpenseInputModel

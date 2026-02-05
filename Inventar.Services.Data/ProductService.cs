@@ -1,6 +1,7 @@
 ﻿using Inventar.Data;
 using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
+using Inventar.Web.ViewModels;
 using Inventar.Web.ViewModels.Product;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,7 +69,18 @@ namespace Inventar.Services.Data
                 Gain = product.Gain
             };
         }
-
+        public async Task<IEnumerable<ProductDropdownViewModel>> GetProductsForDropdownAsync()
+        {
+            return await dbContext.Products
+                .AsNoTracking()
+                .Select(p => new ProductDropdownViewModel
+                {
+                    Id = p.Id, // Това е Guid
+                    Name = p.Name
+                })
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+        }
         public async Task EditProductAsync(ProductFormModel model)
         {
             var product = await dbContext.Products
