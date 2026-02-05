@@ -63,8 +63,8 @@ public class Program
         builder.Services.AddScoped<IStockService, StockService>();
         builder.Services.AddScoped<IProductionCenterService, ProductionCenterService>();
         builder.Services.AddScoped<ISalesPointService, SalesPointService>();
-        builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IProductService, ProductService>();
+        builder.Services.AddScoped<IUserService, UserService>();
 
         var app = builder.Build();
 
