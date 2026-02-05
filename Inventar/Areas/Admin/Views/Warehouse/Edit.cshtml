@@ -1,7 +1,10 @@
 ﻿@model Inventar.Web.ViewModels.Warehouse.WarehouseFormViewModel
 @using Inventar.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Edit Warehouse";
+    ViewData["Title"] = Localizer["Edit Warehouse"];
 }
 
 <div class="container py-4">
@@ -11,7 +14,7 @@
             <div class="card shadow border-0 rounded-3">
                 <div class="card-header bg-warning text-dark p-3">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-edit me-2"></i> Edit Warehouse
+                        <i class="fas fa-edit me-2"></i> @Localizer["Edit Warehouse"]
                     </h5>
                 </div>
 
@@ -20,39 +23,39 @@
                         <input type="hidden" asp-for="Id" />
 
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Warehouse Name</label>
+                            <label asp-for="Name" class="form-label fw-bold">@Localizer["Warehouse Name"]</label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Location" class="form-label fw-bold">Location / Address</label>
+                            <label asp-for="Location" class="form-label fw-bold">@Localizer["Location / Address"]</label>
                             <input asp-for="Location" class="form-control" />
                             <span asp-validation-for="Location" class="text-danger small"></span>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label asp-for="Status" class="form-label fw-bold">Status</label>
+                                <label asp-for="Status" class="form-label fw-bold">@Localizer["Status"]</label>
                                 <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<WarehouseStatus>()"></select>
                                 <span asp-validation-for="Status" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6">
-                                <label asp-for="Capacity" class="form-label fw-bold">Capacity</label>
+                                <label asp-for="Capacity" class="form-label fw-bold">@Localizer["Capacity"]</label>
                                 <input asp-for="Capacity" class="form-control" />
                                 <span asp-validation-for="Capacity" class="text-danger small"></span>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label asp-for="ContactInfo" class="form-label fw-bold">Contact Information</label>
+                            <label asp-for="ContactInfo" class="form-label fw-bold">@Localizer["Contact Information"]</label>
                             <textarea asp-for="ContactInfo" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="ContactInfo" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">Save Changes</button>
-                            <a asp-action="Index" class="btn btn-link text-decoration-none text-muted">Cancel</a>
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">@Localizer["Save Changes"]</button>
+                            <a asp-action="Index" class="btn btn-link text-decoration-none text-muted">@Localizer["Cancel"]</a>
                         </div>
                     </form>
                 </div>
