@@ -65,6 +65,8 @@ namespace Inventar.Services.Data
             var basesEntities = await _context.PrimaryMaterialBases
                 .Include(b => b.Expenses)
                 .Include(b => b.RecurringExpenses)
+                .Include(b => b.Capacities)
+                .Include(b => b.StockTransactions)
                 .ToListAsync();
 
             var baseViewModels = basesEntities.Select(b => new BaseListViewModel
@@ -81,7 +83,9 @@ namespace Inventar.Services.Data
                     re.Frequency == ExpenseFrequency.Yearly ? re.Amount / 12m :
                     (re.Frequency == ExpenseFrequency.CustomMonthInterval && re.IntervalMonths > 0)
                     ? re.Amount / (decimal)re.IntervalMonths
-                    : 0)
+                    : 0),
+                MaxCapacity = (double)b.Capacities.Sum(c => c.CapacityLimit),
+                OccupiedCapacity = (double)b.StockTransactions.Sum(st => st.QuantityChange)
             }).ToList();
 
             var dashboard = new DashboardViewModel

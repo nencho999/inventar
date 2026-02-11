@@ -165,4 +165,10 @@
   <data name="lv." xml:space="preserve">
     <value>лв.</value>
   </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>Инвентар</value>
+  </data>
+  <data name="Stock" xml:space="preserve">
+    <value>Наличност</value>
+  </data>
 </root>

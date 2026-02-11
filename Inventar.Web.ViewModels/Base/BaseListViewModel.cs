@@ -11,5 +11,8 @@ namespace Inventar.Web.ViewModels.Base
 
         public decimal MonthlyExpenses { get; set; }
         public decimal OneTimeExpenses { get; set; }
+
+        public double OccupiedCapacity { get; set; }
+        public double MaxCapacity { get; set; }
     }
 }
