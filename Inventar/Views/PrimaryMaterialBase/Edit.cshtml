@@ -2,55 +2,73 @@
 @inject IViewLocalizer Localizer
 @model Inventar.Web.ViewModels.Base.BaseFormViewModel
 @{
-    var title = Model.Id == Guid.Empty ? Localizer["New Base"] : Localizer["Edit Base"];
+    bool isNew = Model.Id == Guid.Empty;
+    var title = isNew ? Localizer["New Base"] : Localizer["Edit Base"];
     ViewData["Title"] = title;
+
+    // ДИНАМИЧНИ КЛАСОВЕ ЗА ТЕМАТА
+    // Ако е нов: primary (синьо), ако е редактиране: warning (оранжево)
+    string themeColor = isNew ? "primary" : "warning";
+    string btnClass = isNew ? "btn-primary" : "btn-warning text-dark";
+    string borderClass = isNew ? "border-primary" : "border-warning";
+    string textClass = isNew ? "text-primary" : "text-warning";
+    string subtleBg = isNew ? "bg-primary-subtle" : "bg-warning-subtle";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-header bg-white">
-                <h4>
-                    @if (Model.Id == Guid.Empty)
+        <div class="card shadow border-0">
+            @* Динамична горна граница *@
+            <div class="card-header bg-white border-bottom @borderClass border-3">
+                <h4 class="mb-0">
+                    @if (isNew)
                     {
-                        @:➕ @Localizer["New Base"]
+                        <span class="@textClass">➕</span> 
+                        @Localizer["New Base"]
                     }
                     else
                     {
-                        @:✏️ @Localizer["Edit Base"]
+                        <span class="@textClass">✏️</span> 
+                        @Localizer["Edit Base"]
                     }
                 </h4>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form asp-action="Edit" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
 
-                    <h5 class="text-muted mb-3">@Localizer["Basic Information"]</h5>
+                    @* Подзаглавие с динамичен цвят *@
+                    <h5 class="@textClass mb-3 fw-bold">
+                        <i class="fas fa-info-circle me-1"></i> @Localizer["Basic Information"]
+                    </h5>
 
                     <div class="form-group mb-3">
                         <label asp-for="Name" class="form-label fw-bold">@Localizer["Base Name"]</label>
-                        <input asp-for="Name" class="form-control" placeholder=@Localizer["e.g. North Warehouse"] />
+                        <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. North Warehouse"]" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Address" class="form-label">@Localizer["Address"]</label>
+                        <label asp-for="Address" class="form-label fw-bold">@Localizer["Address"]</label>
                         <input asp-for="Address" class="form-control" />
                         <span asp-validation-for="Address" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="Description" class="form-label">@Localizer["Description"]</label>
+                        <label asp-for="Description" class="form-label fw-bold">@Localizer["Description"]</label>
                         <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
-                    <hr />
+                    <hr class="opacity-25" />
 
-                    <h5 class="text-muted mb-3">
-                        <i class="fas fa-cubes"></i> @Localizer["Capacity / Limits"]
-                        <small class="d-block text-muted fs-6 font-weight-normal">@Localizer["Enter the maximum quantity for each material. Leave 0 if the base does not support this material."]</small>
+                    @* Секция Капацитет с динамичен цвят *@
+                    <h5 class="@textClass mb-3 fw-bold">
+                        <i class="fas fa-cubes me-1"></i> @Localizer["Capacity / Limits"]
+                        <small class="d-block text-muted fs-6 fw-normal mt-1">
+                            @Localizer["Enter the maximum quantity for each material. Leave 0 if the base does not support this material."]
+                        </small>
                     </h5>
 
                     <div class="bg-light p-3 rounded border">
@@ -63,10 +81,10 @@
                                         <input type="hidden" asp-for="Capacities[i].MaterialId" />
                                         <input type="hidden" asp-for="Capacities[i].MaterialName" />
 
-                                        <label class="form-label">@Model.Capacities[i].MaterialName</label>
-                                        <div class="input-group">
+                                        <label class="form-label fw-semibold">@Model.Capacities[i].MaterialName</label>
+                                        <div class="input-group shadow-sm">
                                             <input asp-for="Capacities[i].Limit" class="form-control" type="number" min="0" step="1" />
-                                            <span class="input-group-text bg-white">@Localizer["max."]</span>
+                                            <span class="input-group-text @subtleBg">@Localizer["max."]</span>
                                         </div>
                                     </div>
                                 }
@@ -74,15 +92,22 @@
                         }
                         else
                         {
-                            <div class="alert alert-warning">
+                            <div class="alert alert-@themeColor">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
                                 @Localizer["No materials defined in the system. Please add materials to the registry first."]
                             </div>
                         }
                     </div>
 
-                    <div class="d-grid gap-2 mt-4 d-md-flex justify-content-md-end">
-                        <a asp-action="Index" class="btn btn-secondary me-md-2">@Localizer["Cancel"]</a>
-                        <button type="submit" class="btn btn-success px-4">@Localizer["Save Changes"]</button>
+                    @* Динамични бутони *@
+                    <div class="d-grid gap-2 mt-4 d-md-flex justify-content-md-end pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4 me-md-2">
+                            @Localizer["Cancel"]
+                        </a>
+                        <button type="submit" class="btn @btnClass px-5 fw-bold shadow-sm">
+                            <i class="fas fa-save me-2"></i>
+                            @(isNew? Localizer["Create Base"] : Localizer["Save Changes"])
+                        </button>
                     </div>
                 </form>
             </div>
@@ -95,3 +120,11 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    /* Динамичен hover ефект спрямо темата */
+    .form-control:focus {
+        border-color: @(isNew ? "#0d6efd" : "#ffc107");
+        box-shadow: 0 0 0 0.25rem @(isNew ? "rgba(13, 110, 253, 0.25)" : "rgba(255, 193, 7, 0.25)");
+    }
+</style>

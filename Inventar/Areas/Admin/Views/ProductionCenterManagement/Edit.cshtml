@@ -11,7 +11,8 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <h2 class="d-flex align-items-center mb-4">
-    <i class="fas fa-edit me-3 text-primary"></i> @Localizer["Editing:"] @Model.Name
+    @* Иконата и текстът вече са в оранжево (text-warning) *@
+    <i class="fas fa-edit me-3 text-warning"></i> @Localizer["Editing:"] @Model.Name
 </h2>
 <hr />
 
@@ -22,7 +23,8 @@
 
             <input type="hidden" asp-for="Id" />
 
-            <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> @Localizer["General Information"]</h5>
+            @* Заглавие на секция в оранжево *@
+            <h5 class="text-warning mb-3"><i class="fas fa-file-alt me-2"></i> @Localizer["General Information"]</h5>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -67,7 +69,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                        @* Иконката на парите също в оранжево *@
+                        <span class="input-group-text text-warning"><i class="fas fa-coins"></i></span>
                         <div class="form-floating flex-grow-1">
                             <input asp-for="Expenses" class="form-control" placeholder="500" />
                             <label asp-for="Expenses">@Localizer["General Expenses"]</label>
@@ -88,8 +91,9 @@
             <hr class="my-4" />
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-primary mb-0"><i class="fas fa-database me-2"></i> @Localizer["Storage Capacity by Product"]</h5>
-                <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="addStorageRow()">
+                <h5 class="text-warning mb-0"><i class="fas fa-database me-2"></i> @Localizer["Storage Capacity by Product"]</h5>
+                @* Бутонът е с оранжев контур *@
+                <button type="button" class="btn btn-outline-warning btn-sm px-3" onclick="addStorageRow()">
                     <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Product"]
                 </button>
             </div>
@@ -126,8 +130,9 @@
             <hr class="my-4" />
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-primary mb-0"><i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses Management"]</h5>
-                <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="addExpenseRow()">
+                <h5 class="text-warning mb-0"><i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses Management"]</h5>
+                @* Бутонът е с оранжев контур *@
+                <button type="button" class="btn btn-outline-warning btn-sm px-3" onclick="addExpenseRow()">
                     <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Expense"]
                 </button>
             </div>
@@ -193,7 +198,8 @@
 
             <div class="d-flex justify-content-end mt-5 border-top pt-4">
                 <a asp-action="Index" class="btn btn-secondary px-4 me-2 shadow-sm">@Localizer["Cancel"]</a>
-                <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                @* Главният бутон за запис вече е в плътно оранжево (btn-warning) *@
+                <button type="submit" class="btn btn-warning px-5 shadow-sm text-dark fw-bold">
                     <i class="fas fa-save me-2"></i> @Localizer["Save Changes"]
                 </button>
             </div>
@@ -211,7 +217,6 @@
 
         const availableMaterials = @Html.Raw(Json.Serialize(Model.Products));
 
-        // Обект с преводи за JavaScript
         const translations = {
             selectProduct: "@Localizer["-- Select Product --"]",
             maxCapacity: "@Localizer["Max Capacity"]",
@@ -240,6 +245,7 @@
             const container = document.getElementById('storage-container');
             const selectId = `product-select-${storageIndex}`;
             const row = document.createElement('div');
+            // Оранжева тема и за новите редове
             row.className = 'row mb-3 align-items-center g-2 p-3 border rounded bg-light mx-0 storage-row shadow-sm';
 
             let optionsHtml = `<option value="">${translations.selectProduct}</option>`;
@@ -345,9 +351,9 @@
             height: 38px;
             padding-top: 5px;
         }
-
+        /* Оранжев hover ефект за редовете */
         .storage-row:hover {
-            border-color: #0d6efd !important;
+            border-color: #ffc107 !important;
             background-color: #fff !important;
         }
 

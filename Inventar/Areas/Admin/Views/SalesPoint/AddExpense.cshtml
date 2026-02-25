@@ -4,7 +4,7 @@
 @inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Register Expense";
+    ViewData["Title"] = Localizer["Register Expense"];
 }
 
 <div class="container py-5">
@@ -13,7 +13,8 @@
 
             <div class="card shadow-lg border-0 rounded-3">
 
-                <div class="card-header bg-success text-white p-3">
+                @* CARD HEADER: Променен на bg-primary за синя тема *@
+                <div class="card-header bg-primary text-white p-3">
                     <h5 class="mb-0 fw-bold">
                         <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Register Expense"]
                     </h5>
@@ -24,21 +25,21 @@
                         <input type="hidden" asp-for="SalesPointId" />
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-uppercase text-muted">@Localizer["Base"]</label>
+                            <label class="form-label fw-bold small text-uppercase text-muted">@Localizer["Sales Point"]</label>
                             <input asp-for="SalesPointName" class="form-control bg-light" readonly />
                         </div>
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-8">
                                 <label asp-for="Name" class="form-label fw-bold">@Localizer["Expense Name"]</label>
-                                <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Security Guard Salary"]" />
+                                <input asp-for="Name" class="form-control border-primary-subtle" placeholder="@Localizer["e.g. Security Guard Salary"]" />
                                 <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="Amount" class="form-label fw-bold">@Localizer["Amount"]</label>
                                 <div class="input-group">
-                                    <input asp-for="Amount" type="number" step="0.01" class="form-control text-end" placeholder="0" />
-                                    <span class="input-group-text bg-light">@Localizer["lv."]</span>
+                                    <input asp-for="Amount" type="number" step="0.01" class="form-control text-end border-primary-subtle" placeholder="0" />
+                                    <span class="input-group-text bg-light">€</span>
                                 </div>
                                 <span asp-validation-for="Amount" class="text-danger small"></span>
                             </div>
@@ -47,6 +48,7 @@
                         <hr class="my-4 opacity-25">
 
                         <div class="form-check form-switch mb-4">
+                            @* SWITCH: Стилът се управлява от темата (син при включване) *@
                             <input asp-for="IsRecurring" class="form-check-input" type="checkbox" id="recurringSwitch" style="cursor: pointer;">
                             <label class="form-check-label fw-bold ms-2" for="recurringSwitch" style="cursor: pointer;">
                                 @Localizer["Is this a recurring (subscription) expense?"]
@@ -56,16 +58,16 @@
                         <div id="dateSection">
                             <div class="mb-3">
                                 <label asp-for="OneTimeDate" class="form-label fw-bold">@Localizer["Payment Date"]</label>
-                                <input asp-for="OneTimeDate" type="date" class="form-control" />
+                                <input asp-for="OneTimeDate" type="date" class="form-control border-primary-subtle" />
                             </div>
                         </div>
 
-                        <div id="frequencySection" class="d-none bg-light p-3 rounded border mb-3">
+                        <div id="frequencySection" class="d-none bg-light p-3 rounded border border-primary-subtle mb-3">
                             <label class="form-label fw-bold small text-uppercase text-primary">@Localizer["Recurring Settings"]</label>
                             <div class="d-flex gap-2">
-                                <select asp-for="Frequency" class="form-select" id="frequencySelect" asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"></select>
+                                <select asp-for="Frequency" class="form-select border-primary-subtle" id="frequencySelect" asp-items="Html.GetEnumSelectList<ExpenseFrequency>()"></select>
 
-                                <select asp-for="CustomIntervalCount" id="customInterval" class="form-select d-none" style="max-width: 100px;">
+                                <select asp-for="CustomIntervalCount" id="customInterval" class="form-select d-none border-primary-subtle" style="max-width: 100px;">
                                     @for (int i = 1; i <= 12; i++)
                                     {
                                         <option value="@i">@i mo.</option>
@@ -76,12 +78,13 @@
 
                         <div class="mb-4">
                             <label asp-for="Description" class="form-label fw-bold">@Localizer["Description / Comment"]</label>
-                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="@Localizer["Additional details about this expense..."]"></textarea>
+                            <textarea asp-for="Description" class="form-control border-primary-subtle" rows="3" placeholder="@Localizer["Additional details about this expense..."]"></textarea>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
-                                @Localizer["Save Expense"]
+                            @* BUTTON: Променен на btn-primary за синя тема *@
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                <i class="fas fa-save me-2"></i> @Localizer["Save Expense"]
                             </button>
                             <a asp-action="Index" class="btn btn-link text-muted text-decoration-none text-center">
                                 @Localizer["Cancel"]

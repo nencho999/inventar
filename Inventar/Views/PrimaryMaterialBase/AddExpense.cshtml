@@ -4,7 +4,7 @@
 @inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Register Base Expense";
+    ViewData["Title"] = Localizer["Register Base Expense"];
 }
 
 <div class="container py-5">
@@ -12,7 +12,8 @@
         <div class="col-md-8 col-lg-6">
 
             <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-success text-white p-3">
+                @* CARD HEADER: bg-primary за синя тема *@
+                <div class="card-header bg-primary text-white p-3">
                     <h5 class="mb-0 fw-bold">
                         <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Register Expense for Base"]
                     </h5>
@@ -37,7 +38,7 @@
                                 <label asp-for="Amount" class="form-label fw-bold">@Localizer["Amount"]</label>
                                 <div class="input-group">
                                     <input asp-for="Amount" type="number" step="0.01" class="form-control text-end" />
-                                    <span class="input-group-text bg-light">@Localizer["lv"].</span>
+                                    <span class="input-group-text bg-light">€</span>
                                 </div>
                                 <span asp-validation-for="Amount" class="text-danger small"></span>
                             </div>
@@ -46,6 +47,7 @@
                         <hr class="my-4 opacity-25">
 
                         <div class="form-check form-switch mb-4">
+                            @* SWITCH: Ще използва основния син цвят на темата *@
                             <input asp-for="IsRecurring" class="form-check-input" type="checkbox" id="recurringSwitch" style="cursor: pointer;">
                             <label class="form-check-label fw-bold ms-2" for="recurringSwitch">
                                 @Localizer["Is this a recurring (subscription) expense?"]
@@ -73,15 +75,16 @@
                                 </div>
 
                                 <div class="col-4 d-none" id="customIntervalDiv">
-                                    <label asp-for="IntervalMonths" class="form-label small">Months</label>
+                                    <label asp-for="IntervalMonths" class="form-label small">@Localizer["Months"]</label>
                                     <input asp-for="IntervalMonths" type="number" class="form-control" min="1" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
-                                @Localizer["Save Expense"]
+                            @* BUTTON: btn-primary за синя тема *@
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                <i class="fas fa-save me-2"></i> @Localizer["Save Expense"]
                             </button>
                             <a asp-action="Index" class="btn btn-link text-muted text-decoration-none text-center">
                                 @Localizer["Cancel"]
@@ -120,8 +123,7 @@
             }
 
             function toggleCustom() {
-                const selectedText = freqSelect.options[freqSelect.selectedIndex].text;
-
+                // Използваме стойност "3" за CustomMonths (провери дали съвпада с твоя enum)
                 if(freqSelect.value == "3") {
                     customDiv.classList.remove('d-none');
                     freqSelect.parentElement.classList.remove('col-12');
