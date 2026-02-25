@@ -25,6 +25,7 @@ public class ProductionCenterService : IProductionCenterService
     public async Task<IEnumerable<CenterIndexViewModel>> GetAllCentersAsync()
     {
         var centers = await dbContext.ProductionCenters
+            .Include(c => c.ExpensesList)
             .Select(c => new CenterIndexViewModel
             {
                 Id = c.Id,
@@ -33,7 +34,13 @@ public class ProductionCenterService : IProductionCenterService
                 Location = c.Location,
                 Contact = c.Contact,
                 Capacity = c.Capacity,
-                Expenses = c.Expenses
+                Expenses = c.Expenses,
+                ExpensesList = c.ExpensesList.Select(e => new ExpenseInputModel
+                {
+                    Amount = e.Amount,
+                    Type = e.Type
+                }).ToList(),
+
             })
             .ToListAsync();
 
@@ -62,14 +69,12 @@ public class ProductionCenterService : IProductionCenterService
 
     public async Task<bool> AddCenterAsync(string userId, CenterCreateInputModel model)
     {
-        // 1. Проверка на потребителя
         var user = await userManager.FindByIdAsync(userId);
         if (user == null || !await userManager.IsInRoleAsync(user, "Admin"))
         {
             throw new ArgumentException("Admin authorization required.");
         }
 
-        // 2. Инициализация на центъра
         var center = new ProductionCenter
         {
             Id = Guid.NewGuid(),
@@ -77,16 +82,14 @@ public class ProductionCenterService : IProductionCenterService
             Location = model.Location,
             Capacity = model.Capacity,
             Contact = model.Contact,
-            Status = model.Status, // Може да е null (Non-defined)
+            Status = model.Status,
             Expenses = model.Expenses
         };
 
-        // 3. Запис на Продукти и Капацитети
         if (model.Storages != null)
         {
             foreach (var storage in model.Storages)
             {
-                // Проверяваме дали е избран продукт (MaterialId всъщност е ProductId)
                 if (storage.MaterialId != Guid.Empty)
                 {
                     center.StorageCapacities.Add(new ProductionCenterStorage
@@ -99,7 +102,6 @@ public class ProductionCenterService : IProductionCenterService
             }
         }
 
-        // 4. Запис на Разходи
         foreach (var e in model.ExpensesList)
         {
             center.ExpensesList.Add(new ProductionCenterExpense
@@ -146,10 +148,9 @@ public class ProductionCenterService : IProductionCenterService
             Contact = center.Contact,
             Status = center.Status,
             Expenses = center.Expenses,
-            // МАПВАНЕ ОБРАТНО ОТ ПРОДУКТИ
             Storages = center.StorageCapacities.Select(s => new StorageInputModel
             {
-                MaterialId = s.ProductId, // Guid на продукта
+                MaterialId = s.ProductId,
                 MaxCapacity = s.MaxStorageCapacity
             }).ToList(),
             ExpensesList = center.ExpensesList.Select(e => new ExpenseInputModel
@@ -181,10 +182,9 @@ public class ProductionCenterService : IProductionCenterService
         center.Location = model.Location;
         center.Capacity = model.Capacity;
         center.Contact = model.Contact;
+        center.Expenses = model.Expenses;
         center.Status = model.Status;
 
-        // 3. ПЪРВА СТЪПКА: Изтриваме съществуващите записи в междинните таблици
-        // Използваме RemoveRange директно върху контекста за по-голяма сигурност
         if (center.StorageCapacities.Any())
         {
             dbContext.ProductionCenterStorages.RemoveRange(center.StorageCapacities);

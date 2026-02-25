@@ -1,4 +1,6 @@
-﻿namespace Inventar.Web.ViewModels.Product
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Inventar.Web.ViewModels.Product
 {
     public class ProductIndexViewModel
     {
@@ -15,6 +17,8 @@
         public decimal Vat { get; set; }
 
         public decimal Gain { get; set; }
+        [StringLength(13)]
+        public string? Barcode { get; set; }
 
         public int CentersCount { get; set; }
     }

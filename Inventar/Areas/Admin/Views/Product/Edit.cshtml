@@ -17,11 +17,22 @@
             </div>
             <div class="card-body p-4">
                 <form asp-action="Edit" method="post">
+                    @* Скрито ID за идентификация на записа *@
                     <input type="hidden" asp-for="Id" />
 
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <div class="row">
+                        @* 0. Баркод *@
+                        <div class="col-12 mb-3">
+                            <label asp-for="Barcode" class="form-label fw-bold">@Localizer["Barcode"]</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <input asp-for="Barcode" class="form-control" placeholder="@Localizer["Scan or enter barcode"]" />
+                            </div>
+                            <span asp-validation-for="Barcode" class="text-danger"></span>
+                        </div>
+
                         @* 1. Име на продукта *@
                         <div class="col-md-6 mb-3">
                             <label asp-for="Name" class="form-label fw-bold">@Localizer["Name"] *</label>
@@ -97,7 +108,6 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Изчисляване на ДДС в реално време при промяна на цената
         document.addEventListener("DOMContentLoaded", function() {
             const priceInput = document.getElementById('priceInput');
             const vatDisplay = document.getElementById('vatDisplay');

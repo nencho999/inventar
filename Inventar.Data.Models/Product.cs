@@ -27,7 +27,8 @@ namespace Inventar.Data.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Gain { get; set; }
 
-        public string? ProductType { get; set; } 
+        public string? ProductType { get; set; }
+        public string? BarCode { get; set; }
         public virtual ICollection<ProductionCenterStorage> ProductionCenters { get; set; } = new HashSet<ProductionCenterStorage>();
     }
 }

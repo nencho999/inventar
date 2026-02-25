@@ -18,6 +18,16 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <div class="row">
+                        @* Barcode Field *@
+                        <div class="col-12 mb-3">
+                            <label asp-for="Barcode" class="form-label fw-bold">@Localizer["Barcode"]</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <input asp-for="Barcode" class="form-control" placeholder="@Localizer["Scan or enter barcode"]" />
+                            </div>
+                            <span asp-validation-for="Barcode" class="text-danger"></span>
+                        </div>
+
                         <div class="col-md-6 mb-3">
                             <label asp-for="Name" class="form-label fw-bold">@Localizer["Name"] *</label>
                             <input asp-for="Name" class="form-control" />
@@ -72,6 +82,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // Automatic VAT Calculation
         document.getElementById('priceInput').addEventListener('input', function () {
             const price = parseFloat(this.value) || 0;
             const vat = (price * 0.20).toFixed(2);

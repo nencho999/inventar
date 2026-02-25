@@ -34,17 +34,17 @@
                             <th class="ps-4" style="width: 40px;">
                                 <input type="checkbox" id="selectAll" class="form-check-input" />
                             </th>
-                            <th>@Localizer["Name / Type"]</th>
+                            <th>@Localizer["Name / Barcode"]</th>
                             <th>@Localizer["Package"]</th>
                             <th class="text-end">@Localizer["Base Price"]</th>
-                            <th class="text-end text-muted">@Localizer["VAT (20%)"]</th>
+                            <th class="text-end text-muted small">@Localizer["VAT (20%)"]</th>
                             <th class="text-end text-success">@Localizer["Gain"]</th>
                             <th class="text-center">@Localizer["Centers"]</th>
                             <th class="text-end pe-4">@Localizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Any())
+                        @if (Model != null && Model.Any())
                         {
                             @foreach (var product in Model)
                             {
@@ -54,7 +54,17 @@
                                     </td>
                                     <td>
                                         <div class="fw-bold text-dark">@product.Name</div>
-                                        <small class="text-muted">@(product.ProductType ?? Localizer["No type"].Value)</small>
+                                        <div class="d-flex flex-column">
+                                            @if (!string.IsNullOrEmpty(product.Barcode))
+                                            {
+                                                <small class="text-muted">
+                                                    <i class="fas fa-barcode me-1"></i> @product.Barcode
+                                                </small>
+                                            }
+                                            <small class="text-info" style="font-size: 0.75rem;">
+                                                <i class="fas fa-tag me-1"></i> @(product.ProductType ?? Localizer["No type"].Value)
+                                            </small>
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="text-muted small">@(product.Package ?? "-")</span>
@@ -62,7 +72,6 @@
                                     <td class="text-end fw-bold text-dark">
                                         @product.Price.ToString("F2")
                                     </td>
-                                    @* НОВАТА КОЛОНА ЗА VAT *@
                                     <td class="text-end text-muted small">
                                         @product.Vat.ToString("F2")
                                     </td>
@@ -70,14 +79,17 @@
                                         @product.Gain.ToString("F2")
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge rounded-pill bg-info text-dark">
+                                        <span class="badge rounded-pill bg-info text-dark shadow-sm">
                                             <i class="fas fa-industry me-1"></i> @product.CentersCount
                                         </span>
                                     </td>
                                     <td class="text-end pe-4">
-                                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary" title="@Localizer["Edit"]">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        <div class="btn-group">
+                                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary" title="@Localizer["Edit"]">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            @* Опционално: бутон за детайли или история *@
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -86,8 +98,11 @@
                         {
                             <tr>
                                 <td colspan="8" class="text-center py-5 text-muted">
-                                    <i class="fas fa-box-open fa-3x mb-3 d-block opacity-25"></i>
-                                    @Localizer["No products available."]
+                                    <div class="py-4">
+                                        <i class="fas fa-box-open fa-3x mb-3 opacity-25"></i>
+                                        <p class="mb-0">@Localizer["No products found in the catalog."]</p>
+                                        <small>@Localizer["Start by adding a new product using the button above."]</small>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -100,28 +115,34 @@
 
 @section Scripts {
     <script>
-        const selectAll = document.getElementById('selectAll');
-        const checkboxes = document.querySelectorAll('.product-checkbox');
-        const deleteBtn = document.getElementById('deleteSelectedBtn');
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            const deleteBtn = document.getElementById('deleteSelectedBtn');
 
-        selectAll.addEventListener('change', function() {
-            checkboxes.forEach(cb => {
-                cb.checked = this.checked;
-            });
-            toggleDeleteButton();
-        });
-
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', toggleDeleteButton);
-        });
-
-        function toggleDeleteButton() {
-            const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
-            if (checkedCount > 0) {
-                deleteBtn.classList.remove('d-none');
-            } else {
-                deleteBtn.classList.add('d-none');
+            // Handle "Select All"
+            if (selectAll) {
+                selectAll.addEventListener('change', function () {
+                    checkboxes.forEach(cb => {
+                        cb.checked = this.checked;
+                    });
+                    toggleDeleteButton();
+                });
             }
-        }
+
+            // Handle individual checkboxes
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', toggleDeleteButton);
+            });
+
+            function toggleDeleteButton() {
+                const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+                if (checkedCount > 0) {
+                    deleteBtn.classList.remove('d-none');
+                } else {
+                    deleteBtn.classList.add('d-none');
+                }
+            }
+        });
     </script>
 }

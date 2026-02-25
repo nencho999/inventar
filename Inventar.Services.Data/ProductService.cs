@@ -28,6 +28,7 @@ namespace Inventar.Services.Data
                     Package = p.Package,
                     Price = p.Price,
                     Vat = p.Vat,
+                    Barcode = p.BarCode,
                     Gain = p.Gain,
                     CentersCount = p.ProductionCenters.Count()
                 })
@@ -44,6 +45,7 @@ namespace Inventar.Services.Data
                 ProductType = model.ProductType,
                 Package = model.Package,
                 Price = model.Price,
+                BarCode = model.Barcode,
                 Vat = model.Price * 0.20m,
                 Gain = model.Gain
             };
@@ -65,6 +67,7 @@ namespace Inventar.Services.Data
                 ProductType = product.ProductType,
                 Package = product.Package,
                 Price = product.Price,
+                Barcode = product.BarCode,
                 Vat = product.Vat,
                 Gain = product.Gain
             };
@@ -75,7 +78,7 @@ namespace Inventar.Services.Data
                 .AsNoTracking()
                 .Select(p => new ProductDropdownViewModel
                 {
-                    Id = p.Id, // Това е Guid
+                    Id = p.Id,
                     Name = p.Name
                 })
                 .OrderBy(p => p.Name)
@@ -93,6 +96,7 @@ namespace Inventar.Services.Data
                 product.ProductType = model.ProductType;
                 product.Package = model.Package;
                 product.Price = model.Price;
+                product.BarCode = model.Barcode;
                 product.Vat = model.Price * 0.20m;
                 product.Gain = model.Gain;
 

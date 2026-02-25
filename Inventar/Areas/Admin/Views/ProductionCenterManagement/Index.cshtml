@@ -18,6 +18,22 @@
 
     var totalCenters = activeCenters.Count();
 
+    // 1. КАЛКУЛАЦИЯ НА МЕСЕЧНИТЕ РАЗХОДИ (от string полето)
+    decimal totalMonthlyExpenses = Model
+        .Where(c => !string.IsNullOrWhiteSpace(c.Expenses))
+        .Select(c => {
+            decimal val;
+            string cleanValue = c.Expenses.Replace("€", "").Replace("$", "").Trim();
+            return decimal.TryParse(cleanValue, out val) ? val : 0;
+        })
+        .Sum();
+
+    decimal totalOneTimeExpenses = Model
+        .Where(c => c.ExpensesList != null)
+        .SelectMany(c => c.ExpensesList)
+        .Where(e => e.Type == ExpenseType.OneTime)
+        .Sum(e => e.Amount);
+
     Func<string, string> GetStatusClass = (status) => status switch
     {
         "Operational" => "bg-success",
@@ -36,7 +52,46 @@
 <hr />
 
 <div class="row mb-5">
-    <div class="col-md-3">
+    @* Карта: Общи месечни разходи *@
+    <div class="col-md-3 mb-3">
+        <div class="card bg-danger text-white shadow">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">
+                            @Localizer["Monthly Expenses"]
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold">@totalMonthlyExpenses.ToString("F2") €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Карта: Общи еднократни разходи *@
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-dark shadow">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-receipt fa-2x"></i>
+                    </div>
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">
+                            @Localizer["One-time Expenses"]
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold">@totalOneTimeExpenses.ToString("F2") €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Карта: Общо активни центрове *@
+    <div class="col-md-3 mb-3">
         <div class="card bg-info text-white shadow">
             <div class="card-body">
                 <div class="row align-items-center">
@@ -58,7 +113,7 @@
     {
         string badgeClass = GetStatusClass(summary.Status);
 
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="card @badgeClass text-white shadow">
                 <div class="card-body">
                     <div class="row align-items-center">
@@ -76,7 +131,13 @@
     }
 </div>
 
-<div class="d-flex justify-content-end align-items-center mb-4">
+<div class="d-flex justify-content-end align-items-center gap-2 mb-4">
+    @* БУТОН ЗА ПРОДУКТИ *@
+    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary d-flex align-items-center shadow-sm">
+        <i class="fas fa-boxes me-2"></i> @Localizer["Product Catalog"]
+    </a>
+
+    @* БУТОН ЗА НОВ ЦЕНТЪР *@
     <a asp-action="Create" class="btn btn-success d-flex align-items-center shadow-sm">
         <i class="fas fa-plus me-2"></i> @Localizer["Add New Center"]
     </a>
@@ -125,7 +186,7 @@
                                 <strong>@Localizer["Contact:"]</strong> @center.Contact
                             </p>
                             <p class="card-text mb-1"><i class="fas fa-money-bill-wave me-2 text-secondary"></i> 
-                                <strong>@Localizer["Expenses:"]</strong> @center.Expenses
+                                <strong>@Localizer["Expenses:"]</strong> @center.Expenses €
                             </p>
                         </div>
 
@@ -168,7 +229,7 @@
                             <p><strong><i class="fas fa-map-marked-alt me-2"></i> @Localizer["Location:"]</strong> @center.Location</p>
                             <p><strong><i class="fas fa-cogs me-2"></i> @Localizer["Capacity:"]</strong> @center.Capacity</p>
                             <p><strong><i class="fas fa-phone-alt me-2"></i> @Localizer["Contact:"]</strong> @center.Contact</p> 
-                            <p><strong><i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses:"]</strong> @center.Expenses</p>
+                            <p><strong><i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses:"]</strong> @center.Expenses €</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
