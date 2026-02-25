@@ -150,11 +150,20 @@
   <data name="Maintenance" xml:space="preserve">
     <value>В ремонт</value>
   </data>
+  <data name="Monthly Expenses" xml:space="preserve">
+    <value>Месечни разходи</value>
+  </data>
   <data name="No production centers have been registered yet." xml:space="preserve">
     <value>Все още няма регистрирани производствени центрове.</value>
   </data>
+  <data name="One-time Expenses" xml:space="preserve">
+    <value>Еднократни разходи</value>
+  </data>
   <data name="Operational" xml:space="preserve">
     <value>Отворен</value>
+  </data>
+  <data name="Product Catalog" xml:space="preserve">
+    <value>Продукти</value>
   </data>
   <data name="Production Centers Dashboard" xml:space="preserve">
     <value>Табло на производствените центрове</value>

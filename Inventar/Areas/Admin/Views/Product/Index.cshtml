@@ -13,7 +13,6 @@
             <i class="fas fa-boxes me-2"></i> @ViewData["Title"]
         </h1>
         <div class="d-flex gap-2">
-            @* Бутон за групово изтриване *@
             <button type="submit" id="deleteSelectedBtn" class="btn btn-danger shadow-sm d-none"
                     onclick="return confirm('@Localizer["Are you sure you want to delete the selected products?"]');">
                 <i class="fas fa-trash-alt me-2"></i> @Localizer["Delete Selected"]
@@ -69,14 +68,15 @@
                                     <td>
                                         <span class="text-muted small">@(product.Package ?? "-")</span>
                                     </td>
+                                    @* Добавено евро към цените *@
                                     <td class="text-end fw-bold text-dark">
-                                        @product.Price.ToString("F2")
+                                        @product.Price.ToString("F2") €
                                     </td>
                                     <td class="text-end text-muted small">
-                                        @product.Vat.ToString("F2")
+                                        @product.Vat.ToString("F2") €
                                     </td>
                                     <td class="text-end text-success fw-bold">
-                                        @product.Gain.ToString("F2")
+                                        @product.Gain.ToString("F2") €
                                     </td>
                                     <td class="text-center">
                                         <span class="badge rounded-pill bg-info text-dark shadow-sm">
@@ -88,7 +88,6 @@
                                             <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary" title="@Localizer["Edit"]">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            @* Опционално: бутон за детайли или история *@
                                         </div>
                                     </td>
                                 </tr>
@@ -120,7 +119,6 @@
             const checkboxes = document.querySelectorAll('.product-checkbox');
             const deleteBtn = document.getElementById('deleteSelectedBtn');
 
-            // Handle "Select All"
             if (selectAll) {
                 selectAll.addEventListener('change', function () {
                     checkboxes.forEach(cb => {
@@ -130,7 +128,6 @@
                 });
             }
 
-            // Handle individual checkboxes
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', toggleDeleteButton);
             });

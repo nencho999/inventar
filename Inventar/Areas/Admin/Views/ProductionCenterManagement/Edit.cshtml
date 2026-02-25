@@ -211,9 +211,26 @@
 
         const availableMaterials = @Html.Raw(Json.Serialize(Model.Products));
 
+        // Обект с преводи за JavaScript
+        const translations = {
+            selectProduct: "@Localizer["-- Select Product --"]",
+            maxCapacity: "@Localizer["Max Capacity"]",
+            expenseName: "@Localizer["Expense Name"]",
+            amount: "@Localizer["Amount"]",
+            oneTime: "@Localizer["One-time"]",
+            regular: "@Localizer["Regular"]",
+            weekly: "@Localizer["Weekly"]",
+            monthly: "@Localizer["Monthly"]",
+            yearly: "@Localizer["Yearly"]",
+            everyXMonths: "@Localizer["Every X months"]",
+            date: "@Localizer["Date"]",
+            frequency: "@Localizer["Frequency"]",
+            monthsInterval: "@Localizer["Months Interval"]"
+        };
+
         $(document).ready(function() {
             $('.product-search-select').select2({
-                placeholder: "-- @Localizer["Select Product"] --",
+                placeholder: translations.selectProduct,
                 allowClear: true,
                 width: '100%'
             });
@@ -225,7 +242,7 @@
             const row = document.createElement('div');
             row.className = 'row mb-3 align-items-center g-2 p-3 border rounded bg-light mx-0 storage-row shadow-sm';
 
-            let optionsHtml = `<option value="">-- @Localizer["Select Product"] --</option>`;
+            let optionsHtml = `<option value="">${translations.selectProduct}</option>`;
             availableMaterials.forEach(mat => {
                 optionsHtml += `<option value="${mat.id}">${mat.name}</option>`;
             });
@@ -236,7 +253,7 @@
                     <select id="${selectId}" name="Storages[${storageIndex}].MaterialId" class="form-select" required>${optionsHtml}</select>
                 </div>
                 <div class="col-md-3">
-                    <label class="small text-muted mb-1 d-block">@Localizer["Max Capacity"]</label>
+                    <label class="small text-muted mb-1 d-block">${translations.maxCapacity}</label>
                     <div class="input-group">
                         <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="0.00" required />
                         <span class="input-group-text small">QTY</span>
@@ -259,11 +276,11 @@
             row.innerHTML = `
                 <div class="row g-2 align-items-center">
                     <div class="col-md-4">
-                        <label class="small text-muted mb-1 d-block">@Localizer["Expense Name"]</label>
+                        <label class="small text-muted mb-1 d-block">${translations.expenseName}</label>
                         <input name="ExpensesList[${expenseIndex}].Name" class="form-control" required />
                     </div>
                     <div class="col-md-3">
-                        <label class="small text-muted mb-1 d-block">@Localizer["Amount"]</label>
+                        <label class="small text-muted mb-1 d-block">${translations.amount}</label>
                         <div class="input-group">
                             <input name="ExpensesList[${expenseIndex}].Amount" type="number" step="0.01" class="form-control" required />
                             <span class="input-group-text">€</span>
@@ -272,8 +289,8 @@
                     <div class="col-md-3">
                         <label class="small text-muted mb-1 d-block">@Localizer["Type"]</label>
                         <select name="ExpensesList[${expenseIndex}].Type" class="form-select" onchange="toggleExpenseFields(this, ${expenseIndex})">
-                            <option value="0">@Localizer["One-time"]</option>
-                            <option value="1">@Localizer["Regular"]</option>
+                            <option value="0">${translations.oneTime}</option>
+                            <option value="1">${translations.regular}</option>
                         </select>
                     </div>
                     <div class="col-md-2 text-end pt-4">
@@ -282,7 +299,7 @@
                 </div>
                 <div id="expense-details-${expenseIndex}" class="mt-2 row g-2">
                     <div class="col-md-4">
-                        <label class="small text-muted">@Localizer["Date"]</label>
+                        <label class="small text-muted">${translations.date}</label>
                         <input name="ExpensesList[${expenseIndex}].Date" type="date" class="form-control" required />
                     </div>
                 </div>`;
@@ -293,20 +310,24 @@
         function toggleExpenseFields(select, index) {
             const detailsDiv = document.getElementById(`expense-details-${index}`);
             if (select.value === "0") {
-                detailsDiv.innerHTML = `<div class="col-md-4"><label class="small text-muted">@Localizer["Date"]</label><input name="ExpensesList[${index}].Date" type="date" class="form-control" required /></div>`;
+                detailsDiv.innerHTML = `
+                    <div class="col-md-4">
+                        <label class="small text-muted">${translations.date}</label>
+                        <input name="ExpensesList[${index}].Date" type="date" class="form-control" required />
+                    </div>`;
             } else {
                 detailsDiv.innerHTML = `
                     <div class="col-md-4">
-                        <label class="small text-muted">@Localizer["Frequency"]</label>
+                        <label class="small text-muted">${translations.frequency}</label>
                         <select name="ExpensesList[${index}].Frequency" class="form-select" onchange="toggleCustomMonths(this, ${index})">
-                            <option value="0">Weekly</option>
-                            <option value="1">Monthly</option>
-                            <option value="2">Yearly</option>
-                            <option value="3">Every X months</option>
+                            <option value="0">${translations.weekly}</option>
+                            <option value="1">${translations.monthly}</option>
+                            <option value="2">${translations.yearly}</option>
+                            <option value="3">${translations.everyXMonths}</option>
                         </select>
                     </div>
                     <div id="custom-months-container-${index}" class="col-md-3 d-none">
-                        <label class="small text-muted">@Localizer["Months Interval"]</label>
+                        <label class="small text-muted">${translations.monthsInterval}</label>
                         <input name="ExpensesList[${index}].EveryXMonths" type="number" class="form-control" />
                     </div>`;
             }

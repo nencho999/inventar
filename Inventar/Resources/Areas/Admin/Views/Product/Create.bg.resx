@@ -117,130 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="-- Select Material --" xml:space="preserve">
-    <value>-- Изберете материал --</value>
+  <data name="Add New Product" xml:space="preserve">
+    <value>Добави нов продукт</value>
   </data>
-  <data name="Add Expense" xml:space="preserve">
-    <value>Добави разход</value>
+  <data name="Back to List" xml:space="preserve">
+    <value>Назад към списъка</value>
   </data>
-  <data name="Add Product" xml:space="preserve">
-    <value>Добави продукт</value>
+  <data name="Barcode" xml:space="preserve">
+    <value>Баркод</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Отказ</value>
+  <data name="Calculated VAT (20%):" xml:space="preserve">
+    <value>Изчислено ДДС(20%):</value>
   </data>
-  <data name="Central Production Unit" xml:space="preserve">
-    <value>Централен производствен цех</value>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
   </data>
-  <data name="City, Street Address" xml:space="preserve">
-    <value>Град, адрес</value>
+  <data name="e.g. Box 10kg" xml:space="preserve">
+    <value>напр. Кутия 10кг</value>
   </data>
-  <data name="Contact &amp; Financials" xml:space="preserve">
-    <value>Контакти и финанси</value>
-  </data>
-  <data name="e.g., 10,000 units/day" xml:space="preserve">
-    <value>напр. 10 000 единици/ден</value>
-  </data>
-  <data name="Email or Phone" xml:space="preserve">
-    <value>Имейл или телефон</value>
-  </data>
-  <data name="Expense Name" xml:space="preserve">
-    <value>Име на разхода (напр. Наем)</value>
-  </data>
-  <data name="Expenses Management" xml:space="preserve">
-    <value>Управление на разходите</value>
-  </data>
-  <data name="Expenses per day/month" xml:space="preserve">
-    <value>Разходи на ден/месец</value>
-  </data>
-  <data name="General Information" xml:space="preserve">
-    <value>Обща информация</value>
-  </data>
-  <data name="Location &amp; Capacity" xml:space="preserve">
-    <value>Местоположение и капацитет</value>
-  </data>
-  <data name="Max Capacity" xml:space="preserve">
-    <value>Макс. капацитет</value>
+  <data name="e.g. Raw Material" xml:space="preserve">
+    <value>напр. Суров материал</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Име</value>
   </data>
-  <data name="No expenses added yet." xml:space="preserve">
-    <value>Все още няма добавени разходи.</value>
+  <data name="Package" xml:space="preserve">
+    <value>Опаковка</value>
   </data>
-  <data name="No materials available" xml:space="preserve">
-    <value>Няма налични материали</value>
+  <data name="Price" xml:space="preserve">
+    <value>Цена</value>
   </data>
-  <data name="No storage capacities defined." xml:space="preserve">
-    <value>Няма дефинирани складови капацитети.</value>
+  <data name="Product Type" xml:space="preserve">
+    <value>Тип продукт</value>
   </data>
-  <data name="Register New Production Center" xml:space="preserve">
-    <value>Регистриране на нов производствен център</value>
+  <data name="Save Product" xml:space="preserve">
+    <value>Запази продукта</value>
   </data>
-  <data name="Save Center" xml:space="preserve">
-    <value>Запази центъра</value>
+  <data name="Scan or enter barcode" xml:space="preserve">
+    <value>Сканирай или въведи баркод</value>
   </data>
-  <data name="Select Center Status" xml:space="preserve">
-    <value>Избери Статус за центъра</value>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>Статус</value>
-  </data>
-  <data name="Storage Capacity by Product" xml:space="preserve">
-    <value>Складов капацитет по продукт</value>
-  </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Сума</value>
-  </data>
-  <data name="One-time" xml:space="preserve">
-    <value>Еднократен</value>
-  </data>
-  <data name="Regular" xml:space="preserve">
-    <value>Регулярен</value>
-  </data>
-  <data name="Date" xml:space="preserve">
-    <value>Дата</value>
-  </data>
-  <data name="Frequency" xml:space="preserve">
-    <value>Периодичност</value>
-  </data>
-  <data name="Weekly" xml:space="preserve">
-    <value>Седмично</value>
-  </data>
-  <data name="Monthly" xml:space="preserve">
-    <value>Месечно</value>
-  </data>
-  <data name="Yearly" xml:space="preserve">
-    <value>Годишно</value>
-  </data>
-  <data name="Every X months" xml:space="preserve">
-    <value>На всеки няколко месеца</value>
-  </data>
-  <data name="Months count" xml:space="preserve">
-    <value>Брой месеци</value>
-  </data>
-  <data name="Location" xml:space="preserve">
-    <value>Местоположение</value>
-  </data>
-  <data name="Capacity" xml:space="preserve">
-    <value>Капацитет</value>
-  </data>
-  <data name="General Expenses" xml:space="preserve">
-    <value>Месечни разходи</value>
-  </data>
-  <data name="Contact Information" xml:space="preserve">
-    <value>Контакт</value>
-  </data>
-  <data name="No storage capacities defined. Click 'Add Product' to start." xml:space="preserve">
-    <value>Няма дефинирани складови капацитети</value>
-  </data>
-  <data name="No detailed expenses added yet." xml:space="preserve">
-    <value>Няма добавени разходи все още</value>
-  </data>
-  <data name="-- Search &amp; Select Product --" xml:space="preserve">
-    <value>-- Потърсете или изберете продукт --</value>
-  </data>
-  <data name="Expenses Details" xml:space="preserve">
-    <value>Детайли за разходите</value>
+  <data name="Target Gain" xml:space="preserve">
+    <value>Целева печалба</value>
   </data>
 </root>

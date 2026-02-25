@@ -204,4 +204,19 @@
   <data name="Yearly" xml:space="preserve">
     <value>Годишно</value>
   </data>
+  <data name="General Expenses" xml:space="preserve">
+    <value>Месечни разходи</value>
+  </data>
+  <data name="Contact Information" xml:space="preserve">
+    <value>Контакт</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Продукт</value>
+  </data>
+  <data name="-- Select Product --" xml:space="preserve">
+    <value>-- Изберете продукт --</value>
+  </data>
+  <data name="Max Capacity" xml:space="preserve">
+    <value>Макс. Капацитет</value>
+  </data>
 </root>

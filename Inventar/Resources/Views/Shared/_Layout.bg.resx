@@ -132,10 +132,19 @@
   <data name="Privacy" xml:space="preserve">
     <value>Поверителност</value>
   </data>
+  <data name="Product Management" xml:space="preserve">
+    <value>Управление на продукти</value>
+  </data>
   <data name="Production Center Management" xml:space="preserve">
     <value>Управление на производствени центрове</value>
   </data>
   <data name="Sales Point Management" xml:space="preserve">
     <value>Управление на търговски обекти</value>
+  </data>
+  <data name="User Management" xml:space="preserve">
+    <value>Управление на потребители</value>
+  </data>
+  <data name="Warehouse Management" xml:space="preserve">
+    <value>Управление на складове</value>
   </data>
 </root>

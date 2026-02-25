@@ -36,19 +36,19 @@
 
                         <div class="col-md-6 mb-3">
                             <label asp-for="ProductType" class="form-label fw-bold">@Localizer["Product Type"]</label>
-                            <input asp-for="ProductType" class="form-control" placeholder="e.g. Raw Material" />
+                            <input asp-for="ProductType" class="form-control" placeholder="@Localizer["e.g. Raw Material"]" />
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label asp-for="Package" class="form-label fw-bold">@Localizer["Package"]</label>
-                            <input asp-for="Package" class="form-control" placeholder="e.g. Box 10kg" />
+                            <input asp-for="Package" class="form-control" placeholder="@Localizer["e.g. Box 10kg"]" />
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label asp-for="Price" class="form-label fw-bold">@Localizer["Price"] *</label>
                             <div class="input-group">
                                 <input asp-for="Price" id="priceInput" type="number" step="0.01" class="form-control" />
-                                <span class="input-group-text">€/$</span>
+                                <span class="input-group-text">€</span>
                             </div>
                             <div class="mt-1 small text-muted">
                                 @Localizer["Calculated VAT (20%):"] <span id="vatDisplay" class="fw-bold text-primary">0.00</span>

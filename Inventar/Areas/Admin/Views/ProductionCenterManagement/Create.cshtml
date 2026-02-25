@@ -143,13 +143,20 @@
 
         const availableProducts = @Html.Raw(Json.Serialize(Model.Products));
 
+        // Обект с преводи, достъпни за JavaScript
         const translations = {
             selectProduct: "@Localizer["-- Search & Select Product --"]",
             maxCapacity: "@Localizer["Max Capacity"]",
             expenseName: "@Localizer["Expense Name"]",
             amount: "@Localizer["Amount"]",
             oneTime: "@Localizer["One-time"]",
-            regular: "@Localizer["Regular"]"
+            regular: "@Localizer["Regular"]",
+            weekly: "@Localizer["Weekly"]",
+            monthly: "@Localizer["Monthly"]",
+            yearly: "@Localizer["Yearly"]",
+            date: "@Localizer["Date"]",
+            frequency: "@Localizer["Frequency"]",
+            select: "@Localizer["Select Product"]"
         };
 
         function addStorageRow() {
@@ -167,13 +174,13 @@
 
             row.innerHTML = `
                 <div class="col-md-7">
-                    <label class="small text-muted mb-1 d-block">@Localizer["Select Product"]</label>
+                    <label class="small text-muted mb-1 d-block">${translations.select}</label>
                     <select id="${selectId}" name="Storages[${storageIndex}].MaterialId" class="form-select product-select" required>
                         ${optionsHtml}
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="small text-muted mb-1 d-block">@Localizer["Max Capacity"]</label>
+                    <label class="small text-muted mb-1 d-block">${translations.maxCapacity}</label>
                     <div class="input-group">
                         <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="0.00" required />
                         <span class="input-group-text small">QTY</span>
@@ -224,7 +231,7 @@
                 </div>
                 <div id="expense-details-${expenseIndex}" class="mt-2 row g-2">
                     <div class="col-md-4">
-                        <label class="small text-muted">@Localizer["Date"]</label>
+                        <label class="small text-muted">${translations.date}</label>
                         <input name="ExpensesList[${expenseIndex}].Date" type="date" class="form-control" required />
                     </div>
                 </div>`;
@@ -235,9 +242,21 @@
         function toggleExpenseType(select, index) {
             const detailsDiv = document.getElementById(`expense-details-${index}`);
             if (select.value === "OneTime") {
-                detailsDiv.innerHTML = `<div class="col-md-4"><label class="small text-muted">@Localizer["Date"]</label><input name="ExpensesList[${index}].Date" type="date" class="form-control" required /></div>`;
+                detailsDiv.innerHTML = `
+                    <div class="col-md-4">
+                        <label class="small text-muted">${translations.date}</label>
+                        <input name="ExpensesList[${index}].Date" type="date" class="form-control" required />
+                    </div>`;
             } else {
-                detailsDiv.innerHTML = `<div class="col-md-4"><label class="small text-muted">@Localizer["Frequency"]</label><select name="ExpensesList[${index}].Frequency" class="form-select" required><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="Yearly">Yearly</option></select></div>`;
+                detailsDiv.innerHTML = `
+                    <div class="col-md-4">
+                        <label class="small text-muted">${translations.frequency}</label>
+                        <select name="ExpensesList[${index}].Frequency" class="form-select" required>
+                            <option value="Weekly">${translations.weekly}</option>
+                            <option value="Monthly">${translations.monthly}</option>
+                            <option value="Yearly">${translations.yearly}</option>
+                        </select>
+                    </div>`;
             }
         }
     </script>
