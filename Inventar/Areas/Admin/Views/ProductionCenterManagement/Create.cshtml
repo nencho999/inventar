@@ -11,34 +11,34 @@
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<h2 class="d-flex align-items-center mb-4">
-    <i class="fas fa-plus-circle me-3 text-primary"></i> @ViewData["Title"]
+<h2 class="d-flex align-items-center mb-4 text-primary fw-bold">
+    <i class="fas fa-plus-circle me-3"></i> @ViewData["Title"]
 </h2>
 <hr />
 
 <div class="row">
     <div class="col-md-11">
-        <form asp-action="Create" method="post" class="shadow p-4 bg-white rounded">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <form asp-action="Create" method="post" class="shadow-sm p-4 bg-white rounded border">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm"></div>
 
-            <h5 class="text-primary mb-3"><i class="fas fa-file-alt me-2"></i> @Localizer["General Information"]</h5>
+            <h5 class="text-primary mb-3 fw-bold"><i class="fas fa-info-circle me-2"></i> @Localizer["General Information"]</h5>
 
             @* Първи ред: Име и Статус *@
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light text-primary"><i class="fas fa-warehouse"></i></span>
                         <div class="form-floating flex-grow-1">
                             <input asp-for="Name" class="form-control" placeholder="Name" />
                             <label asp-for="Name">@Localizer["Name"]</label>
                         </div>
-                        <span class="input-group-text text-danger">*</span>
+                        <span class="input-group-text text-danger bg-light small">*</span>
                     </div>
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light text-primary"><i class="fas fa-toggle-on"></i></span>
                         <div class="form-floating flex-grow-1">
                             <select asp-for="Status" asp-items="ViewBag.CenterStatuses" class="form-select">
                             </select>
@@ -48,10 +48,11 @@
                 </div>
             </div>
 
+            @* Втори ред: Локация, Капацитет, Разходи *@
             <div class="row mb-3">
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light text-primary"><i class="fas fa-map-marker-alt"></i></span>
                         <div class="form-floating flex-grow-1">
                             <input asp-for="Location" class="form-control" placeholder="Location" />
                             <label asp-for="Location">@Localizer["Location"]</label>
@@ -59,8 +60,8 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light text-primary"><i class="fas fa-chart-pie"></i></span>
                         <div class="form-floating flex-grow-1">
                             <input asp-for="Capacity" class="form-control" placeholder="Capacity" />
                             <label asp-for="Capacity">@Localizer["Capacity"]</label>
@@ -68,64 +69,64 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light text-primary"><i class="fas fa-wallet"></i></span>
                         <div class="form-floating flex-grow-1">
                             <input asp-for="Expenses" class="form-control" placeholder="e.g. 500" />
                             <label asp-for="Expenses">@Localizer["General Expenses"]</label>
                         </div>
-                        <span class="input-group-text">€</span>
+                        <span class="input-group-text bg-light fw-bold text-primary">€</span>
                     </div>
                 </div>
             </div>
 
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+            <div class="mb-3 input-group shadow-sm">
+                <span class="input-group-text bg-light text-primary"><i class="fas fa-id-card"></i></span>
                 <div class="form-floating flex-grow-1">
                     <input asp-for="Contact" class="form-control" placeholder="Contact" />
                     <label asp-for="Contact">@Localizer["Contact Information"]</label>
                 </div>
             </div>
 
-            <hr class="my-4" />
+            <hr class="my-4 opacity-25" />
 
             @* Секция: Складов капацитет по Продукти *@
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-primary mb-0">
-                    <i class="fas fa-database me-2"></i> @Localizer["Storage Capacity by Product"]
+                <h5 class="text-primary mb-0 fw-bold">
+                    <i class="fas fa-boxes me-2"></i> @Localizer["Storage Capacity by Product"]
                 </h5>
-                <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="addStorageRow()">
-                    <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Product"]
+                <button type="button" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm" onclick="addStorageRow()">
+                    <i class="fas fa-plus me-1"></i> @Localizer["Add Product"]
                 </button>
             </div>
 
             <div id="storage-container" class="mb-4">
-                <div class="text-muted small mb-2 p-3 border rounded bg-light text-center" id="no-storage-msg">
-                    <i class="fas fa-info-circle me-1"></i> @Localizer["No storage capacities defined. Click 'Add Product' to start."]
+                <div class="text-muted small mb-2 p-4 border rounded bg-light text-center border-dashed" id="no-storage-msg">
+                    <i class="fas fa-box-open fa-2x mb-2 d-block"></i> @Localizer["No storage capacities defined. Click 'Add Product' to start."]
                 </div>
             </div>
 
-            <hr class="my-4" />
+            <hr class="my-4 opacity-25" />
 
             @* Секция: Динамичен списък с Разходи *@
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-primary mb-0">
-                    <i class="fas fa-money-bill-wave me-2"></i> @Localizer["Expenses Details"]
+                <h5 class="text-primary mb-0 fw-bold">
+                    <i class="fas fa-receipt me-2"></i> @Localizer["Expenses Details"]
                 </h5>
-                <button type="button" class="btn btn-outline-primary btn-sm px-3" onclick="addExpenseRow()">
-                    <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Expense"]
+                <button type="button" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm" onclick="addExpenseRow()">
+                    <i class="fas fa-plus me-1"></i> @Localizer["Add Expense"]
                 </button>
             </div>
 
             <div id="expense-container" class="mb-4">
-                <div class="text-muted small mb-2 p-3 border rounded bg-light text-center" id="no-expenses-msg">
-                    <i class="fas fa-info-circle me-1"></i> @Localizer["No detailed expenses added yet."]
+                <div class="text-muted small mb-2 p-4 border rounded bg-light text-center border-dashed" id="no-expenses-msg">
+                    <i class="fas fa-money-bill-alt fa-2x mb-2 d-block"></i> @Localizer["No detailed expenses added yet."]
                 </div>
             </div>
 
             <div class="d-flex justify-content-end mt-5 border-top pt-4">
-                <a asp-action="Index" class="btn btn-secondary px-4 me-2 shadow-sm">@Localizer["Cancel"]</a>
-                <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                <a asp-action="Index" class="btn btn-link text-muted me-3 text-decoration-none px-4">@Localizer["Cancel"]</a>
+                <button type="submit" class="btn btn-primary px-5 fw-bold shadow">
                     <i class="fas fa-save me-2"></i> @Localizer["Save Center"]
                 </button>
             </div>
@@ -143,10 +144,10 @@
 
         const availableProducts = @Html.Raw(Json.Serialize(Model.Products));
 
-        // Обект с преводи, достъпни за JavaScript
         const translations = {
             selectProduct: "@Localizer["-- Search & Select Product --"]",
             maxCapacity: "@Localizer["Max Capacity"]",
+            currentStock: "@Localizer["Current Stock"]",
             expenseName: "@Localizer["Expense Name"]",
             amount: "@Localizer["Amount"]",
             oneTime: "@Localizer["One-time"]",
@@ -156,16 +157,16 @@
             yearly: "@Localizer["Yearly"]",
             date: "@Localizer["Date"]",
             frequency: "@Localizer["Frequency"]",
-            select: "@Localizer["Select Product"]"
+            select: "@Localizer["Product"]"
         };
 
         function addStorageRow() {
-            document.getElementById('no-storage-msg')?.remove();
+            document.getElementById('no-storage-msg')?.classList.add('d-none');
             const container = document.getElementById('storage-container');
             const selectId = `product-select-${storageIndex}`;
 
             const row = document.createElement('div');
-            row.className = 'row mb-3 align-items-center g-2 p-3 border rounded bg-white shadow-sm mx-0';
+            row.className = 'row mb-3 align-items-center g-2 p-3 border rounded bg-white shadow-sm mx-0 position-relative';
 
             let optionsHtml = `<option value="">${translations.selectProduct}</option>`;
             availableProducts.forEach(p => {
@@ -173,22 +174,26 @@
             });
 
             row.innerHTML = `
-                <div class="col-md-7">
-                    <label class="small text-muted mb-1 d-block">${translations.select}</label>
+                <div class="col-md-5">
+                    <label class="small fw-bold text-muted mb-1 d-block">${translations.select}</label>
                     <select id="${selectId}" name="Storages[${storageIndex}].MaterialId" class="form-select product-select" required>
                         ${optionsHtml}
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <label class="small fw-bold text-muted mb-1 d-block">${translations.currentStock}</label>
+                    <input name="Storages[${storageIndex}].CurrentStock" type="number" step="0.01" class="form-control text-primary fw-bold" placeholder="0.00" value="0" required />
+                </div>
                 <div class="col-md-3">
-                    <label class="small text-muted mb-1 d-block">${translations.maxCapacity}</label>
+                    <label class="small fw-bold text-muted mb-1 d-block">${translations.maxCapacity}</label>
                     <div class="input-group">
                         <input name="Storages[${storageIndex}].MaxCapacity" type="number" step="0.01" class="form-control" placeholder="0.00" required />
-                        <span class="input-group-text small">QTY</span>
+                        <span class="input-group-text small bg-light">QTY</span>
                     </div>
                 </div>
                 <div class="col-md-2 text-end pt-4">
-                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.row').remove()">
-                        <i class="fas fa-trash-alt"></i>
+                    <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeStorageRow(this)">
+                        <i class="fas fa-trash-alt fa-lg"></i>
                     </button>
                 </div>`;
 
@@ -197,8 +202,16 @@
             storageIndex++;
         }
 
+        function removeStorageRow(btn) {
+            btn.closest('.row').remove();
+            const container = document.getElementById('storage-container');
+            if (container.children.length === 1) { // self-check for msg
+                 document.getElementById('no-storage-msg')?.classList.remove('d-none');
+            }
+        }
+
         function addExpenseRow() {
-            document.getElementById('no-expenses-msg')?.remove();
+            document.getElementById('no-expenses-msg')?.classList.add('d-none');
             const container = document.getElementById('expense-container');
             const row = document.createElement('div');
             row.className = 'card mb-3 p-3 expense-row shadow-sm border-light bg-white';
@@ -206,32 +219,32 @@
             row.innerHTML = `
                 <div class="row g-2 align-items-center">
                     <div class="col-md-4">
-                        <label class="small text-muted mb-1 d-block">${translations.expenseName}</label>
+                        <label class="small fw-bold text-muted mb-1 d-block">${translations.expenseName}</label>
                         <input name="ExpensesList[${expenseIndex}].Name" class="form-control" required />
                     </div>
                     <div class="col-md-3">
-                        <label class="small text-muted mb-1 d-block">${translations.amount}</label>
+                        <label class="small fw-bold text-muted mb-1 d-block">${translations.amount}</label>
                         <div class="input-group">
                             <input name="ExpensesList[${expenseIndex}].Amount" type="number" step="0.01" class="form-control" required />
-                            <span class="input-group-text">€</span>
+                            <span class="input-group-text bg-light">€</span>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="small text-muted mb-1 d-block">@Localizer["Type"]</label>
+                        <label class="small fw-bold text-muted mb-1 d-block">@Localizer["Type"]</label>
                         <select name="ExpensesList[${expenseIndex}].Type" class="form-select" onchange="toggleExpenseType(this, ${expenseIndex})" required>
                             <option value="OneTime">${translations.oneTime}</option>
                             <option value="Regular">${translations.regular}</option>
                         </select>
                     </div>
                     <div class="col-md-2 text-end pt-4">
-                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.expense-row').remove()">
-                            <i class="fas fa-trash"></i>
+                        <button type="button" class="btn btn-outline-danger btn-sm border-0" onclick="removeExpenseRow(this)">
+                            <i class="fas fa-trash-alt fa-lg"></i>
                         </button>
                     </div>
                 </div>
                 <div id="expense-details-${expenseIndex}" class="mt-2 row g-2">
                     <div class="col-md-4">
-                        <label class="small text-muted">${translations.date}</label>
+                        <label class="small fw-bold text-muted">${translations.date}</label>
                         <input name="ExpensesList[${expenseIndex}].Date" type="date" class="form-control" required />
                     </div>
                 </div>`;
@@ -239,18 +252,26 @@
             expenseIndex++;
         }
 
+        function removeExpenseRow(btn) {
+            btn.closest('.expense-row').remove();
+            const container = document.getElementById('expense-container');
+            if (container.children.length === 1) {
+                 document.getElementById('no-expenses-msg')?.classList.remove('d-none');
+            }
+        }
+
         function toggleExpenseType(select, index) {
             const detailsDiv = document.getElementById(`expense-details-${index}`);
             if (select.value === "OneTime") {
                 detailsDiv.innerHTML = `
                     <div class="col-md-4">
-                        <label class="small text-muted">${translations.date}</label>
+                        <label class="small fw-bold text-muted">${translations.date}</label>
                         <input name="ExpensesList[${index}].Date" type="date" class="form-control" required />
                     </div>`;
             } else {
                 detailsDiv.innerHTML = `
                     <div class="col-md-4">
-                        <label class="small text-muted">${translations.frequency}</label>
+                        <label class="small fw-bold text-muted">${translations.frequency}</label>
                         <select name="ExpensesList[${index}].Frequency" class="form-select" required>
                             <option value="Weekly">${translations.weekly}</option>
                             <option value="Monthly">${translations.monthly}</option>
@@ -262,14 +283,19 @@
     </script>
 
     <style>
+        .border-dashed {
+            border-style: dashed !important;
+            border-width: 2px !important;
+        }
+
         .select2-container--default .select2-selection--single {
             border: 1px solid #dee2e6;
-            height: 38px;
-            padding-top: 5px;
+            height: 3.6rem;
+            padding-top: 1rem;
         }
 
             .select2-container--default .select2-selection--single .select2-selection__arrow {
-                height: 36px;
+                height: 3.5rem;
             }
 
         .form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {

@@ -23,4 +23,7 @@ public class ProductionCenter
         = new List<ProductionCenterStorage>();
     public virtual ICollection<ProductionCenterExpense> ExpensesList { get; set; }
         = new List<ProductionCenterExpense>();
+
+    public virtual ICollection<ProductionLog> ProductionLogs { get; set; }
+        = new List<ProductionLog>();
 }

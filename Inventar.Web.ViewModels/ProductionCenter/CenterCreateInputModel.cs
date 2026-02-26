@@ -29,5 +29,6 @@ public class ExpenseInputModel
 public class StorageInputModel
 {
     public Guid MaterialId { get; set; }
+    public double CurrentStock { get; set; }
     public double MaxCapacity { get; set; }
 }

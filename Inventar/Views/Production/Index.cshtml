@@ -1,0 +1,172 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Production Management"];
+}
+
+<div class="container-fluid py-4">
+    @* --- HEADER SECTION --- *@
+    <div class="d-flex align-items-center mb-5 p-4 bg-white rounded shadow-sm border-start border-primary border-5">
+        <div class="icon-box bg-primary text-white rounded-3 p-3 me-3 shadow">
+            <i class="fas fa-industry fa-2x"></i>
+        </div>
+        <div>
+            <h2 class="h3 mb-0 fw-bold text-dark">@Localizer["Production Management"]</h2>
+            <p class="text-muted mb-0">@Localizer["Manage manufacturing, stock levels, and logistics"]</p>
+        </div>
+    </div>
+
+    @* --- MAIN OPERATIONS (PRIMARY) --- *@
+    <div class="mb-5">
+        <h5 class="text-uppercase text-muted small fw-bold mb-3 d-flex align-items-center">
+            <span class="me-2">@Localizer["Core Operations"]</span>
+            <div class="flex-grow-1 border-bottom opacity-25"></div>
+        </h5>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <a asp-action="Registration" class="text-decoration-none group-card">
+                    <div class="card h-100 border-0 shadow-sm bg-primary text-white overflow-hidden position-relative">
+                        <div class="card-body p-4 position-relative" style="z-index: 2;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <i class="fas fa-plus-circle fa-3x opacity-75"></i>
+                                <i class="fas fa-arrow-right opacity-50"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1">@Localizer["Production Registration"]</h5>
+                            <p class="small mb-0 opacity-75">@Localizer["Record newly produced quantities into center stock"]</p>
+                        </div>
+                        @* Декоративна икона на заден план *@
+                        <i class="fas fa-tools position-absolute end-0 bottom-0 mb-n3 me-n2 opacity-25 fa-6x" style="transform: rotate(-15deg);"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @* --- LOGISTICS & TRANSFERS --- *@
+    <div class="mb-5">
+        <h5 class="text-uppercase text-muted small fw-bold mb-3 d-flex align-items-center">
+            <span class="me-2">@Localizer["Logistics & Internal Transfers"]</span>
+            <div class="flex-grow-1 border-bottom opacity-25"></div>
+        </h5>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift border-bottom border-primary border-3">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="icon-circle bg-primary-subtle text-primary me-3">
+                            <i class="fas fa-truck-moving"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">@Localizer["Center to Warehouse"]</h6>
+                            <small class="text-muted">@Localizer["Move stock to central storage"]</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift border-bottom border-primary border-3">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="icon-circle bg-primary-subtle text-primary me-3">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">@Localizer["Center to Sales Point"]</h6>
+                            <small class="text-muted">@Localizer["Direct shipment to retail"]</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift border-bottom border-primary border-3">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="icon-circle bg-primary-subtle text-primary me-3">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">@Localizer["Warehouse Transfer"]</h6>
+                            <small class="text-muted">@Localizer["Between storage locations"]</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* --- RETURNS & RECLAMATIONS --- *@
+    <div class="mb-5">
+        <h5 class="text-uppercase text-muted small fw-bold mb-3 d-flex align-items-center">
+            <span class="me-2 text-danger">@Localizer["Returns & Quality Control"]</span>
+            <div class="flex-grow-1 border-bottom opacity-25"></div>
+        </h5>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm hover-lift bg-light-subtle">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-2 bg-danger-subtle text-danger rounded me-3">
+                                <i class="fas fa-undo-alt"></i>
+                            </div>
+                            <span class="fw-bold">@Localizer["Sales Point Return"]</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted px-2"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm hover-lift bg-light-subtle">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-2 bg-danger-subtle text-danger rounded me-3">
+                                <i class="fas fa-house-damage"></i>
+                            </div>
+                            <span class="fw-bold">@Localizer["Warehouse Return to Center"]</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted px-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Ефект на повдигане при посочване */
+    .hover-lift {
+        transition: all 0.25s ease;
+        cursor: pointer;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+        }
+
+    /* Кръгли икони за под-менютата */
+    .icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    /* Стил за основната карта (синята) */
+    .group-card .card {
+        transition: transform 0.2s;
+    }
+
+    .group-card:hover .card {
+        transform: scale(1.02);
+    }
+
+    /* Светлосини и светлочервени фонове за Bootstrap 5 (ако не са дефинирани) */
+    .bg-primary-subtle {
+        background-color: #e7f1ff;
+    }
+
+    .bg-danger-subtle {
+        background-color: #f8d7da;
+    }
+</style>

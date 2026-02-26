@@ -96,7 +96,9 @@ public class ProductionCenterService : IProductionCenterService
                     {
                         ProductionCenterId = center.Id,
                         ProductId = storage.MaterialId,
-                        MaxStorageCapacity = storage.MaxCapacity
+                        MaxStorageCapacity = storage.MaxCapacity,
+                        CurrentStock = storage.CurrentStock
+
                     });
                 }
             }
@@ -151,7 +153,8 @@ public class ProductionCenterService : IProductionCenterService
             Storages = center.StorageCapacities.Select(s => new StorageInputModel
             {
                 MaterialId = s.ProductId,
-                MaxCapacity = s.MaxStorageCapacity
+                MaxCapacity = s.MaxStorageCapacity,
+                CurrentStock = s.CurrentStock
             }).ToList(),
             ExpensesList = center.ExpensesList.Select(e => new ExpenseInputModel
             {
@@ -210,7 +213,8 @@ public class ProductionCenterService : IProductionCenterService
                     Id = Guid.NewGuid(), // Нов ключ
                     ProductionCenterId = center.Id,
                     ProductId = s.MaterialId,
-                    MaxStorageCapacity = (double)s.MaxCapacity
+                    MaxStorageCapacity = (double)s.MaxCapacity,
+                    CurrentStock = s.CurrentStock
                 });
             }
         }

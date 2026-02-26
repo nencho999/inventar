@@ -18,6 +18,7 @@ namespace Inventar.Data.Models
 
         [ForeignKey(nameof(ProductId))]
         public virtual Product Product { get; set; } = null!;
+        public double CurrentStock { get; set; }
 
         [Required]
         public double MaxStorageCapacity { get; set; }
