@@ -1,4 +1,6 @@
-﻿namespace Inventar.Web.ViewModels.SalesPoint;
+﻿using Inventar.Data.Models;
+
+namespace Inventar.Web.ViewModels.SalesPoint;
 
 public class SalesPointListDTO
 {
@@ -7,6 +9,7 @@ public class SalesPointListDTO
     public string Address { get; set; }
     public string Type { get; set; }
     public int ProductCount { get; set; }
+    public WarehouseStatus Status { get; set; }
 
     public decimal MonthlyExpenses { get; set; }
     public decimal OneTimeExpenses { get; set; }

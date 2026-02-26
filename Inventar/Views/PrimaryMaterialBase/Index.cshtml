@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Inventar.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @model Inventar.Web.ViewModels.Base.DashboardViewModel
 @{
@@ -69,6 +70,29 @@
             border-color: #cdd4db;
             color: #212529;
         }
+
+    .status-badge-sm {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-operational {
+        background-color: #e0f2f1;
+        color: #00695c;
+    }
+
+    .status-maintenance {
+        background-color: #fff3e0;
+        color: #ef6c00;
+    }
+
+    .status-closed {
+        background-color: #eceff1;
+        color: #455a64;
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -93,6 +117,31 @@
         </div>
     </div>
 
+    <div class="col-md-4">
+        <div class="card bg-warning text-dark shadow-sm border-0">
+            <div class="card-body d-flex align-items-center">
+                <i class="fas fa-tools fa-3x opacity-50 me-3"></i>
+                <div>
+                    <h6 class="text-uppercase mb-0">@Localizer["Under Construction"]</h6>
+                    <h2 class="mb-0 fw-bold">@Model.UnderConstructionCount</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-success text-white shadow-sm border-0">
+            <div class="card-body d-flex align-items-center">
+                <i class="fas fa-check-circle fa-3x opacity-50 me-3"></i>
+                <div>
+                    <h6 class="text-uppercase mb-0">@Localizer["Operational"]</h6>
+                    <h2 class="mb-0 fw-bold">@Model.OperationalCount</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mb-4 g-3">
     <div class="col-xl-3 col-md-6">
         <div class="card border-0 shadow-sm rounded-3 p-3 h-100 border-start border-4 border-success">
             <div class="d-flex justify-content-between align-items-start h-100">
@@ -172,12 +221,22 @@
 <div class="row g-4">
     @foreach (var item in Model.Bases)
     {
+        string statusClass = item.Status switch
+        {
+            WarehouseStatus.Operational => "status-operational",
+            WarehouseStatus.Maintenance => "status-maintenance",
+            WarehouseStatus.UnderConstruction => "status-maintenance",
+            WarehouseStatus.Closed => "status-closed",
+            _ => "bg-light text-dark"
+        };
+
         <div class="col-lg-4 col-md-6">
             <div class="card dashboard-card h-100 p-3">
                 <div class="card-body p-1">
 
                     <div class="d-flex justify-content-between mb-2">
                         <h5 class="base-card-title mb-0">@item.Name</h5>
+                        <span class="status-badge-sm @statusClass">@item.Status</span>
                     </div>
 
                     <p class="location-text mb-1">

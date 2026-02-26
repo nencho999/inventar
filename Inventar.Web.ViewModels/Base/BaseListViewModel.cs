@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inventar.Data.Models;
+using System;
 
 namespace Inventar.Web.ViewModels.Base
 {
@@ -14,5 +15,6 @@ namespace Inventar.Web.ViewModels.Base
 
         public double OccupiedCapacity { get; set; }
         public double MaxCapacity { get; set; }
+        public WarehouseStatus Status { get; set; }
     }
 }

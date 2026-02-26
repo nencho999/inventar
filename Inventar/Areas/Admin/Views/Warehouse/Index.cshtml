@@ -97,6 +97,51 @@
             border-color: #cdd4db;
             color: #212529;
         }
+
+    .capacity-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #e9ecef;
+    }
+
+    .stat-card {
+        border-radius: 5px;
+        padding: 20px;
+        color: white;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            opacity: 0.8;
+        }
+
+        .stat-card .info h4 {
+            margin: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .stat-card .info h2 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+    .bg-info-custom {
+        background-color: #00c0ef;
+    }
+    .bg-warning-custom {
+        background-color: #f39c12;
+    }
+    .bg-success-custom {
+        background-color: #00a65a;
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -107,22 +152,38 @@
 </div>
 
 <div class="row mb-4 g-3">
-    <div class="col-xl-4 col-md-6">
-        <div class="card border-0 shadow-sm rounded-3 p-3 h-100">
-            <div class="d-flex justify-content-between align-items-start h-100">
-                <div>
-                    <span class="text-muted small text-uppercase fw-bold">@Localizer["Total Warehouses"]</span>
-                    <h2 class="mb-0 fw-bold mt-2">@Model.TotalWarehouses</h2>
-                </div>
-                <div class="icon-box bg-light-blue text-primary">
-                    <i class="fas fa-warehouse fa-lg"></i>
-                </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-info-custom">
+            <i class="fas fa-globe"></i>
+            <div class="info">
+                <h4>@Localizer["Total Active Centers"]</h4>
+                <h2>@Model.TotalWarehouses</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card bg-warning-custom">
+            <i class="fas fa-tachometer-alt"></i>
+            <div class="info">
+                <h4>@Localizer["Under Construction"]</h4>
+                <h2>@Model.UnderConstructionCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card bg-success-custom">
+            <i class="fas fa-tachometer-alt"></i>
+            <div class="info">
+                <h4>@Localizer["Operational"]</h4>
+                <h2>@Model.OperationalCount</h2>
             </div>
         </div>
     </div>
 
     <div class="col-xl-4 col-md-6">
-        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow border-start border-4 border-success">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative border-start border-4 border-success">
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
                     <span class="text-muted small text-uppercase fw-bold">@Localizer["Monthly Expenses"]</span>
@@ -136,7 +197,7 @@
     </div>
 
     <div class="col-xl-4 col-md-6">
-        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative hover-shadow border-start border-4 border-warning">
+        <div class="card border-0 shadow-sm rounded-3 p-3 h-100 position-relative border-start border-4 border-warning">
             <div class="d-flex justify-content-between align-items-start h-100">
                 <div>
                     <span class="text-muted small text-uppercase fw-bold">@Localizer["One-Time Expenses"]</span>
@@ -161,10 +222,6 @@
             </div>
         </form>
 
-        <button class="btn btn-white border bg-white text-muted">
-            <i class="fas fa-filter"></i> @Localizer["Filter"]
-        </button>
-
         <a asp-action="Create" class="btn btn-primary px-4 fw-bold">
             <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Warehouse"]
         </a>
@@ -183,9 +240,6 @@
             _ => "bg-light text-dark"
         };
 
-        var monthlyTotal = item.RecurringExpenses.Sum(x => x.Amount);
-        var oneTimeTotal = item.Expenses.Sum(x => x.Amount);
-
         <div class="col-lg-4 col-md-6">
             <div class="card dashboard-card h-100 p-3">
                 <div class="card-body p-1 d-flex flex-column h-100">
@@ -200,24 +254,48 @@
                         <span class="status-badge-sm @statusClass">@item.Status</span>
                     </div>
 
-                    <p class="text-muted small mb-3">
-                        <i class="fas fa-cubes me-1"></i> @(item.Capacity ?? "No capacity info")
-                    </p>
-
                     <hr class="text-muted opacity-25" />
 
-                    <div class="mb-4">
+                    <div class="capacity-container">
+                        <div class="d-flex justify-content-between align-items-end mb-2">
+                            <span class="text-muted small fw-bold">
+                                <i class="fas fa-box-open me-1"></i> @Localizer["Inventory"]
+                            </span>
+                            <span class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                @item.UsedCapacity.ToString("N0") / @item.TotalCapacity.ToString("N0")
+                            </span>
+                        </div>
+
+                        <div class="progress shadow-sm" style="height: 10px; border-radius: 10px; background-color: #e2e8f0;">
+                            @{
+                                var barColor = item.FillPercentage > 90 ? "bg-danger" :
+                                item.FillPercentage > 75 ? "bg-warning" : "bg-success";
+                            }
+                            <div class="progress-bar @barColor"
+                                 role="progressbar"
+                                 style="width: @item.FillPercentage.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)%; border-radius: 10px;"
+                                 aria-valuenow="@item.FillPercentage"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <div class="text-end mt-1">
+                            <small class="text-muted" style="font-size: 0.75rem;">@item.FillPercentage.ToString("0.0")% @Localizer["full"]</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 mt-2">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="expense-label text-info">
-                                <i class="fas fa-dollar-sign"></i> @Localizer["Monthly"]:
+                                <i class="fas fa-calendar-alt me-1 small"></i> @Localizer["Monthly"]:
                             </span>
-                            <span class="fw-bold text-dark">@monthlyTotal.ToString("N2") @Localizer["lv."]</span>
+                            <span class="fw-bold text-dark">@item.MonthlyExpensesTotal.ToString("N2") @Localizer["lv."]</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="expense-label text-secondary" style="color: #a87e55 !important;">
-                                <i class="fas fa-tags"></i> @Localizer["One-Time"]:
+                                <i class="fas fa-receipt me-1 small"></i> @Localizer["One-Time"]:
                             </span>
-                            <span class="fw-bold text-dark">@oneTimeTotal.ToString("N2") @Localizer["lv."]</span>
+                            <span class="fw-bold text-dark">@item.OneTimeExpensesTotal.ToString("N2") @Localizer["lv."]</span>
                         </div>
                     </div>
 

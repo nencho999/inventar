@@ -4,6 +4,7 @@ using Inventar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventar.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260226095319_AddStatus")]
+    partial class AddStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,9 +216,6 @@ namespace Inventar.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BarCode")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -252,9 +252,6 @@ namespace Inventar.Data.Migrations
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("CurrentStock")
-                        .HasColumnType("float");
 
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -675,33 +672,6 @@ namespace Inventar.Data.Migrations
                     b.ToTable("ProductionCenterExpenses");
                 });
 
-            modelBuilder.Entity("ProductionLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductionCenterId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ProductionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductionCenterId");
-
-                    b.ToTable("ProductionLog");
-                });
-
             modelBuilder.Entity("Inventar.Data.Models.Capacity", b =>
                 {
                     b.HasOne("Inventar.Data.Models.Material", "Material")
@@ -891,25 +861,6 @@ namespace Inventar.Data.Migrations
                     b.Navigation("ProductionCenter");
                 });
 
-            modelBuilder.Entity("ProductionLog", b =>
-                {
-                    b.HasOne("Inventar.Data.Models.Product", "Product")
-                        .WithMany("ProductionLogs")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductionCenter", "ProductionCenter")
-                        .WithMany("ProductionLogs")
-                        .HasForeignKey("ProductionCenterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductionCenter");
-                });
-
             modelBuilder.Entity("Inventar.Data.Models.Material", b =>
                 {
                     b.Navigation("StorageInCenters");
@@ -929,8 +880,6 @@ namespace Inventar.Data.Migrations
             modelBuilder.Entity("Inventar.Data.Models.Product", b =>
                 {
                     b.Navigation("ProductionCenters");
-
-                    b.Navigation("ProductionLogs");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.SalesPoint", b =>
@@ -952,8 +901,6 @@ namespace Inventar.Data.Migrations
             modelBuilder.Entity("ProductionCenter", b =>
                 {
                     b.Navigation("ExpensesList");
-
-                    b.Navigation("ProductionLogs");
 
                     b.Navigation("StorageCapacities");
                 });

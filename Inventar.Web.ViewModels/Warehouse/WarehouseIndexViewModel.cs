@@ -11,7 +11,9 @@ namespace Inventar.Web.ViewModels.Warehouse
         public int TotalWarehouses { get; set; }
         public decimal TotalMonthlyExpenses { get; set; }
         public decimal TotalOneTimeExpenses { get; set; }
+        public int OperationalCount { get; set; }
+        public int UnderConstructionCount { get; set; }
 
-        public IEnumerable<Inventar.Data.Models.Warehouse> Warehouses { get; set; }
+        public IEnumerable<WarehouseListItemViewModel> Warehouses { get; set; } = new List<WarehouseListItemViewModel>();
     }
 }

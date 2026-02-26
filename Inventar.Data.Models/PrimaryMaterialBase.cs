@@ -11,6 +11,7 @@ namespace Inventar.Data.Models
         public string Address { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
+        public WarehouseStatus Status { get; set; }
         public ICollection<Capacity> Capacities { get; set; } = new List<Capacity>();
         public ICollection<StockTransaction> StockTransactions { get; set; } = new List<StockTransaction>();
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();

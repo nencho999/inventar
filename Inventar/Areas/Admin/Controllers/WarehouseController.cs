@@ -1,7 +1,9 @@
-﻿using Inventar.Services.Data.Contracts;
+﻿using Inventar.Services.Data;
+using Inventar.Services.Data.Contracts;
 using Inventar.Web.ViewModels.Warehouse;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -26,9 +28,11 @@ namespace Inventar.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new WarehouseFormViewModel());
+            var model = await _service.GetNewWarehouseFormAsync();
+
+            return View(model);
         }
 
         [HttpPost]
@@ -50,8 +54,14 @@ namespace Inventar.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(WarehouseFormViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                model.AvailableMaterials = await _service.GetMaterialsSelectListAsync();
+                return View(model);
+            }
+
             await _service.UpdateAsync(model);
+
             return RedirectToAction(nameof(Index));
         }
 

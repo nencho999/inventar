@@ -1,4 +1,5 @@
 ﻿using Inventar.Data.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,5 +25,8 @@ namespace Inventar.Web.ViewModels.Warehouse
 
         [Required]
         public WarehouseStatus Status { get; set; }
+
+        public List<CapacityViewModel> Capacities { get; set; } = new List<CapacityViewModel>();
+        public IEnumerable<SelectListItem> AvailableMaterials { get; set; } = new List<SelectListItem>();
     }
 }

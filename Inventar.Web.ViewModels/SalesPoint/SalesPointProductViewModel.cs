@@ -10,4 +10,5 @@ public class SalesPointProductViewModel
     public decimal PriceReduction { get; set; }
 
     public bool IsPercentage { get; set; }
+    public decimal OriginalPrice { get; set; }
 }

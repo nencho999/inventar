@@ -9,6 +9,7 @@ public class SalesPoint
     public string? Description { get; set; }
 
     public SalesPointType Type { get; set; }
+    public WarehouseStatus Status { get; set; }
 
     public ICollection<SalesPointProduct> SalesPointProducts { get; set; } = new List<SalesPointProduct>();
     public ICollection<SalesPointExpense> Expenses { get; set; } = new List<SalesPointExpense>();
