@@ -32,6 +32,14 @@
                             <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<SalesPointType>()"></select>
                             <span asp-validation-for="Type" class="text-danger"></span>
                         </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Status" class="form-label fw-bold">@Localizer["Статус на обекта"]</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-info-circle text-primary"></i></span>
+                                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<WarehouseStatus>()"></select>
+                            </div>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label fw-bold">@Localizer["Name"] <span class="text-danger">*</span></label>
                             <input asp-for="Name" class="form-control" placeholder="@Localizer["e.g. Central Store"]" />
@@ -55,43 +63,47 @@
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fs-6 text-uppercase"><i class="fas fa-boxes me-2"></i> @Localizer["Sealed Products"]</h5>
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" id="selectAllProducts" checked>
-                        <label class="form-check-label text-white small" for="selectAllProducts">@Localizer["Select All"]</label>
-                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                         <table class="table table-hover align-middle table-sm mb-0">
-                            <thead class="bg-light sticky-top" style="z-index: 5;">
+                            <thead class="bg-light sticky-top">
                                 <tr>
-                                    <th style="width: 40px;" class="text-center">#</th>
+                                    <th style="width: 50px;" class="text-center">
+                                        <input class="form-check-input" type="checkbox" id="selectAllProducts" checked>
+                                    </th>
                                     <th>@Localizer["Product"]</th>
-                                    <th style="width: 140px;">@Localizer["Discount"]</th>
-                                    <th style="width: 100px;">@Localizer["Type"]</th>
+                                    <th>@Localizer["Price"]</th>
+                                    <th style="width: 140px;">@Localizer["Reduced Price"]</th>
+                                    <th style="width: 120px;">@Localizer["Discount"]</th>
+                                    <th style="width: 80px;">@Localizer["Type"]</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @for (int i = 0; i < Model.Products.Count; i++)
                                 {
-                                    <tr class="@(Model.Products[i].IsSelected ? "" : "opacity-50 bg-light")">
+                                    <tr class="product-row @(Model.Products[i].IsSelected ? "" : "opacity-50 bg-light")"
+                                        data-original-price="@Model.Products[i].OriginalPrice">
                                         <td class="text-center">
                                             <input type="hidden" asp-for="Products[i].ProductId" />
                                             <input type="hidden" asp-for="Products[i].ProductName" />
-                                            <div class="form-check d-flex justify-content-center">
-                                                <input asp-for="Products[i].IsSelected" class="form-check-input product-check" />
-                                            </div>
+                                            <input type="hidden" asp-for="Products[i].OriginalPrice" class="orig-price-hidden" />
+                                            <input asp-for="Products[i].IsSelected" class="form-check-input product-check" />
+                                        </td>
+                                        <td><span class="fw-bold">@Model.Products[i].ProductName</span></td>
+                                        <td><span class="text-muted">@Model.Products[i].OriginalPrice.ToString("N2")</span></td>
+                                        <td>
+                                            <input type="number" step="0.01" class="form-control form-control-sm final-price-input"
+                                                   placeholder="0.00" />
                                         </td>
                                         <td>
-                                            <span class="fw-bold text-dark">@Model.Products[i].ProductName</span>
+                                            <input asp-for="Products[i].PriceReduction" type="number" step="0.01"
+                                                   class="form-control form-control-sm text-end discount-input" />
                                         </td>
                                         <td>
-                                            <input asp-for="Products[i].PriceReduction" type="number" step="0.01" class="form-control form-control-sm text-end" placeholder="0" />
-                                        </td>
-                                        <td>
-                                            <select asp-for="Products[i].IsPercentage" class="form-select form-select-sm border-0 bg-light">
+                                            <select asp-for="Products[i].IsPercentage" class="form-select form-select-sm is-percentage-select">
                                                 <option value="true">%</option>
-                                                <option value="false">@Localizer["lv."]</option>
+                                                <option value="false">lv.</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -122,79 +134,60 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const tableBody = document.querySelector('tbody');
 
-            const selectAllCheckbox = document.getElementById('selectAllProducts');
-            const productCheckboxes = document.querySelectorAll('.product-check');
+            tableBody.addEventListener('input', function (e) {
+                const row = e.target.closest('tr');
+                if (!row) return;
 
-            if(selectAllCheckbox) {
-                selectAllCheckbox.addEventListener('change', function() {
-                    productCheckboxes.forEach(chk => {
-                        chk.checked = this.checked;
-                        const tr = chk.closest('tr');
-                        if(this.checked) {
-                            tr.classList.remove('opacity-50', 'bg-light');
-                        } else {
-                            tr.classList.add('opacity-50', 'bg-light');
-                        }
-                    });
-                });
-            }
+                const originalPrice = parseFloat(row.getAttribute('data-original-price')) || 0;
+                const finalPriceInput = row.querySelector('.final-price-input');
+                const discountInput = row.querySelector('.discount-input');
+                const isPercentage = row.querySelector('.is-percentage-select').value === "true";
 
-            productCheckboxes.forEach(chk => {
-                chk.addEventListener('change', function() {
-                    const tr = this.closest('tr');
-                    if(this.checked) {
-                        tr.classList.remove('opacity-50', 'bg-light');
-                    } else {
-                        tr.classList.add('opacity-50', 'bg-light');
+                if (e.target.classList.contains('final-price-input')) {
+                    let val = parseFloat(finalPriceInput.value) || 0;
+
+                    if (val > originalPrice) {
+                        val = originalPrice;
+                        finalPriceInput.value = originalPrice.toFixed(2);
                     }
-                });
+
+                    if (isPercentage) {
+                        let pct = ((originalPrice - val) / originalPrice) * 100;
+                        discountInput.value = pct.toFixed(2);
+                    } else {
+                        discountInput.value = (originalPrice - val).toFixed(2);
+                    }
+                }
+
+                if (e.target.classList.contains('discount-input')) {
+                    let disc = parseFloat(discountInput.value) || 0;
+                    let final = 0;
+
+                    if (isPercentage) {
+                        if (disc > 100) { disc = 100; discountInput.value = 100; }
+                        final = originalPrice - (originalPrice * (disc / 100));
+                    } else {
+                        if (disc > originalPrice) { disc = originalPrice; discountInput.value = originalPrice.toFixed(2); }
+                        final = originalPrice - disc;
+                    }
+                    finalPriceInput.value = final.toFixed(2);
+                }
             });
 
-            const expensesContainer = document.getElementById('expensesContainer');
+            document.querySelectorAll('.product-row').forEach(row => {
+                const orig = parseFloat(row.getAttribute('data-original-price'));
+                const disc = parseFloat(row.querySelector('.discount-input').value) || 0;
+                const isPct = row.querySelector('.is-percentage-select').value === "true";
+                const finalInput = row.querySelector('.final-price-input');
 
-            if(expensesContainer) {
-                expensesContainer.addEventListener('change', function(e) {
-                    const target = e.target;
-
-                    if (target.classList.contains('is-recurring-select')) {
-                        const row = target.closest('.expense-row');
-                        const oneTimeDiv = row.querySelector('.one-time-field');
-                        const recurringDiv = row.querySelector('.recurring-field');
-
-                        if (target.value === 'true') {
-                            oneTimeDiv.classList.add('d-none');
-                            recurringDiv.classList.remove('d-none');
-                        } else {
-                            oneTimeDiv.classList.remove('d-none');
-                            recurringDiv.classList.add('d-none');
-                        }
-                    }
-
-                    if (target.classList.contains('frequency-select')) {
-                        const row = target.closest('.recurring-field');
-                        const customIntervalSelect = row.querySelector('.custom-interval');
-
-                        if (target.value == "3") {
-                            customIntervalSelect.classList.remove('d-none');
-                        } else {
-                            customIntervalSelect.classList.add('d-none');
-                        }
-                    }
-                });
-
-                expensesContainer.addEventListener('click', function(e) {
-                    const btn = e.target.closest('.delete-row-btn');
-                    if (btn) {
-                        const row = btn.closest('.expense-row');
-
-                        const deletedFlag = row.querySelector('.is-deleted-flag');
-                        if (deletedFlag) deletedFlag.value = 'true';
-
-                        row.style.display = 'none';
-                    }
-                });
-            }
+                if (isPct) {
+                    finalInput.value = (orig - (orig * (disc / 100))).toFixed(2);
+                } else {
+                    finalInput.value = (orig - disc).toFixed(2);
+                }
+            });
         });
     </script>
 }

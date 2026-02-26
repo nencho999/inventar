@@ -73,6 +73,7 @@ namespace Inventar.Services.Data
             {
                 Id = b.Id,
                 Name = b.Name,
+                Status = b.Status,
                 Address = b.Address,
                 Description = b.Description,
                 OneTimeExpenses = b.Expenses.Sum(e => e.Amount),
@@ -93,7 +94,10 @@ namespace Inventar.Services.Data
                 TotalBases = baseViewModels.Count,
                 TotalOneTimeExpenses = baseViewModels.Sum(x => x.OneTimeExpenses),
                 TotalMonthlyExpenses = baseViewModels.Sum(x => x.MonthlyExpenses),
-                Bases = baseViewModels
+                Bases = baseViewModels,
+                OperationalCount = baseViewModels.Count(b => b.Status == WarehouseStatus.Operational),
+                UnderConstructionCount = baseViewModels.Count(b => b.Status == WarehouseStatus.UnderConstruction),
+                ClosedCount = baseViewModels.Count(b => b.Status == WarehouseStatus.Closed)
             };
 
             return dashboard;
@@ -117,6 +121,7 @@ namespace Inventar.Services.Data
             entity.Name = model.Name;
             entity.Address = model.Address;
             entity.Description = model.Description;
+            entity.Status = model.Status;
 
             await _context.SaveChangesAsync();
 

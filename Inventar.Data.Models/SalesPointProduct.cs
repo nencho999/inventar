@@ -6,7 +6,7 @@ public class SalesPointProduct
     public SalesPoint SalesPoint { get; set; }
 
     public Guid ProductId { get; set; }
-    public Material Product { get; set; }
+    public Product Product { get; set; }
 
     public bool IsSelected { get; set; } = true;
 

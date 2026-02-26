@@ -9,6 +9,9 @@ namespace Inventar.Web.ViewModels.Base
         public decimal TotalMonthlyExpenses { get; set; }
         public decimal TotalOneTimeExpenses { get; set; }
         public decimal TotalInventoryValue { get; set; }
+        public int OperationalCount { get; set; }
+        public int UnderConstructionCount { get; set; }
+        public int ClosedCount { get; set; }
 
         public IEnumerable<BaseListViewModel> Bases { get; set; }
     }

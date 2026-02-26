@@ -65,6 +65,7 @@ namespace Inventar.Services.Data
                     Name = sp.Name,
                     Address = sp.Address,
                     Type = sp.Type.ToString(),
+                    Status = sp.Status,
                     ProductCount = sp.SalesPointProducts.Count(p => p.IsSelected),
                     MonthlyExpenses = spMonthly,
                     OneTimeExpenses = spOneTime
@@ -78,6 +79,9 @@ namespace Inventar.Services.Data
                 TotalCount = entities.Count,
                 PhysicalCount = entities.Count(x => x.Type == SalesPointType.Physical),
                 OnlineCount = entities.Count(x => x.Type == SalesPointType.Online),
+                OperationalCount = entities.Count(x => x.Status == WarehouseStatus.Operational),
+                UnderConstructionCount = entities.Count(x => x.Status == WarehouseStatus.UnderConstruction),
+                ClosedCount = entities.Count(x => x.Status == WarehouseStatus.Closed),
                 TotalMonthlyExpenses = globalMonthly,
                 TotalOneTimeExpenses = globalOneTime
             };
@@ -85,14 +89,15 @@ namespace Inventar.Services.Data
 
         public async Task<SalesPointFormViewModel> GetFormForCreateAsync()
         {
-            var products = await _context.Materials
+            var products = await _context.Products
                 .Select(p => new SalesPointProductViewModel
                 {
                     ProductId = p.Id,
                     ProductName = p.Name,
                     IsSelected = true,
                     PriceReduction = 0,
-                    IsPercentage = true
+                    IsPercentage = true,
+                    OriginalPrice = p.Price
                 }).ToListAsync();
 
             return new SalesPointFormViewModel
@@ -109,7 +114,8 @@ namespace Inventar.Services.Data
                 Name = model.Name,
                 Address = model.Address,
                 Description = model.Description,
-                Type = model.Type
+                Type = model.Type,
+                Status = model.Status
             };
 
             foreach (var p in model.Products.Where(x => x.IsSelected))
@@ -136,7 +142,7 @@ namespace Inventar.Services.Data
 
             if (entity == null) return null;
 
-            var allMaterials = await _context.Materials.ToListAsync();
+            var allMaterials = await _context.Products.ToListAsync();
             var productVms = new List<SalesPointProductViewModel>();
 
             foreach (var mat in allMaterials)
@@ -149,7 +155,8 @@ namespace Inventar.Services.Data
                     ProductName = mat.Name,
                     IsSelected = existingLink != null,
                     PriceReduction = existingLink?.PriceReductionValue ?? 0,
-                    IsPercentage = existingLink?.IsPercentage ?? true
+                    IsPercentage = existingLink?.IsPercentage ?? true,
+                    OriginalPrice = mat.Price
                 });
             }
 
@@ -160,7 +167,8 @@ namespace Inventar.Services.Data
                 Address = entity.Address,
                 Description = entity.Description,
                 Type = entity.Type,
-                Products = productVms
+                Products = productVms,
+                Status = entity.Status
             };
         }
 
@@ -177,6 +185,7 @@ namespace Inventar.Services.Data
             entity.Address = model.Address;
             entity.Description = model.Description;
             entity.Type = model.Type;
+            entity.Status = model.Status;
 
             entity.SalesPointProducts.Clear();
             foreach (var p in model.Products.Where(x => x.IsSelected))

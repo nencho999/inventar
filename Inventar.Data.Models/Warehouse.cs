@@ -23,5 +23,6 @@ namespace Inventar.Data.Models
         public WarehouseStatus Status { get; set; }
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
         public ICollection<RecurringExpense> RecurringExpenses { get; set; } = new List<RecurringExpense>();
+        public ICollection<Capacity> Capacities { get; set; } = new List<Capacity>();
     }
 }

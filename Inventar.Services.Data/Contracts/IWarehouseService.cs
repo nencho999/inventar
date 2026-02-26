@@ -1,5 +1,6 @@
 ﻿using Inventar.Data.Models;
 using Inventar.Web.ViewModels.Warehouse;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Inventar.Services.Data.Contracts
         Task<WarehouseIndexViewModel> GetDashboardDataAsync(string search = null);
         Task<IEnumerable<Warehouse>> GetAllWarehousesAsync();
         Task<WarehouseFormViewModel> GetForEditAsync(Guid id);
+        Task<WarehouseFormViewModel> GetNewWarehouseFormAsync();
+        Task<IEnumerable<SelectListItem>> GetMaterialsSelectListAsync();
         Task CreateAsync(WarehouseFormViewModel model);
         Task UpdateAsync(WarehouseFormViewModel model);
         Task DeleteAsync(Guid id);
