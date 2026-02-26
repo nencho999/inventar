@@ -10,4 +10,5 @@ public class CenterIndexViewModel
     public string Contact { get; set; }
     public string Capacity { get; set; }
     public string Expenses { get; set; }
+    public List<ExpenseInputModel> ExpensesList { get; set; } = new List<ExpenseInputModel>();
 }

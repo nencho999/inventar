@@ -4,6 +4,7 @@ using Inventar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventar.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260225083610_BarCode")]
+    partial class BarCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,21 +105,15 @@ namespace Inventar.Data.Migrations
                     b.Property<Guid>("MaterialId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PrimaryMaterialBaseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("WarehouseId")
+                    b.Property<Guid>("PrimaryMaterialBaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MaterialId");
 
-                    b.HasIndex("WarehouseId");
-
                     b.HasIndex("PrimaryMaterialBaseId", "MaterialId")
-                        .IsUnique()
-                        .HasFilter("[PrimaryMaterialBaseId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Capacities");
                 });
@@ -198,9 +195,6 @@ namespace Inventar.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -330,9 +324,6 @@ namespace Inventar.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -682,17 +673,13 @@ namespace Inventar.Data.Migrations
 
                     b.HasOne("Inventar.Data.Models.PrimaryMaterialBase", "PrimaryMaterialBase")
                         .WithMany("Capacities")
-                        .HasForeignKey("PrimaryMaterialBaseId");
-
-                    b.HasOne("Inventar.Data.Models.Warehouse", "Warehouse")
-                        .WithMany("Capacities")
-                        .HasForeignKey("WarehouseId");
+                        .HasForeignKey("PrimaryMaterialBaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Material");
 
                     b.Navigation("PrimaryMaterialBase");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.Expense", b =>
@@ -763,7 +750,7 @@ namespace Inventar.Data.Migrations
 
             modelBuilder.Entity("Inventar.Data.Models.SalesPointProduct", b =>
                 {
-                    b.HasOne("Inventar.Data.Models.Product", "Product")
+                    b.HasOne("Inventar.Data.Models.Material", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -891,8 +878,6 @@ namespace Inventar.Data.Migrations
 
             modelBuilder.Entity("Inventar.Data.Models.Warehouse", b =>
                 {
-                    b.Navigation("Capacities");
-
                     b.Navigation("Expenses");
 
                     b.Navigation("RecurringExpenses");

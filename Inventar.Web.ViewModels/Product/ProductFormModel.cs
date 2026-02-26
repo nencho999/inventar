@@ -17,6 +17,7 @@
 
         public string? Package { get; set; }
         public decimal Vat { get; set; }
+        public string? Barcode { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
         [Range(0.01, 1000000, ErrorMessage = "Price must be positive")]
