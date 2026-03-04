@@ -38,7 +38,13 @@ namespace Inventar.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(WarehouseFormViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                var freshModel = await _service.GetNewWarehouseFormAsync();
+                model.Products = freshModel.Products;
+                return View(model);
+            }
+
             await _service.CreateAsync(model);
             return RedirectToAction(nameof(Index));
         }
@@ -56,12 +62,15 @@ namespace Inventar.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.AvailableMaterials = await _service.GetMaterialsSelectListAsync();
+                var freshModel = await _service.GetForEditAsync(model.Id ?? Guid.Empty);
+                if (freshModel != null)
+                {
+                    model.Products = freshModel.Products;
+                }
                 return View(model);
             }
 
             await _service.UpdateAsync(model);
-
             return RedirectToAction(nameof(Index));
         }
 

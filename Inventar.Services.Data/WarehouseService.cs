@@ -31,7 +31,7 @@ namespace Inventar.Services.Data
             var query = _context.Warehouses
                 .Include(w => w.Expenses)
                 .Include(w => w.RecurringExpenses)
-                .Include(w => w.Capacities)
+                .Include(w => w.WarehouseProducts)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
@@ -44,9 +44,8 @@ namespace Inventar.Services.Data
 
             foreach (var w in warehouses)
             {
-                decimal maxCapacity = w.Capacities?.Sum(c => c.CapacityLimit) ?? 0;
-
-                decimal currentlyUsed = 0;
+                decimal.TryParse(w.Capacity, out decimal maxCapacity);
+                decimal currentlyUsed = (decimal)(w.WarehouseProducts?.Sum(wp => wp.Quantity) ?? 0);
 
                 warehouseViewModels.Add(new WarehouseListItemViewModel
                 {
@@ -81,27 +80,28 @@ namespace Inventar.Services.Data
 
         public async Task<WarehouseFormViewModel> GetNewWarehouseFormAsync()
         {
-            var model = new WarehouseFormViewModel();
+            var allProducts = await _context.Products.ToListAsync();
 
-            var materials = await _context.Materials.ToListAsync();
-
-            model.AvailableMaterials = materials.Select(m => new SelectListItem
+            return new WarehouseFormViewModel
             {
-                Value = m.Id.ToString(),
-                Text = m.Name
-            });
-
-            return model;
+                Products = allProducts.Select(p => new WarehouseProductSelectionViewModel
+                {
+                    ProductId = p.Id,
+                    ProductName = p.Name,
+                    IsSelected = false,
+                    Quantity = 0
+                }).ToList()
+            };
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetMaterialsSelectListAsync()
+        public async Task<IEnumerable<SelectListItem>> GetProductsSelectListAsync()
         {
-            var materials = await _context.Materials.ToListAsync();
-            return materials.Select(m => new SelectListItem
-            {
-                Value = m.Id.ToString(),
-                Text = m.Name
-            });
+            return await _context.Products
+                .Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.Name
+                }).ToListAsync();
         }
 
         public async Task CreateAsync(WarehouseFormViewModel model)
@@ -115,16 +115,16 @@ namespace Inventar.Services.Data
                 Status = model.Status
             };
 
-            if (model.Capacities != null && model.Capacities.Any())
+            if (model.Products != null && model.Products.Any())
             {
-                foreach (var cap in model.Capacities)
+                foreach (var productRow in model.Products)
                 {
-                    if (cap.MaterialId != Guid.Empty && cap.CapacityLimit > 0)
+                    if (productRow.IsSelected)
                     {
-                        warehouse.Capacities.Add(new Capacity
+                        warehouse.WarehouseProducts.Add(new WarehouseProduct
                         {
-                            MaterialId = cap.MaterialId,
-                            CapacityLimit = cap.CapacityLimit
+                            ProductId = productRow.ProductId,
+                            Quantity = productRow.Quantity
                         });
                     }
                 }
@@ -137,10 +137,13 @@ namespace Inventar.Services.Data
         public async Task<WarehouseFormViewModel> GetForEditAsync(Guid id)
         {
             var warehouse = await _context.Warehouses
-                .Include(w => w.Capacities)
+                .Include(w => w.WarehouseProducts)
+                .ThenInclude(wp => wp.Product)
                 .FirstOrDefaultAsync(w => w.Id == id);
 
             if (warehouse == null) return null;
+
+            var allProducts = await _context.Products.ToListAsync();
 
             var model = new WarehouseFormViewModel
             {
@@ -150,20 +153,15 @@ namespace Inventar.Services.Data
                 ContactInfo = warehouse.ContactInfo,
                 Capacity = warehouse.Capacity,
                 Status = warehouse.Status,
-
-                Capacities = warehouse.Capacities.Select(c => new CapacityViewModel
+                Products = allProducts.Select(p => new WarehouseProductSelectionViewModel
                 {
-                    MaterialId = c.MaterialId,
-                    CapacityLimit = c.CapacityLimit
+                    ProductId = p.Id,
+                    ProductName = p.Name,
+                    IsSelected = warehouse.WarehouseProducts.Any(wp => wp.ProductId == p.Id),
+                    Quantity = warehouse.WarehouseProducts
+                        .FirstOrDefault(wp => wp.ProductId == p.Id)?.Quantity ?? 0
                 }).ToList()
             };
-
-            var materials = await _context.Materials.ToListAsync();
-            model.AvailableMaterials = materials.Select(m => new SelectListItem
-            {
-                Value = m.Id.ToString(),
-                Text = m.Name
-            });
 
             return model;
         }
@@ -171,8 +169,8 @@ namespace Inventar.Services.Data
         public async Task UpdateAsync(WarehouseFormViewModel model)
         {
             var warehouse = await _context.Warehouses
-        .Include(w => w.Capacities)
-        .FirstOrDefaultAsync(w => w.Id == model.Id);
+                .Include(w => w.WarehouseProducts)
+                .FirstOrDefaultAsync(w => w.Id == model.Id);
 
             if (warehouse != null)
             {
@@ -182,20 +180,17 @@ namespace Inventar.Services.Data
                 warehouse.Capacity = model.Capacity;
                 warehouse.Status = model.Status;
 
-                _context.Capacities.RemoveRange(warehouse.Capacities);
+                _context.WarehouseProducts.RemoveRange(warehouse.WarehouseProducts);
 
-                if (model.Capacities != null && model.Capacities.Any())
+                if (model.Products != null)
                 {
-                    foreach (var cap in model.Capacities)
+                    foreach (var p in model.Products.Where(x => x.IsSelected))
                     {
-                        if (cap.MaterialId != Guid.Empty && cap.CapacityLimit > 0)
+                        warehouse.WarehouseProducts.Add(new WarehouseProduct
                         {
-                            warehouse.Capacities.Add(new Capacity
-                            {
-                                MaterialId = cap.MaterialId,
-                                CapacityLimit = cap.CapacityLimit
-                            });
-                        }
+                            ProductId = p.ProductId,
+                            Quantity = p.Quantity
+                        });
                     }
                 }
 

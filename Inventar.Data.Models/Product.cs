@@ -32,5 +32,6 @@ namespace Inventar.Data.Models
         public virtual ICollection<ProductionCenterStorage> ProductionCenters { get; set; } = new HashSet<ProductionCenterStorage>();
 
         public virtual ICollection<ProductionLog> ProductionLogs { get; set; } = new List<ProductionLog>();
+        public virtual ICollection<WarehouseProduct> WarehouseProducts { get; set; } = new HashSet<WarehouseProduct>();
     }
 }

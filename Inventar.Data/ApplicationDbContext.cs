@@ -30,6 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Warehouse> Warehouses { get; set; }
     public DbSet<ProductionCenterExpense> ProductionCenterExpenses { get; set; }
     public DbSet<ProductionLog> ProductionLog { get; set; }
+    public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -105,5 +106,20 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<ProductionCenterStorage>()
         .HasKey(ps => new { ps.ProductionCenterId, ps.ProductId });
+
+        modelBuilder.Entity<WarehouseProduct>()
+        .HasKey(wp => new { wp.WarehouseId, wp.ProductId });
+
+        modelBuilder.Entity<WarehouseProduct>()
+            .HasOne(wp => wp.Warehouse)
+            .WithMany(w => w.WarehouseProducts)
+            .HasForeignKey(wp => wp.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<WarehouseProduct>()
+            .HasOne(wp => wp.Product)
+            .WithMany(p => p.WarehouseProducts)
+            .HasForeignKey(wp => wp.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

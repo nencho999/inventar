@@ -24,5 +24,6 @@ namespace Inventar.Data.Models
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
         public ICollection<RecurringExpense> RecurringExpenses { get; set; } = new List<RecurringExpense>();
         public ICollection<Capacity> Capacities { get; set; } = new List<Capacity>();
+        public virtual ICollection<WarehouseProduct> WarehouseProducts { get; set; } = new HashSet<WarehouseProduct>();
     }
 }

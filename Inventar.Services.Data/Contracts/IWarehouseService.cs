@@ -16,7 +16,7 @@ namespace Inventar.Services.Data.Contracts
         Task<IEnumerable<Warehouse>> GetAllWarehousesAsync();
         Task<WarehouseFormViewModel> GetForEditAsync(Guid id);
         Task<WarehouseFormViewModel> GetNewWarehouseFormAsync();
-        Task<IEnumerable<SelectListItem>> GetMaterialsSelectListAsync();
+        Task<IEnumerable<SelectListItem>> GetProductsSelectListAsync();
         Task CreateAsync(WarehouseFormViewModel model);
         Task UpdateAsync(WarehouseFormViewModel model);
         Task DeleteAsync(Guid id);

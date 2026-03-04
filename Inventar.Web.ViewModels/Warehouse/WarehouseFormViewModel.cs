@@ -27,6 +27,6 @@ namespace Inventar.Web.ViewModels.Warehouse
         public WarehouseStatus Status { get; set; }
 
         public List<CapacityViewModel> Capacities { get; set; } = new List<CapacityViewModel>();
-        public IEnumerable<SelectListItem> AvailableMaterials { get; set; } = new List<SelectListItem>();
+        public List<WarehouseProductSelectionViewModel> Products { get; set; } = new List<WarehouseProductSelectionViewModel>();
     }
 }
