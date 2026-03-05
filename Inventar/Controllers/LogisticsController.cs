@@ -44,5 +44,79 @@ namespace Inventar.Web.Controllers
             model.Warehouses = await _logisticsService.GetAllWarehousesAsync();
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> CenterToWarehouse()
+        {
+            // Трябва да имаш метод, който връща обекти за центровете и складовете
+            var model = await _logisticsService.GetTransferModelAsync();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CenterToWarehouse(ProductionTransferFormModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _logisticsService.GetTransferModelAsync();
+                model.ProductionCenters = viewModel.ProductionCenters;
+                model.Warehouses = viewModel.Warehouses;
+                return View(model);
+            }
+
+            try
+            {
+                bool success = await _logisticsService.RegisterTransferAsync(model);
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "Продукцията е преместена успешно!";
+                    return RedirectToAction("Index", "Production");
+                }
+                ModelState.AddModelError("", "Недостатъчна наличност в центъра.");
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Грешка при трансфера.");
+            }
+
+            var retryModel = await _logisticsService.GetTransferModelAsync();
+            model.ProductionCenters = retryModel.ProductionCenters;
+            model.Warehouses = retryModel.Warehouses;
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CenterToSalesPoint()
+        {
+            var model = await _logisticsService.GetSalesPointTransferModelAsync();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CenterToSalesPoint(CenterToSalesPointFormModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var refreshModel = await _logisticsService.GetSalesPointTransferModelAsync();
+                model.ProductionCenters = refreshModel.ProductionCenters;
+                model.SalesPoints = refreshModel.SalesPoints;
+                return View(model);
+            }
+
+            bool success = await _logisticsService.RegisterSalesPointTransferAsync(model);
+
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Stock successfully transferred to Sales Point!";
+                return RedirectToAction("Index", "Production");
+            }
+
+            ModelState.AddModelError("", "Insufficient stock in the production center.");
+
+            var retryModel = await _logisticsService.GetSalesPointTransferModelAsync();
+            model.ProductionCenters = retryModel.ProductionCenters;
+            model.SalesPoints = retryModel.SalesPoints;
+            return View(model);
+        }
     }
 }

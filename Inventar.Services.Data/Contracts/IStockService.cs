@@ -1,5 +1,5 @@
 ﻿using Inventar.Web.ViewModels.Stock;
-using Inventar.Web.ViewModels;
+using Inventar.Web.ViewModels.DropDowns;
 
 namespace Inventar.Services.Data.Contracts;
 

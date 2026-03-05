@@ -1,7 +1,7 @@
 ﻿using Inventar.Data;
 using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
-using Inventar.Web.ViewModels;
+using Inventar.Web.ViewModels.DropDowns;
 using Inventar.Web.ViewModels.Product;
 using Microsoft.EntityFrameworkCore;
 

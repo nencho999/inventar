@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Inventar.Data.Models;
+using Inventar.Web.ViewModels.DropDowns;
 
 namespace Inventar.Web.ViewModels.ProductionCenter;
 

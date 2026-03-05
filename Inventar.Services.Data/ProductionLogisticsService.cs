@@ -1,6 +1,8 @@
 ﻿using Inventar.Data;
 using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
+using Inventar.Web.ViewModels;
+using Inventar.Web.ViewModels.DropDowns;
 using Inventar.Web.ViewModels.Logistics;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -76,6 +78,130 @@ namespace Inventar.Services.Data
                 await transaction.RollbackAsync();
                 return false;
             }
+        }
+        public async Task<bool> RegisterTransferAsync(ProductionTransferFormModel model)
+        {
+            var centerStorage = await _context.ProductionCenterStorages
+                .FirstOrDefaultAsync(s => s.ProductionCenterId == model.FromProductionCenterId && s.ProductId == model.ProductId);
+
+            if (centerStorage == null || centerStorage.CurrentStock < model.Quantity)
+                return false;
+
+            var warehouseStorage = await _context.WarehouseProducts
+                .FirstOrDefaultAsync(w => w.WarehouseId == model.ToWarehouseId && w.ProductId == model.ProductId);
+
+            if (warehouseStorage == null)
+            {
+                warehouseStorage = new WarehouseProduct
+                {
+                    WarehouseId = model.ToWarehouseId,
+                    ProductId = model.ProductId,
+                    Quantity = 0
+                };
+                _context.WarehouseProducts.Add(warehouseStorage);
+            }
+
+            centerStorage.CurrentStock -= model.Quantity;
+            warehouseStorage.Quantity += model.Quantity;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<ProductionTransferFormModel> GetTransferModelAsync()
+        {
+            var centers = await _context.ProductionCenters
+                .AsNoTracking()
+                .Select(c => new ProductionCentersDropDown
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToListAsync();
+
+            var warehouses = await _context.Warehouses
+                .AsNoTracking()
+                .Select(w => new WarehouseDropDownModel
+                {
+                    Id = w.Id,
+                    Name = w.Name
+                })
+                .ToListAsync();
+
+            return new ProductionTransferFormModel
+            {
+                ProductionCenters = centers,
+                Warehouses = warehouses,
+            };
+        }
+        public async Task<bool> RegisterSalesPointTransferAsync(CenterToSalesPointFormModel model)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var centerStorage = await _context.ProductionCenterStorages
+                    .FirstOrDefaultAsync(s => s.ProductionCenterId == model.FromProductionCenterId
+                                           && s.ProductId == model.ProductId);
+
+                if (centerStorage == null || centerStorage.CurrentStock < model.Quantity)
+                {
+                    return false;
+                }
+
+                var salesPointStorage = await _context.SalesPointProducts
+                    .FirstOrDefaultAsync(s => s.SalesPointId == model.ToSalesPointId
+                                           && s.ProductId == model.ProductId);
+
+                if (salesPointStorage == null)
+                {
+                    salesPointStorage = new SalesPointProduct
+                    {
+                        SalesPointId = model.ToSalesPointId,
+                        ProductId = model.ProductId,
+                        Quantity = 0
+                    };
+                    await _context.SalesPointProducts.AddAsync(salesPointStorage);
+                }
+
+                centerStorage.CurrentStock -= model.Quantity;
+                salesPointStorage.Quantity += model.Quantity;
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        public async Task<CenterToSalesPointFormModel> GetSalesPointTransferModelAsync()
+        {
+            var centers = await _context.ProductionCenters
+                .AsNoTracking()
+                .Select(c => new ProductionCentersDropDown
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToListAsync();
+
+            var salesPoints = await _context.SalesPoints
+                .AsNoTracking()
+                .Select(s => new SalesPointDropDownModel
+                {
+                    Id = s.Id,
+                    Name = s.Name
+                })
+                .ToListAsync();
+
+            return new CenterToSalesPointFormModel
+            {
+                ProductionCenters = centers,
+                SalesPoints = salesPoints
+            };
         }
     }
 }

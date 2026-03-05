@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Inventar.Web.ViewModels
+namespace Inventar.Web.ViewModels.DropDowns
 {
-    public class ProductDropdownViewModel
+    public class MaterialDropDownModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;

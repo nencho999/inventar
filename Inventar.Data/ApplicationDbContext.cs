@@ -32,7 +32,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProductionLog> ProductionLog { get; set; }
     public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

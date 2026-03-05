@@ -13,5 +13,9 @@ namespace Inventar.Services.Data.Contracts
         Task<IEnumerable<SelectListItem>> GetAllWarehousesAsync();
         Task<List<TransferProductItemViewModel>> GetWarehouseProductStocksAsync(Guid warehouseId);
         Task<bool> ExecuteWarehouseTransferAsync(WarehouseTransferViewModel model);
+        Task<ProductionTransferFormModel> GetTransferModelAsync();
+        Task<bool> RegisterTransferAsync(ProductionTransferFormModel model);
+        Task<CenterToSalesPointFormModel> GetSalesPointTransferModelAsync();
+        Task<bool> RegisterSalesPointTransferAsync(CenterToSalesPointFormModel model);
     }
 }

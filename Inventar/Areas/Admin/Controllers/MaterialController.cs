@@ -1,6 +1,6 @@
 ﻿using Inventar.Areas.Admin.Controllers;
 using Inventar.Services.Data.Contracts;
-using Inventar.Web.ViewModels;
+using Inventar.Web.ViewModels.DropDowns;
 using Microsoft.AspNetCore.Mvc;
 using static Inventar.Common.Messages.ErrorMessages.Material;
 

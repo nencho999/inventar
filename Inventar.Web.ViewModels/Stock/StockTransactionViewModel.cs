@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Inventar.Web.ViewModels.DropDowns;
+using System.ComponentModel.DataAnnotations;
 
 namespace Inventar.Web.ViewModels.Stock;
 

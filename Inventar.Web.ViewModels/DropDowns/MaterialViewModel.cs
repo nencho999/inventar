@@ -1,4 +1,4 @@
-﻿namespace Inventar.Web.ViewModels;
+﻿namespace Inventar.Web.ViewModels.DropDowns;
 
 public class MaterialViewModel
 {

@@ -1,8 +1,8 @@
 ﻿using Inventar.Data;
 using Inventar.Data.Models;
 using Inventar.Services.Data.Contracts;
-using Inventar.Web.ViewModels;
 using Inventar.Web.ViewModels.Base;
+using Inventar.Web.ViewModels.DropDowns;
 using Inventar.Web.ViewModels.PrimaryBase;
 using Inventar.Web.ViewModels.ProductionCenter;
 using Microsoft.EntityFrameworkCore;

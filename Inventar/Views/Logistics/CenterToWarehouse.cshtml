@@ -1,0 +1,120 @@
+﻿@using Inventar.Web.ViewModels.Production
+@using Microsoft.AspNetCore.Mvc.Localization
+@model ProductionTransferFormModel
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Center to Warehouse Transfer";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0 mt-4">
+            @* Card Header *@
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-exchange-alt me-2"></i> @Localizer["Transfer to Warehouse"]
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                @* Form targeting Logistics Controller *@
+                <form asp-action="CenterToWarehouse" asp-controller="Logistics" method="post" id="transferForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        @* 1. FROM CENTER *@
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase">@Localizer["From Production Center"]</label>
+                            <select asp-for="FromProductionCenterId" id="centerSelect" class="form-select shadow-sm"
+                                    asp-items="@(new SelectList(Model.ProductionCenters, "Id", "Name"))">
+                                <option value="">-- @Localizer["Select Center"] --</option>
+                            </select>
+                            <span asp-validation-for="FromProductionCenterId" class="text-danger small"></span>
+                        </div>
+
+                        @* 2. TO WAREHOUSE *@
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase">@Localizer["To Warehouse"]</label>
+                            <select asp-for="ToWarehouseId" class="form-select shadow-sm"
+                                    asp-items="@(new SelectList(Model.Warehouses, "Id", "Name"))">
+                                <option value="">-- @Localizer["Select Warehouse"] --</option>
+                            </select>
+                            <span asp-validation-for="ToWarehouseId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    @* 3. PRODUCT (Dynamic) *@
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">@Localizer["Product for Transfer"]</label>
+                        <select asp-for="ProductId" id="productSelect" class="form-select shadow-sm" disabled>
+                            <option value="">-- @Localizer["Select center first"] --</option>
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger small"></span>
+                        <div id="stockLabel" class="form-text text-primary fw-bold mt-1"></div>
+                    </div>
+
+                    @* 4. QUANTITY *@
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small text-uppercase">@Localizer["Quantity"]</label>
+                        <div class="input-group shadow-sm">
+                            <input asp-for="Quantity" type="number" step="0.01" class="form-control" id="quantityInput" placeholder="0.00" />
+                            <span class="input-group-text bg-light text-primary fw-bold">QTY</span>
+                        </div>
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    @* Footer Buttons *@
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <a asp-controller="Production" asp-action="Index" class="btn btn-outline-secondary px-4">
+                            @Localizer["Cancel"]
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5 fw-bold shadow">
+                            <i class="fas fa-shipping-fast me-2"></i> @Localizer["Perform Transfer"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('centerSelect').addEventListener('change', async function() {
+            const centerId = this.value;
+            const productSelect = document.getElementById('productSelect');
+            const stockLabel = document.getElementById('stockLabel');
+
+            productSelect.innerHTML = '<option value="">-- @Localizer["Loading..."] --</option>';
+            productSelect.disabled = true;
+            stockLabel.innerText = '';
+
+            if (!centerId) {
+                productSelect.innerHTML = '<option value="">-- @Localizer["Select center first"] --</option>';
+                return;
+            }
+
+            try {
+                // Ensure the path is correct based on your routing
+                const response = await fetch(`/Production/GetProducts?centerId=${centerId}`);
+                const products = await response.json();
+
+                productSelect.innerHTML = '<option value="">-- @Localizer["Select Product"] --</option>';
+                products.forEach(p => {
+                    const option = new Option(p.name, p.id);
+                    productSelect.add(option);
+                });
+                productSelect.disabled = false;
+            } catch (error) {
+                console.error("Error loading products:", error);
+                productSelect.innerHTML = '<option value="">-- @Localizer["Error loading data"] --</option>';
+            }
+        });
+
+        // Re-enable select before submit to avoid null values in ModelState
+        document.getElementById('transferForm').addEventListener('submit', function() {
+            document.getElementById('productSelect').disabled = false;
+        });
+    </script>
+}

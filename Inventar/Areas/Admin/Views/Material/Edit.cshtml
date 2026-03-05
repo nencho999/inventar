@@ -1,6 +1,7 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Inventar.Web.ViewModels.DropDowns
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@model Inventar.Web.ViewModels.MaterialViewModel
+@model MaterialViewModel
 
 @{
     ViewData["Title"] = Model.Id == Guid.Empty ? Localizer["New Material"] : Localizer["Edit Material"];

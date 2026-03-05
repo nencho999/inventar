@@ -9,6 +9,7 @@ public class SalesPointProduct
     public Product Product { get; set; }
 
     public bool IsSelected { get; set; } = true;
+    public int? Quantity { get; set; }
 
     public decimal PriceReductionValue { get; set; }
     public bool IsPercentage { get; set; }

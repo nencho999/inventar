@@ -1,4 +1,4 @@
-﻿using Inventar.Web.ViewModels;
+﻿using Inventar.Web.ViewModels.DropDowns;
 using Inventar.Web.ViewModels.Product;
 using System;
 using System.Collections.Generic;

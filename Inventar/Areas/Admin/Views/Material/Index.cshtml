@@ -1,7 +1,8 @@
 ﻿@using System.Globalization
+@using Inventar.Web.ViewModels.DropDowns
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@model IEnumerable<Inventar.Web.ViewModels.MaterialViewModel>
+@model IEnumerable<MaterialViewModel>
 
 @{
     ViewData["Title"] = @Localizer["Materials"];
