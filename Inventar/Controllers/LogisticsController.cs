@@ -118,5 +118,28 @@ namespace Inventar.Web.Controllers
             model.SalesPoints = retryModel.SalesPoints;
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> WarehouseToSalesPoint()
+        {
+            var model = new WarehouseToSalesPointViewModel
+            {
+                Warehouses = await _logisticsService.GetAllWarehousesAsync(),
+                SalesPoints = await _logisticsService.GetAllSalesPointsAsync()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> WarehouseToSalesPoint(WarehouseToSalesPointViewModel model)
+        {
+            if (await _logisticsService.ExecuteWarehouseToSalesPointTransferAsync(model))
+            {
+                return RedirectToAction("Index", "Production");
+            }
+            model.Warehouses = await _logisticsService.GetAllWarehousesAsync();
+            model.SalesPoints = await _logisticsService.GetAllSalesPointsAsync();
+            return View(model);
+        }
     }
 }

@@ -11,6 +11,6 @@ namespace Inventar.Web.ViewModels.Logistics
         public Guid ProductId { get; set; }
         public string ProductName { get; set; } = null!;
         public double AvailableQuantity { get; set; }
-        public double TransferQuantity { get; set; }
+        public int TransferQuantity { get; set; }
     }
 }

@@ -1,0 +1,142 @@
+﻿@model WarehouseToSalesPointViewModel
+@using Inventar.Web.ViewModels.Logistics
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0 text-primary fw-bold">
+            <i class="fas fa-shipping-fast me-2"></i> @Localizer["Transfer to Sales Point"]
+        </h2>
+        <a asp-action="Index" asp-controller="Production" class="btn btn-outline-secondary shadow-sm">
+            <i class="fas fa-arrow-left me-1"></i> @Localizer["Back"]
+        </a>
+    </div>
+
+    <form asp-action="WarehouseToSalesPoint" method="post" id="transferToSalesPointForm">
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <label asp-for="FromWarehouseId" class="form-label fw-bold text-muted text-uppercase small">@Localizer["From Warehouse (Source)"]</label>
+                                <select asp-for="FromWarehouseId" class="form-select form-select-lg border-primary-subtle shadow-sm"
+                                        asp-items="Model.Warehouses" id="sourceWarehouse">
+                                    <option value="">-- @Localizer["Select Warehouse"] --</option>
+                                </select>
+                                <span asp-validation-for="FromWarehouseId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-2 text-center pt-4">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-arrow-right text-primary fa-lg"></i>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label asp-for="ToSalesPointId" class="form-label fw-bold text-muted text-uppercase small">@Localizer["To Sales Point (Destination)"]</label>
+                                <select asp-for="ToSalesPointId" class="form-select form-select-lg border-success-subtle shadow-sm"
+                                        asp-items="Model.SalesPoints">
+                                    <option value="">-- @Localizer["Select Sales Point"] --</option>
+                                </select>
+                                <span asp-validation-for="ToSalesPointId" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="card shadow-sm border-0 overflow-hidden">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h6 class="mb-0 fw-bold text-dark">
+                            <i class="fas fa-clipboard-list text-primary me-2"></i> @Localizer["Product Selection and Quantities"]
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">@Localizer["Product"]</th>
+                                        <th class="text-center">@Localizer["Warehouse Stock"]</th>
+                                        <th style="width: 200px;" class="pe-4">@Localizer["Transfer Quantity"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center py-5">
+                                            <div class="text-muted">
+                                                <i class="fas fa-warehouse fa-2x mb-3 d-block opacity-25"></i>
+                                                @Localizer["Select a source warehouse to load products."]
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 p-3 bg-white border rounded shadow-sm text-end">
+            <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow">
+                <i class="fas fa-truck-loading me-2"></i> @Localizer["Execute Transfer"]
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#sourceWarehouse').change(function () {
+                const warehouseId = $(this).val();
+                const $tableBody = $('#productsTableBody');
+
+                if (!warehouseId) {
+                    $tableBody.html('<tr><td colspan="3" class="text-center py-5 text-muted">Изберете склад.</td></tr>');
+                    return;
+                }
+
+                $tableBody.html('<tr><td colspan="3" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></td></tr>');
+
+                $.getJSON('@Url.Action("GetStocks", "Logistics")', { warehouseId: warehouseId }, function (data) {
+                    $tableBody.empty();
+
+                    if (data.length === 0) {
+                        $tableBody.html('<tr><td colspan="3" class="text-center py-5 text-danger">В този склад няма налична продукция.</td></tr>');
+                        return;
+                    }
+
+                    $.each(data, function (i, item) {
+                        $tableBody.append(`
+                            <tr>
+                                <td class="ps-4">
+                                    <input type="hidden" name="Products[${i}].ProductId" value="${item.productId}" />
+                                    <input type="hidden" name="Products[${i}].ProductName" value="${item.productName}" />
+                                    <div class="fw-bold">${item.productName}</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info-subtle text-info px-3 py-2 border border-info-subtle">
+                                        ${item.availableQuantity.toFixed(2)} kg/pcs
+                                    </span>
+                                    <input type="hidden" name="Products[${i}].AvailableQuantity" value="${item.availableQuantity}" />
+                                </td>
+                                <td class="pe-4">
+                                    <div class="input-group">
+                                        <input type="number" name="Products[${i}].TransferQuantity"
+                                               class="form-control border-primary"
+                                               min="0" max="${item.availableQuantity}" step="0.01" value="0" />
+                                    </div>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                });
+            });
+        });
+    </script>
+}

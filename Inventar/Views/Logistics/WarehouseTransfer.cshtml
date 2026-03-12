@@ -6,10 +6,10 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h3 mb-0 text-primary fw-bold">
-            <i class="fas fa-exchange-alt me-2"></i> @Localizer["Преместване на продукция"]
+            <i class="fas fa-exchange-alt me-2"></i> @Localizer["Warehouse Transfer"]
         </h2>
         <a asp-action="Index" asp-controller="Production" class="btn btn-outline-secondary shadow-sm">
-            <i class="fas fa-arrow-left me-1"></i> @Localizer["Назад"]
+            <i class="fas fa-arrow-left me-1"></i> @Localizer["Back"]
         </a>
     </div>
 
@@ -20,10 +20,10 @@
                     <div class="card-body p-4">
                         <div class="row">
                             <div class="col-md-5">
-                                <label asp-for="FromWarehouseId" class="form-label fw-bold">@Localizer["От Склад (Източник)"]</label>
+                                <label asp-for="FromWarehouseId" class="form-label fw-bold">@Localizer["From Warehouse (Source)"]</label>
                                 <select asp-for="FromWarehouseId" class="form-select border-primary-subtle"
                                         asp-items="Model.Warehouses" id="fromWarehouse">
-                                    <option value="">-- @Localizer["Изберете склад"] --</option>
+                                    <option value="">-- @Localizer["Select Warehouse"] --</option>
                                 </select>
                                 <span asp-validation-for="FromWarehouseId" class="text-danger"></span>
                             </div>
@@ -31,10 +31,10 @@
                                 <i class="fas fa-long-arrow-alt-right fa-2x text-muted d-none d-md-block"></i>
                             </div>
                             <div class="col-md-5">
-                                <label asp-for="ToWarehouseId" class="form-label fw-bold">@Localizer["Към Склад (Дестинация)"]</label>
+                                <label asp-for="ToWarehouseId" class="form-label fw-bold">@Localizer["To Warehouse (Destination)"]</label>
                                 <select asp-for="ToWarehouseId" class="form-select border-success-subtle"
                                         asp-items="Model.Warehouses" id="toWarehouse">
-                                    <option value="">-- @Localizer["Изберете склад"] --</option>
+                                    <option value="">-- @Localizer["Select Warehouse"] --</option>
                                 </select>
                                 <span asp-validation-for="ToWarehouseId" class="text-danger"></span>
                             </div>
@@ -47,7 +47,7 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-dark text-white py-3">
                         <h5 class="mb-0 fs-6 text-uppercase fw-bold">
-                            <i class="fas fa-boxes me-2"></i> @Localizer["Налични продукти в избрания склад"]
+                            <i class="fas fa-boxes me-2"></i> @Localizer["Available Products in Selected Warehouse"]
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -55,16 +55,16 @@
                             <table class="table table-hover align-middle mb-0" id="productsTable">
                                 <thead class="bg-light sticky-top">
                                     <tr>
-                                        <th>@Localizer["Продукт"]</th>
-                                        <th class="text-center">@Localizer["Текуща наличност"]</th>
-                                        <th style="width: 250px;">@Localizer["Количество за преместване"]</th>
+                                        <th>@Localizer["Product"]</th>
+                                        <th class="text-center">@Localizer["Current Stock"]</th>
+                                        <th style="width: 250px;">@Localizer["Transfer Quantity"]</th>
                                     </tr>
                                 </thead>
                                 <tbody id="productsTableBody">
                                     <tr>
                                         <td colspan="3" class="text-center py-5 text-muted">
                                             <i class="fas fa-info-circle me-1"></i>
-                                            @Localizer["Моля, изберете изходен склад, за да видите наличностите."]
+                                            @Localizer["Please select a source warehouse to see availability."]
                                         </td>
                                     </tr>
                                 </tbody>
@@ -78,7 +78,7 @@
         <div class="fixed-bottom bg-white border-top py-3 shadow-lg" style="z-index: 1000; margin-left: 250px;">
             <div class="container-fluid px-4 text-end">
                 <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
-                    <i class="fas fa-check-circle me-2"></i> @Localizer["Потвърди преместването"]
+                    <i class="fas fa-check-circle me-2"></i> @Localizer["Confirm Transfer"]
                 </button>
             </div>
         </div>
@@ -93,7 +93,7 @@
                 const $tableBody = $('#productsTableBody');
 
                 if (!warehouseId) {
-                    $tableBody.html('<tr><td colspan="3" class="text-center py-5">Изберете склад.</td></tr>');
+                    $tableBody.html('<tr><td colspan="3" class="text-center py-5">@Localizer["Select Warehouse"]</td></tr>');
                     return;
                 }
 
@@ -102,7 +102,7 @@
                 $.getJSON('@Url.Action("GetStocks", "Logistics")', { warehouseId: warehouseId }, function (data) {
                     $tableBody.empty();
                     if (data.length === 0) {
-                        $tableBody.html('<tr><td colspan="3" class="text-center py-5 text-warning">Няма налична продукция в този склад.</td></tr>');
+                        $tableBody.html('<tr><td colspan="3" class="text-center py-5 text-warning">@Localizer["No products available in this warehouse."]</td></tr>');
                         return;
                     }
 
@@ -136,7 +136,7 @@
                 const from = $('#fromWarehouse').val();
                 const to = $('#toWarehouse').val();
                 if (from === to && from !== "") {
-                    alert("Изходният и целевият склад не могат да бъдат едни и същи!");
+                    alert("@Localizer["Source and destination warehouses cannot be the same!"]");
                     e.preventDefault();
                 }
             });

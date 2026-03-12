@@ -203,5 +203,54 @@ namespace Inventar.Services.Data
                 SalesPoints = salesPoints
             };
         }
+
+        public async Task<IEnumerable<SelectListItem>> GetAllSalesPointsAsync()
+        {
+            return await _context.SalesPoints
+                .Select(sp => new SelectListItem { Value = sp.Id.ToString(), Text = sp.Name })
+                .ToListAsync();
+        }
+
+        public async Task<bool> ExecuteWarehouseToSalesPointTransferAsync(WarehouseToSalesPointViewModel model)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                foreach (var item in model.Products.Where(p => p.TransferQuantity > 0))
+                {
+                    var warehouseStock = await _context.WarehouseProducts
+                        .FirstAsync(wp => wp.WarehouseId == model.FromWarehouseId && wp.ProductId == item.ProductId);
+
+                    if (warehouseStock.Quantity < item.TransferQuantity) return false;
+                    warehouseStock.Quantity -= item.TransferQuantity;
+
+                    var salesPointStock = await _context.SalesPointProducts
+                        .FirstOrDefaultAsync(sp => sp.SalesPointId == model.ToSalesPointId && sp.ProductId == item.ProductId);
+
+                    if (salesPointStock == null)
+                    {
+                        await _context.SalesPointProducts.AddAsync(new SalesPointProduct
+                        {
+                            SalesPointId = model.ToSalesPointId,
+                            ProductId = item.ProductId,
+                            Quantity = item.TransferQuantity
+                        });
+                    }
+                    else
+                    {
+                        salesPointStock.Quantity += item.TransferQuantity;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
     }
 }
