@@ -141,5 +141,45 @@ namespace Inventar.Web.Controllers
             model.SalesPoints = await _logisticsService.GetAllSalesPointsAsync();
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SalesActivity()
+        {
+            var model = new SalesActivityViewModel
+            {
+                SalesPoints = await _logisticsService.GetAllSalesPointsAsync()
+            };
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetSalesPointStocks(Guid salesPointId)
+        {
+            var stocks = await _logisticsService.GetSalesPointProductsAsync(salesPointId);
+            return Json(stocks);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SalesActivity(SalesActivityViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.SalesPoints = await _logisticsService.GetAllSalesPointsAsync();
+                return View(model);
+            }
+
+            var result = await _logisticsService.RegisterSalesActivityAsync(model);
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Продажбите бяха регистрирани успешно!";
+                return RedirectToAction("Index", "Production");
+            }
+
+            ModelState.AddModelError("", "Грешка при регистрация на продажбите. Проверете наличностите.");
+            model.SalesPoints = await _logisticsService.GetAllSalesPointsAsync();
+            return View(model);
+        }
     }
 }

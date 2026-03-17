@@ -31,6 +31,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ProductionCenterExpense> ProductionCenterExpenses { get; set; }
     public DbSet<ProductionLog> ProductionLog { get; set; }
     public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+    public DbSet<SaleRecord> SaleRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -120,5 +121,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(p => p.WarehouseProducts)
             .HasForeignKey(wp => wp.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<SalesPointProduct>()
+            .HasKey(spp => new { spp.SalesPointId, spp.ProductId });
     }
 }

@@ -219,7 +219,7 @@ namespace Inventar.Services.Data
                 foreach (var item in model.Products.Where(p => p.TransferQuantity > 0))
                 {
                     var warehouseStock = await _context.WarehouseProducts
-                        .FirstAsync(wp => wp.WarehouseId == model.FromWarehouseId && wp.ProductId == item.ProductId);
+                        .FirstOrDefaultAsync(wp => wp.WarehouseId == model.FromWarehouseId && wp.ProductId == item.ProductId);
 
                     if (warehouseStock.Quantity < item.TransferQuantity) return false;
                     warehouseStock.Quantity -= item.TransferQuantity;
@@ -229,17 +229,72 @@ namespace Inventar.Services.Data
 
                     if (salesPointStock == null)
                     {
-                        await _context.SalesPointProducts.AddAsync(new SalesPointProduct
+                        var newStock = new SalesPointProduct
                         {
                             SalesPointId = model.ToSalesPointId,
                             ProductId = item.ProductId,
-                            Quantity = item.TransferQuantity
-                        });
+                            Quantity = (int?)item.TransferQuantity,
+                            IsSelected = true,
+                            PriceReductionValue = 0
+                        };
+                        await _context.SalesPointProducts.AddAsync(newStock);
                     }
                     else
                     {
-                        salesPointStock.Quantity += item.TransferQuantity;
+                        salesPointStock.Quantity = (salesPointStock.Quantity ?? 0) + (int?)item.TransferQuantity;
                     }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
+
+        public async Task<List<SalesProductItemViewModel>> GetSalesPointProductsAsync(Guid salesPointId)
+        {
+            return await _context.SalesPointProducts
+                .Where(sp => sp.SalesPointId == salesPointId && sp.Quantity > 0)
+                .Include(sp => sp.Product)
+                .Select(sp => new SalesProductItemViewModel
+                {
+                    ProductId = sp.ProductId,
+                    ProductName = sp.Product.Name,
+                    AvailableInStock = sp.Quantity ?? 0,
+                    UnitPrice = sp.PriceReductionValue > 0 ? sp.PriceReductionValue : sp.Product.Price
+                }).ToListAsync();
+        }
+
+        public async Task<bool> RegisterSalesActivityAsync(SalesActivityViewModel model)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                foreach (var item in model.Products.Where(p => p.SoldQuantity > 0))
+                {
+                    var stock = await _context.SalesPointProducts
+                        .FirstAsync(sp => sp.SalesPointId == model.SalesPointId && sp.ProductId == item.ProductId);
+
+                    if (stock.Quantity < item.SoldQuantity) return false;
+                    stock.Quantity -= item.SoldQuantity;
+
+                    var sale = new SaleRecord
+                    {
+                        SalesPointId = model.SalesPointId,
+                        ProductId = item.ProductId,
+                        Quantity = item.SoldQuantity,
+                        UnitPrice = item.UnitPrice,
+                        IsVatApplied = model.IsVatApplicable,
+                        SaleDate = DateTime.Now,
+                        TotalAmount = (decimal)item.SoldQuantity * item.UnitPrice
+                    };
+
+                    await _context.SaleRecords.AddAsync(sale);
                 }
 
                 await _context.SaveChangesAsync();

@@ -20,5 +20,8 @@ namespace Inventar.Services.Data.Contracts
 
         Task<IEnumerable<SelectListItem>> GetAllSalesPointsAsync();
         Task<bool> ExecuteWarehouseToSalesPointTransferAsync(WarehouseToSalesPointViewModel model);
+
+        Task<List<SalesProductItemViewModel>> GetSalesPointProductsAsync(Guid salesPointId);
+        Task<bool> RegisterSalesActivityAsync(SalesActivityViewModel model);
     }
 }

@@ -1,0 +1,114 @@
+﻿@using Inventar.Web.ViewModels.Logistics
+@using Microsoft.AspNetCore.Mvc.Localization
+@model SalesActivityViewModel
+@inject IViewLocalizer Localizer
+
+<div class="container py-4">
+    <h2 class="h3 mb-4 text-primary fw-bold">
+        <i class="fas fa-cash-register me-2"></i> @Localizer["Register Sales Activity"]
+    </h2>
+
+    <form asp-action="RegisterSale" method="post">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">@Localizer["Select Sales Point"]</label>
+                        <select asp-for="SalesPointId" class="form-select" id="salesPointSelect" asp-items="Model.SalesPoints">
+                            <option value="">-- @Localizer["Select Location"] --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsVatApplicable" id="vatSwitch">
+                                <label class="form-check-label fw-bold" for="vatSwitch">@Localizer["Register with VAT (Tax due to Govt)"]</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>@Localizer["Product"]</th>
+                                <th class="text-center">@Localizer["In Stock"]</th>
+                                <th class="text-center">@Localizer["Price"]</th>
+                                <th style="width: 200px;">@Localizer["Quantity Sold"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody">
+                            @* Зарежда се динамично чрез JS *@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">
+                    <i class="fas fa-save me-2"></i> @Localizer["Confirm and Register Sale"]
+                </button>
+            </div>
+    </form>
+</div>
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                // КОРИГИРАНО ID: от #salesPointId на #salesPointSelect
+                $('#salesPointSelect').change(function () {
+                    const salesPointId = $(this).val();
+                    const $tableBody = $('#salesTableBody');
+
+                    console.log("Избрано ID:", salesPointId); // Дебъг: виж дали в конзолата излиза GUID
+
+                    if (!salesPointId) {
+                        $tableBody.empty();
+                        return;
+                    }
+
+                    $tableBody.html('<tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-success"></div></td></tr>');
+
+                    $.getJSON('@Url.Action("GetSalesPointStocks", "Logistics")', { salesPointId: salesPointId }, function (data) {
+                        console.log("Данни от сървъра:", data); // Дебъг: виж дали тук идват продуктите
+                        $tableBody.empty();
+                
+                        if (!data || data.length === 0) {
+                            $tableBody.html('<tr><td colspan="4" class="text-center py-4 text-muted">@Localizer["Няма налична стока в този обект."]</td></tr>');
+                            return;
+                        }
+
+                        $.each(data, function (i, item) {
+                            // ВНИМАНИЕ: Провери дали в JSON-а полетата са с малки букви (camelCase)
+                            // Обикновено AvailableInStock става availableInStock
+                            $tableBody.append(`
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="Products[${i}].ProductId" value="${item.productId}" />
+                                        <input type="hidden" name="Products[${i}].ProductName" value="${item.productName}" />
+                                        <span class="fw-bold">${item.productName}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border">${item.availableInStock}</span>
+                                    </td>
+                                    <td class="text-center text-primary fw-bold">
+                                        ${item.unitPrice.toFixed(2)} лв.
+                                        <input type="hidden" name="Products[${i}].UnitPrice" value="${item.unitPrice}" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Products[${i}].SoldQuantity"
+                                               class="form-control form-control-sm text-center"
+                                               min="0" max="${item.availableInStock}" step="1" value="0" />
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Грешка при заявката:", textStatus, errorThrown);
+                        $tableBody.html('<tr><td colspan="4" class="text-center py-4 text-danger">Грешка при зареждане на данните.</td></tr>');
+                    });
+                });
+            });
+        </script>
+    }
