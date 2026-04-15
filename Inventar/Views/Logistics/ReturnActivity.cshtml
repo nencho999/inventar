@@ -1,52 +1,54 @@
 ﻿@using Inventar.Web.ViewModels.Logistics
+@using Microsoft.AspNetCore.Mvc.Localization
 @model SalesPointReturnViewModel
+@inject IViewLocalizer Localizer
 
 <div class="container py-4">
     <h2 class="h3 mb-4 text-primary fw-bold">
-        <i class="fas fa-undo-alt me-2"></i> Връщане на стока от Обект
+        <i class="fas fa-undo-alt me-2"></i> @Localizer["Return Goods from Sales Point"]
     </h2>
 
     <form asp-action="ReturnActivity" method="post">
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-light">
-                <h5 class="mb-0 fw-bold text-dark">1. Избор на дестинации</h5>
+                <h5 class="mb-0 fw-bold text-dark">@Localizer["1. Destination Selection"]</h5>
             </div>
             <div class="card-body">
                 <div class="row g-4">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-danger">От обект (Източник):</label>
+                        <label class="form-label fw-bold text-danger">@Localizer["From Sales Point (Source):"]</label>
                         <select asp-for="FromSalesPointId" class="form-select border-danger" id="salesPointSelect" asp-items="Model.SalesPoints">
-                            <option value="">-- Изберете обект --</option>
+                            <option value="">-- @Localizer["Select Sales Point"] --</option>
                         </select>
                         <span asp-validation-for="FromSalesPointId" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-success">Накъде връщаме стоката?</label>
+                        <label class="form-label fw-bold text-success">@Localizer["Where to return the goods?"]</label>
                         <div class="d-flex gap-3 mt-2">
                             <div class="form-check">
                                 <input class="form-check-input dest-radio" type="radio" asp-for="DestinationType" value="Warehouse" id="destWarehouse" checked>
-                                    <label class="form-check-label" for="destWarehouse">Към Склад</label>
+                                    <label class="form-check-label" for="destWarehouse">@Localizer["To Warehouse"]</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input dest-radio" type="radio" asp-for="DestinationType" value="ProductionCenter" id="destCenter">
-                                        <label class="form-check-label" for="destCenter">Към Център</label>
+                                        <label class="form-check-label" for="destCenter">@Localizer["To Center"]</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-bold text-success">До (Дестинация):</label>
+                                <label class="form-label fw-bold text-success">@Localizer["To (Destination):"]</label>
                         
                                 <div id="warehouseDiv">
                                     <select class="form-select border-success target-select" id="warehouseSelect" name="ToDestinationId" asp-items="Model.Warehouses">
-                                        <option value="">-- Изберете склад --</option>
+                                        <option value="">-- @Localizer["Select Warehouse"] --</option>
                                     </select>
                                 </div>
 
                                 <div id="centerDiv" style="display: none;">
                                     <select class="form-select border-success target-select" id="centerSelect" disabled asp-items="Model.ProductionCenters">
-                                        <option value="">-- Изберете център --</option>
+                                        <option value="">-- @Localizer["Select Center"] --</option>
                                     </select>
                                 </div>
                             </div>
@@ -56,21 +58,21 @@
 
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-light">
-                        <h5 class="mb-0 fw-bold text-dark">2. Продукти за връщане</h5>
+                        <h5 class="mb-0 fw-bold text-dark">@Localizer["2. Products to Return"]</h5>
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th>Продукт</th>
-                                    <th class="text-center" style="width: 200px;">Налично в обекта</th>
-                                    <th class="text-center" style="width: 200px;">Количество за връщане</th>
+                                    <th>@Localizer["Product"]</th>
+                                    <th class="text-center" style="width: 200px;">@Localizer["Available in Sales Point"]</th>
+                                    <th class="text-center" style="width: 200px;">@Localizer["Return Quantity"]</th>
                                 </tr>
                             </thead>
                             <tbody id="productsTableBody">
                                 <tr>
                                     <td colspan="3" class="text-center py-4 text-muted">
-                                        Моля, изберете "От обект", за да заредите наличните продукти.
+                                        @Localizer["Please select a Sales Point to load available products."]
                                     </td>
                                 </tr>
                             </tbody>
@@ -81,7 +83,7 @@
                 <div class="text-end">
                     <a asp-controller="Production" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4 me-2">Отказ</a>
                     <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
-                        <i class="fas fa-check me-2"></i> Потвърди Връщането
+                        <i class="fas fa-check me-2"></i> @Localizer["Confirm Return"]
                     </button>
                 </div>
             </form>
@@ -122,7 +124,7 @@
                             $tableBody.empty();
                 
                             if (!data || data.length === 0) {
-                                $tableBody.html('<tr><td colspan="3" class="text-center py-4 text-muted">Няма налична стока в този обект.</td></tr>');
+                                $tableBody.html('<tr><td colspan="3" class="text-center py-4 text-muted">@Localizer["No stock available in this location."]</td></tr>');
                                 return;
                             }
 
@@ -147,7 +149,7 @@
                                 `);
                             });
                         }).fail(function() {
-                            $tableBody.html('<tr><td colspan="3" class="text-center py-4 text-danger">Грешка при зареждане на данните.</td></tr>');
+                            $tableBody.html('<tr><td colspan="3" class="text-center py-4 text-danger">@Localizer["Error loading data."]</td></tr>');
                         });
                     });
                 });

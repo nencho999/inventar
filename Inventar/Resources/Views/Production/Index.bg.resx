@@ -117,40 +117,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Admin Tools" xml:space="preserve">
-    <value>Админ инструменти</value>
+  <data name="Between storage locations" xml:space="preserve">
+    <value>Трансфер между складови бази</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Начало</value>
+  <data name="Center to Sales Point" xml:space="preserve">
+    <value>От Център към Търговски обект</value>
   </data>
-  <data name="Inventory" xml:space="preserve">
-    <value>Инвентар</value>
+  <data name="Center to Warehouse" xml:space="preserve">
+    <value>От Център към Склад</value>
   </data>
-  <data name="Primary Material Bases" xml:space="preserve">
-    <value>Бази за първични материали</value>
+  <data name="Core Operations" xml:space="preserve">
+    <value>Основни операции</value>
   </data>
-  <data name="Privacy" xml:space="preserve">
-    <value>Поверителност</value>
+  <data name="Direct shipment to retail" xml:space="preserve">
+    <value>Директна доставка до търговски обект</value>
   </data>
-  <data name="Product Management" xml:space="preserve">
-    <value>Управление на продукти</value>
+  <data name="Log daily sales from retail points" xml:space="preserve">
+    <value>Отчитане на дневните продажби от търговските обекти</value>
   </data>
-  <data name="Production" xml:space="preserve">
-    <value>Производство</value>
+  <data name="Logistics &amp; Internal Transfers" xml:space="preserve">
+    <value>Логистика и Вътрешни трансфери</value>
   </data>
-  <data name="Production Center Management" xml:space="preserve">
-    <value>Управление на производствени центрове</value>
+  <data name="Manage manufacturing, stock levels, and logistics" xml:space="preserve">
+    <value>Управление на производството, складовите наличности и логистиката</value>
   </data>
-  <data name="Register Production" xml:space="preserve">
-    <value>Регистрирайте производство</value>
+  <data name="Move stock to central storage" xml:space="preserve">
+    <value>Преместване на стока в централен склад</value>
   </data>
-  <data name="Sales Point Management" xml:space="preserve">
-    <value>Управление на търговски обекти</value>
+  <data name="Production Management" xml:space="preserve">
+    <value>Управление на производството</value>
   </data>
-  <data name="User Management" xml:space="preserve">
-    <value>Управление на потребители</value>
+  <data name="Production Registration" xml:space="preserve">
+    <value>Регистрация на продукция</value>
   </data>
-  <data name="Warehouse Management" xml:space="preserve">
-    <value>Управление на складове</value>
+  <data name="Record newly produced quantities into center stock" xml:space="preserve">
+    <value>Завеждане на новопроизведени количества в базата</value>
+  </data>
+  <data name="Register Sales" xml:space="preserve">
+    <value>Регистрация на продажби</value>
+  </data>
+  <data name="Returns &amp; Quality Control" xml:space="preserve">
+    <value>Връщане на стока и Контрол</value>
+  </data>
+  <data name="Sales &amp; Revenue" xml:space="preserve">
+    <value>Продажби и Приходи</value>
+  </data>
+  <data name="Sales Point Return" xml:space="preserve">
+    <value>Връщане от Търговски обект</value>
+  </data>
+  <data name="Warehouse Return to Center" xml:space="preserve">
+    <value>Връщане от Склад към Център</value>
+  </data>
+  <data name="Warehouse to Sales Point" xml:space="preserve">
+    <value>От Склад към Търговски обект</value>
+  </data>
+  <data name="Warehouse to Warehouse" xml:space="preserve">
+    <value>От Склад към Склад</value>
   </data>
 </root>

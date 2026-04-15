@@ -117,40 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Admin Tools" xml:space="preserve">
-    <value>Админ инструменти</value>
+  <data name="Confirm and Register Sale" xml:space="preserve">
+    <value>Потвърди и регистрирай продажбата</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Начало</value>
+  <data name="Error loading data" xml:space="preserve">
+    <value>Грешка при зареждане на данните.</value>
   </data>
-  <data name="Inventory" xml:space="preserve">
-    <value>Инвентар</value>
+  <data name="In Stock" xml:space="preserve">
+    <value>Наличност</value>
   </data>
-  <data name="Primary Material Bases" xml:space="preserve">
-    <value>Бази за първични материали</value>
+  <data name="No stock available in this location" xml:space="preserve">
+    <value>Няма налична стока в този обект.</value>
   </data>
-  <data name="Privacy" xml:space="preserve">
-    <value>Поверителност</value>
+  <data name="Price" xml:space="preserve">
+    <value>Цена</value>
   </data>
-  <data name="Product Management" xml:space="preserve">
-    <value>Управление на продукти</value>
+  <data name="Product" xml:space="preserve">
+    <value>Продукт</value>
   </data>
-  <data name="Production" xml:space="preserve">
-    <value>Производство</value>
+  <data name="Quantity Sold" xml:space="preserve">
+    <value>Продадено количество</value>
   </data>
-  <data name="Production Center Management" xml:space="preserve">
-    <value>Управление на производствени центрове</value>
+  <data name="Register Sales Activity" xml:space="preserve">
+    <value>Регистрация на продажба</value>
   </data>
-  <data name="Register Production" xml:space="preserve">
-    <value>Регистрирайте производство</value>
+  <data name="Register with VAT (Tax due to Govt)" xml:space="preserve">
+    <value>Регистрирай с ДДС (Дължим към държавата)</value>
   </data>
-  <data name="Sales Point Management" xml:space="preserve">
-    <value>Управление на търговски обекти</value>
+  <data name="Select Location" xml:space="preserve">
+    <value>Изберете обект</value>
   </data>
-  <data name="User Management" xml:space="preserve">
-    <value>Управление на потребители</value>
+  <data name="Select Sales Point" xml:space="preserve">
+    <value>Изберете търговски обект</value>
   </data>
-  <data name="Warehouse Management" xml:space="preserve">
-    <value>Управление на складове</value>
+  <data name="Няма налична стока в този обект." xml:space="preserve">
+    <value>Няма налична стока в този обект.</value>
   </data>
 </root>

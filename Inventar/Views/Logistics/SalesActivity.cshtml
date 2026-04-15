@@ -75,7 +75,7 @@
                         $tableBody.empty();
                 
                         if (!data || data.length === 0) {
-                            $tableBody.html('<tr><td colspan="4" class="text-center py-4 text-muted">@Localizer["Няма налична стока в този обект."]</td></tr>');
+                            $tableBody.html('<tr><td colspan="4" class="text-center py-4 text-muted">@Localizer["No stock available in this location."]</td></tr>');
                             return;
                         }
 
@@ -106,7 +106,7 @@
                         });
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                         console.error("Грешка при заявката:", textStatus, errorThrown);
-                        $tableBody.html('<tr><td colspan="4" class="text-center py-4 text-danger">Грешка при зареждане на данните.</td></tr>');
+                        $tableBody.html('<tr><td colspan="4" class="text-center py-4 text-danger">@Localizer["Error loading data."]</td></tr>');
                     });
                 });
             });
