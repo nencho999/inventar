@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventar.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260226094624_currentstock")]
-    partial class currentstock
+    [Migration("20260413115842_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,15 +105,21 @@ namespace Inventar.Data.Migrations
                     b.Property<Guid>("MaterialId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PrimaryMaterialBaseId")
+                    b.Property<Guid?>("PrimaryMaterialBaseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MaterialId");
 
+                    b.HasIndex("WarehouseId");
+
                     b.HasIndex("PrimaryMaterialBaseId", "MaterialId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[PrimaryMaterialBaseId] IS NOT NULL");
 
                     b.ToTable("Capacities");
                 });
@@ -196,6 +202,9 @@ namespace Inventar.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("PrimaryMaterialBases");
@@ -247,8 +256,8 @@ namespace Inventar.Data.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("CurrentStock")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("CurrentStock")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -311,6 +320,42 @@ namespace Inventar.Data.Migrations
                     b.ToTable("RecurringExpenses");
                 });
 
+            modelBuilder.Entity("Inventar.Data.Models.SaleRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsVatApplied")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SaleDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SalesPointId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SalesPointId");
+
+                    b.ToTable("SaleRecords");
+                });
+
             modelBuilder.Entity("Inventar.Data.Models.SalesPoint", b =>
                 {
                     b.Property<Guid>("Id")
@@ -327,6 +372,9 @@ namespace Inventar.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -389,6 +437,9 @@ namespace Inventar.Data.Migrations
                     b.Property<decimal>("PriceReductionValue")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("SalesPointId", "ProductId");
 
@@ -459,6 +510,24 @@ namespace Inventar.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Warehouses");
+                });
+
+            modelBuilder.Entity("Inventar.Data.Models.WarehouseProduct", b =>
+                {
+                    b.Property<Guid>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.HasKey("WarehouseId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("WarehouseProducts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -703,13 +772,17 @@ namespace Inventar.Data.Migrations
 
                     b.HasOne("Inventar.Data.Models.PrimaryMaterialBase", "PrimaryMaterialBase")
                         .WithMany("Capacities")
-                        .HasForeignKey("PrimaryMaterialBaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PrimaryMaterialBaseId");
+
+                    b.HasOne("Inventar.Data.Models.Warehouse", "Warehouse")
+                        .WithMany("Capacities")
+                        .HasForeignKey("WarehouseId");
 
                     b.Navigation("Material");
 
                     b.Navigation("PrimaryMaterialBase");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.Expense", b =>
@@ -767,6 +840,25 @@ namespace Inventar.Data.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("Inventar.Data.Models.SaleRecord", b =>
+                {
+                    b.HasOne("Inventar.Data.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Inventar.Data.Models.SalesPoint", "SalesPoint")
+                        .WithMany()
+                        .HasForeignKey("SalesPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SalesPoint");
+                });
+
             modelBuilder.Entity("Inventar.Data.Models.SalesPointExpense", b =>
                 {
                     b.HasOne("Inventar.Data.Models.SalesPoint", "SalesPoint")
@@ -780,7 +872,7 @@ namespace Inventar.Data.Migrations
 
             modelBuilder.Entity("Inventar.Data.Models.SalesPointProduct", b =>
                 {
-                    b.HasOne("Inventar.Data.Models.Material", "Product")
+                    b.HasOne("Inventar.Data.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -814,6 +906,25 @@ namespace Inventar.Data.Migrations
                     b.Navigation("Base");
 
                     b.Navigation("Material");
+                });
+
+            modelBuilder.Entity("Inventar.Data.Models.WarehouseProduct", b =>
+                {
+                    b.HasOne("Inventar.Data.Models.Product", "Product")
+                        .WithMany("WarehouseProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Inventar.Data.Models.Warehouse", "Warehouse")
+                        .WithMany("WarehouseProducts")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -918,6 +1029,8 @@ namespace Inventar.Data.Migrations
                     b.Navigation("ProductionCenters");
 
                     b.Navigation("ProductionLogs");
+
+                    b.Navigation("WarehouseProducts");
                 });
 
             modelBuilder.Entity("Inventar.Data.Models.SalesPoint", b =>
@@ -929,9 +1042,13 @@ namespace Inventar.Data.Migrations
 
             modelBuilder.Entity("Inventar.Data.Models.Warehouse", b =>
                 {
+                    b.Navigation("Capacities");
+
                     b.Navigation("Expenses");
 
                     b.Navigation("RecurringExpenses");
+
+                    b.Navigation("WarehouseProducts");
                 });
 
             modelBuilder.Entity("ProductionCenter", b =>

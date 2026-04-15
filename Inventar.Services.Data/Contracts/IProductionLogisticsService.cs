@@ -23,5 +23,7 @@ namespace Inventar.Services.Data.Contracts
 
         Task<List<SalesProductItemViewModel>> GetSalesPointProductsAsync(Guid salesPointId);
         Task<bool> RegisterSalesActivityAsync(SalesActivityViewModel model);
+        Task<IEnumerable<SelectListItem>> GetAllProductionCentersAsync();
+        Task<bool> RegisterSalesPointReturnAsync(SalesPointReturnViewModel model);
     }
 }

@@ -307,5 +307,82 @@ namespace Inventar.Services.Data
                 return false;
             }
         }
+
+        public async Task<IEnumerable<SelectListItem>> GetAllProductionCentersAsync()
+        {
+            return await _context.ProductionCenters
+                .Select(pc => new SelectListItem { Value = pc.Id.ToString(), Text = pc.Name })
+                .ToListAsync();
+        }
+
+        public async Task<bool> RegisterSalesPointReturnAsync(SalesPointReturnViewModel model)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var productsToReturn = model.Products.Where(p => p.ReturnQuantity > 0).ToList();
+
+                foreach (var item in productsToReturn)
+                {
+                    var salesPointStock = await _context.SalesPointProducts
+                        .FirstOrDefaultAsync(sp => sp.SalesPointId == model.FromSalesPointId && sp.ProductId == item.ProductId);
+
+                    if (salesPointStock == null || (salesPointStock.Quantity ?? 0) < item.ReturnQuantity)
+                        return false;
+
+                    salesPointStock.Quantity -= item.ReturnQuantity;
+
+                    if (model.DestinationType == "Warehouse")
+                    {
+                        var warehouseStock = await _context.WarehouseProducts
+                            .FirstOrDefaultAsync(w => w.WarehouseId == model.ToDestinationId && w.ProductId == item.ProductId);
+
+                        if (warehouseStock == null)
+                        {
+                            await _context.WarehouseProducts.AddAsync(new WarehouseProduct
+                            {
+                                WarehouseId = model.ToDestinationId,
+                                ProductId = item.ProductId,
+                                Quantity = item.ReturnQuantity
+                            });
+                        }
+                        else
+                        {
+                            warehouseStock.Quantity += item.ReturnQuantity;
+                        }
+                    }
+                    else if (model.DestinationType == "ProductionCenter")
+                    {
+                        var centerStock = await _context.ProductionCenterStorages
+                            .FirstOrDefaultAsync(c => c.ProductionCenterId == model.ToDestinationId && c.ProductId == item.ProductId);
+
+                        if (centerStock == null)
+                        {
+                            await _context.ProductionCenterStorages.AddAsync(new ProductionCenterStorage
+                            {
+                                Id = Guid.NewGuid(),
+                                ProductionCenterId = model.ToDestinationId,
+                                ProductId = item.ProductId,
+                                CurrentStock = item.ReturnQuantity,
+                                MaxStorageCapacity = 1000
+                            });
+                        }
+                        else
+                        {
+                            centerStock.CurrentStock += item.ReturnQuantity;
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
     }
 }

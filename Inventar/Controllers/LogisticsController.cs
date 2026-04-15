@@ -181,5 +181,40 @@ namespace Inventar.Web.Controllers
             model.SalesPoints = await _logisticsService.GetAllSalesPointsAsync();
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ReturnActivity()
+        {
+            var model = new SalesPointReturnViewModel
+            {
+                SalesPoints = await _logisticsService.GetAllSalesPointsAsync(),
+                Warehouses = await _logisticsService.GetAllWarehousesAsync(),
+                ProductionCenters = await _logisticsService.GetAllProductionCentersAsync()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReturnActivity(SalesPointReturnViewModel model)
+        {
+            if (model.ToDestinationId == Guid.Empty || string.IsNullOrEmpty(model.DestinationType))
+            {
+                ModelState.AddModelError("", "Моля, изберете дестинация (Склад или Център).");
+            }
+
+            var success = await _logisticsService.RegisterSalesPointReturnAsync(model);
+
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Връщането на стока е регистрирано успешно!";
+                return RedirectToAction("Index", "Production");
+            }
+
+            ModelState.AddModelError("", "Грешка при връщане. Проверете наличностите.");
+
+            return View(model);
+        }
     }
 }
